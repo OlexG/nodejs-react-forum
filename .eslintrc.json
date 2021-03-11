@@ -21,7 +21,9 @@
         "semi": [2, "always"],
         "indent": ["error", "tab"],
         "no-tabs": 0,
-        "properties": "never"
+        "camelcase": 0,
+        "react/prop-types": "off",
+        "operator-linebreak": 0
     }
 }
 
