@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable no-undef */
 // import React from 'react';
 // import ReactDOM from 'react-dom';
@@ -15,7 +14,7 @@ class Post extends React.Component {
 	}
 }
 
-class Body extends React.Component {
+class App extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
@@ -44,4 +43,4 @@ class Body extends React.Component {
 	}
 }
 
-ReactDOM.render(React.createElement(Body), root);
+ReactDOM.render(React.createElement(App), root);
