@@ -23,7 +23,9 @@
         "no-tabs": 0,
         "camelcase": 0,
         "react/prop-types": "off",
-        "operator-linebreak": 0
+        "operator-linebreak": 0,
+        "no-undef":"off",
+        "react/react-in-jsx-scope":"off"
     }
 }
 

@@ -1,21 +1,7 @@
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable no-undef */
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-const root = document.querySelector('#root');
+import React from 'react';
+import Post from './components/post.js.js';
 
-// eslint-disable-next-line no-undef
-class Post extends React.Component {
-	render () {
-		return (
-			<div className="post">
-				<p>{this.props.text}</p>
-			</div>
-		);
-	}
-}
-
-class Body extends React.Component {
+class App extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
@@ -44,4 +30,4 @@ class Body extends React.Component {
 	}
 }
 
-ReactDOM.render(React.createElement(Body), root);
+export default App;
