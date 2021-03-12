@@ -15,17 +15,19 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "node"
     ],
     "rules": {
         "semi": [2, "always"],
         "indent": ["error", "tab"],
         "no-tabs": 0,
-        "camelcase": 0,
+        "camelcase": 2,
         "react/prop-types": "off",
         "operator-linebreak": 0,
         "react/react-in-jsx-scope": 0,
-        "no-undef":"off"
+        "no-undef":"off",
+        "node/global-require":"error"
     }
 }
 

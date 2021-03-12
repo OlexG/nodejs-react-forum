@@ -13,7 +13,7 @@ class UserManager {
 		this.collection = collection;
 	}
 
-	async test_add_user () {
+	async testAddUser () {
 		await this.collection.insertOne({
 			usename: 'test'
 		});
