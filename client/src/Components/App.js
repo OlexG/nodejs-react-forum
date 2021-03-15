@@ -1,20 +1,7 @@
-/* eslint-disable no-undef */
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-const root = document.querySelector('#root');
+import React from 'react';
+import Post from './Post.js';
 
-// eslint-disable-next-line no-undef
-class Post extends React.Component {
-	render () {
-		return (
-			<div className="post">
-				<p>{this.props.text}</p>
-			</div>
-		);
-	}
-}
-
-class App extends React.Component {
+export default class App extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
@@ -42,5 +29,3 @@ class App extends React.Component {
 		);
 	}
 }
-
-ReactDOM.render(React.createElement(App), root);
