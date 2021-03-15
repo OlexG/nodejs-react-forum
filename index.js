@@ -1,13 +1,13 @@
 const express = require('express');
 const { initDB, initManagers } = require('./server/db/init_db.js');
+require('dotenv').config();
 const app = express();
-const port = 3001;
 
 initDB().then(() => {
 	const { postManager, userManager } = initManagers();
 	userManager.testAddUser();
 
-	app.listen(port, () => console.log('listening on %d', port));
+	app.listen(process.env.PORT, () => console.log('listening on %d', process.env.PORT));
 }).catch(error => {
 	console.error(error);
 });
