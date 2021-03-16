@@ -7,8 +7,11 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "bootstrap": "^4.6.0",
     "react": "^17.0.1",
+    "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.0.1"
   },
@@ -24,14 +27,20 @@
       "react-app/jest"
     ],
     "rules": {
-        "semi": [2, "always"],
-        "indent": ["error", "tab"],
-        "no-tabs": 0,
-        "camelcase": 2,
-        "react/prop-types": "off",
-        "operator-linebreak": 0,
-        "react/react-in-jsx-scope": 0,
-        "no-undef":"off"
+      "semi": [
+        2,
+        "always"
+      ],
+      "indent": [
+        "error",
+        "tab"
+      ],
+      "no-tabs": 0,
+      "camelcase": 2,
+      "react/prop-types": "off",
+      "operator-linebreak": 0,
+      "react/react-in-jsx-scope": 0,
+      "no-undef": "off"
     }
   },
   "browserslist": {

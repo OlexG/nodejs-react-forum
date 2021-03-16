@@ -1,4 +1,14 @@
-import App from './Components/App.js';
+import App from './Components/App/App.js';
 import ReactDOM from 'react-dom';
+import { Link, BrowserRouter as Router, Route } from "react-router-dom";
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+const AppRouter = () => {
+	return (
+		<>
+			<Router>
+				<Route exact path="/" component={App} />
+			</Router>
+		</>
+	);
+};
+ReactDOM.render(<AppRouter/>, document.getElementById('root'));
