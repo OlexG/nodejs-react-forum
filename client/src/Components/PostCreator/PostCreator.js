@@ -7,11 +7,11 @@ const PostCreator = (props) => {
 			<form action="/add_post" method="POST">
 				<div class="form-group">
 					<label>Title</label>
-					<input class="form-control" id="titleInput" placeholder="Enter title"/>
+					<input name = "titleInput" class="form-control" id="titleInput" placeholder="Enter title"/>
 				</div>
 				<div class="form-group">
 					<label>Body</label>
-					<input class="form-control" id="bodyInput" placeholder="Enter text"/>
+					<input name = "bodyInput" class="form-control" id="bodyInput" placeholder="Enter text"/>
 				</div>
 				<button type="submit" class="btn btn-primary">Submit</button>
 			</form>
