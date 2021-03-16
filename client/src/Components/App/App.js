@@ -8,14 +8,14 @@ const App = () => {
 
 	useEffect(() => {
 		//get post data from server here
-		setPosts([{text:"test1"},{text:"test2"},{text:"test3"}]);
+		setPosts([{text:'test1'},{text:'test2'},{text:'test3'}]);
 	}, []);
 
 	return (
 		<div>
 			<NavbarComponent/>
-			<div className = "row">
-				<div className = "d-flex flex-column col-9 align-self-start" style = {{"alignItems":"center"}}>
+			<div className = 'row'>
+				<div className = 'd-flex flex-column align-items-center col-9 align-self-start'>
 					{posts ?
 						(
 							posts.map((d, idx) => { return <Post key = {idx} text = {d.text}/>; })
@@ -25,7 +25,7 @@ const App = () => {
 						)
 					}
 				</div>
-				<a type="button" class="btn btn-primary col-2 align-self-top h-25" style = {{"margin":"1em"}} href = "/create">Create a Post</a>
+				<a type='button' className='btn btn-primary col-2 align-self-top h-25 m-3' href = '/create'>Create a Post</a>
 			</div>
 		</div>
 	);
