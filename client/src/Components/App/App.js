@@ -14,15 +14,18 @@ const App = () => {
 	return (
 		<div>
 			<NavbarComponent/>
-			<div className = "d-flex flex-column" style = {{"alignItems":"center"}}>
-				{posts ?
-					(
-						posts.map((d, idx) => { return <Post key = {idx} text = {d.text}/>; })
-					) :
-					(
-						<p>loading</p>
-					)
-				}
+			<div className = "row">
+				<div className = "d-flex flex-column col-9 align-self-start" style = {{"alignItems":"center"}}>
+					{posts ?
+						(
+							posts.map((d, idx) => { return <Post key = {idx} text = {d.text}/>; })
+						) :
+						(
+							<p>loading</p>
+						)
+					}
+				</div>
+				<a type="button" class="btn btn-primary col-2 align-self-top h-25" style = {{"margin":"1em"}} href = "/create">Create a Post</a>
 			</div>
 		</div>
 	);
