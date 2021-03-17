@@ -6,13 +6,13 @@ import { useHistory } from 'react-router';
 const PostCreator = (props) => {
 	let history = useHistory();
 
-	function handleClick(e) {
+	async function handleClick(e) {
 		e.preventDefault();
 		let formElement = document.querySelector('form');
 		var formData = new FormData(formElement);
-		let title = formData.get('titleInput');
-		let body = formData.get('bodyInput');
-		fetch('/posts/add', {
+		let title = formData.get('title');
+		let body = formData.get('body');
+		let res = await fetch('/posts/add', {
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -22,18 +22,20 @@ const PostCreator = (props) => {
 				body
 			})
 		});
-		history.push('/');
+		if (res.status === 200){
+			history.push('/');
+		}
 	}
 	return (
 		<div style = {{'margin-left':'20%', 'margin-right':'20%', 'margin-top':'2%', 'padding':'2em'}} className = 'card'>
-			<Form action='/posts/add' method='POST' id = 'addPostForm' onSubmit = {handleClick}>
+			<Form id = 'addPostForm' onSubmit = {handleClick}>
 				<div className ='form-group'>
 					<label>Title</label>
-					<Form.Control name = 'titleInput' className ='form-control' id='titleInput' placeholder='Enter title'/>
+					<Form.Control name = 'title' className ='form-control' id='title' placeholder='Enter title'/>
 				</div>
 				<div className ='form-group'>
 					<label>Body</label>
-					<Form.Control name = 'bodyInput' className ='form-control' id='bodyInput' placeholder='Enter text'/>
+					<Form.Control name = 'body' className ='form-control' id='body' placeholder='Enter text'/>
 				</div>
 				<button type = 'submit' className ='btn btn-primary'>Submit</button>
 			</Form>
