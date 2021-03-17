@@ -17,10 +17,10 @@ const PostCreator = (props) => {
 				'Content-Type': 'application/json'
 			},
 			method: 'POST',
-			body:{
+			body:JSON.stringify({
 				title,
 				body
-			}
+			})
 		});
 		history.push('/');
 	}
