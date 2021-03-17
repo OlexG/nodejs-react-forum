@@ -12,7 +12,7 @@ const PostCreator = (props) => {
 		var formData = new FormData(formElement);
 		let title = formData.get('title');
 		let body = formData.get('body');
-		let res = await fetch('/posts/add', {
+		let res = await fetch('/posts', {
 			headers: {
 				'Content-Type': 'application/json'
 			},
