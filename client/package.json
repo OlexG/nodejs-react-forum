@@ -41,8 +41,14 @@
       "operator-linebreak": 0,
       "react/react-in-jsx-scope": 0,
       "no-undef": "off",
-      "quotes": [1, "single"],
-      "jsx-quotes": [1, "prefer-single"],
+      "quotes": [
+        1,
+        "single"
+      ],
+      "jsx-quotes": [
+        1,
+        "prefer-single"
+      ],
       "react/display-name": 0,
       "react/forbid-prop-types": 0,
       "react/jsx-boolean-value": 1,
