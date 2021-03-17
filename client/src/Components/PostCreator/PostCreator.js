@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 const PostCreator = (props) => {
 	return (
 		<div style = {{'margin-left':'20%', 'margin-right':'20%', 'margin-top':'2%', 'padding':'2em'}} className = 'card'>
-			<form action='/add_post' method='POST'>
+			<form action='/posts/add' method='POST'>
 				<div className ='form-group'>
 					<label>Title</label>
 					<input name = 'titleInput' className ='form-control' id='titleInput' placeholder='Enter title'/>

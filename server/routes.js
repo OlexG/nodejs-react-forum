@@ -1,5 +1,5 @@
 const routes = function (app, postManager, userManager) {
-	app.post('/add_post', function (req, res) {
+	app.post('/posts/add', function (req, res) {
 		console.log(req.body);
 		res.redirect('/');
 	});
