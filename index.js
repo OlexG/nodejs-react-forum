@@ -1,14 +1,16 @@
 const express = require('express');
-const { initDB, initManagers } = require('./server/db/init_db.js');
+const { initDB } = require('./server/db/init_db.js');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 const app = express();
-const port = 3000;
 
 initDB().then(() => {
-	const { postManager, userManager } = initManagers();
-	userManager.testAddUser();
+	// eslint-disable-next-line node/global-require
+	const routes = require('./server/routes.js');
+	app.use(bodyParser.json());
+	routes(app);
 
-	app.use(express.static('client'));
-	app.listen(port, () => console.log('listening on %d', port));
+	app.listen(process.env.PORT, () => console.log('listening on %d', process.env.PORT));
 }).catch(error => {
 	console.error(error);
 });

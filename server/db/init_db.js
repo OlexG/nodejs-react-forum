@@ -1,7 +1,7 @@
 const { PostManager, UserManager } = require('./db_manager');
 const { MongoClient } = require('mongodb');
-const uri = 'mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
-const client = new MongoClient(uri);
+require('dotenv').config();
+const client = new MongoClient(process.env.URI);
 
 async function initDB () {
 	try {
