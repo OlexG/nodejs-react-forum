@@ -9,7 +9,7 @@ initDB().then(() => {
 	const { postManager, userManager } = initManagers();
 	userManager.testAddUser();
 
-	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
 	routes(app, postManager, userManager);
 
 	app.listen(process.env.PORT, () => console.log('listening on %d', process.env.PORT));
