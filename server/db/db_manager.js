@@ -1,9 +1,25 @@
-const mongo = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 class PostManager {
 	// class with functions relating to accessing and editing post data
 	constructor (collection) {
 		this.collection = collection;
+	}
+
+	async getPost (postId) {
+		return await this.collection.findOne({ _id: ObjectId(postId) });
+	};
+
+	async getAllPosts () {
+		return await this.collection.find({}).toArray();
+	};
+
+	async addPost (title, body) {
+		const post = await this.collection.insertOne({
+			title,
+			body
+		});
+		return post.insertedId;
 	}
 }
 
