@@ -1,4 +1,4 @@
-const { v4 } = require('uuid');
+const { ObjectId } = require('mongodb');
 
 class PostManager {
 	// class with functions relating to accessing and editing post data
@@ -7,7 +7,7 @@ class PostManager {
 	}
 
 	async getPost (postId) {
-		return await this.collection.findOne({ postId });
+		return await this.collection.findOne({ _id: ObjectId(postId) });
 	};
 
 	async getAllPosts () {

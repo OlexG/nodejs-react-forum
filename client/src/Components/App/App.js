@@ -11,6 +11,7 @@ const App = () => {
 		fetch('/posts').then(res => 
 			res.json()
 		).then((res) =>{
+			console.log(res);
 			setPosts(res);
 		});
 	}, []);
