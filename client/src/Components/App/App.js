@@ -14,9 +14,7 @@ const App = () => {
 				<div className = 'd-flex flex-column align-items-center col-9 align-self-start'>
 					{posts ?
 						(
-							posts.filter((post) => {
-								return typeof post.title == 'string' && typeof post.body == 'string';
-							}).map((post, idx) => { 
+							posts.map((post, idx) => { 
 								return <Post key = {post._id} title = {post.title} body = {post.body}/>; 
 							})
 						) :
