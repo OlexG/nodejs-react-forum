@@ -6,12 +6,12 @@ class PostManager {
 		this.collection = collection;
 	}
 
-	getPost (postId) {
-		return this.collection.findOne({ postId });
+	async getPost (postId) {
+		return await this.collection.findOne({ postId });
 	};
 
-	getAllPosts () {
-		return this.collection.find({});
+	async getAllPosts () {
+		return await this.collection.find({}).toArray();
 	};
 
 	async addPost (title, body) {

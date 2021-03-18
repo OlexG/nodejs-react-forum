@@ -8,7 +8,11 @@ const App = () => {
 
 	useEffect(() => {
 		//get post data from server here
-		setPosts([{text:'test1'},{text:'test2'},{text:'test3'}]);
+		fetch('/posts').then(res => 
+			res.json()
+		).then((res) =>{
+			setPosts(res);
+		});
 	}, []);
 
 	return (
@@ -18,7 +22,11 @@ const App = () => {
 				<div className = 'd-flex flex-column align-items-center col-9 align-self-start'>
 					{posts ?
 						(
-							posts.map((d, idx) => { return <Post key = {idx} text = {d.text}/>; })
+							posts.filter((post) => {
+								return typeof post.title == 'string' && typeof post.body == 'string';
+							}).map((post, idx) => { 
+								return <Post key = {post._id} title = {post.title} body = {post.body}/>; 
+							})
 						) :
 						(
 							<p>loading</p>

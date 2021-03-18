@@ -15,9 +15,10 @@ module.exports = function (app) {
 	});
 
 	app.get('/posts', async function (req, res) {
-		postManager.getAllPosts().then((res) => {
-			res.send(res);
-		}).catch(() => {
+		postManager.getAllPosts().then((result) => {
+			res.send(result);
+		}).catch((e) => {
+			console.log(e);
 			res.sendStatus(400);
 		});
 	});
