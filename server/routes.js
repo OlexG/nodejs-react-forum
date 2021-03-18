@@ -1,9 +1,11 @@
 const { initManagers } = require('./db/init_db.js');
+const validatePost = require('./validation/validatePost.js');
 // eslint-disable-next-line no-unused-vars
 const { postManager, userManager } = initManagers();
+
 module.exports = function (app) {
 	app.post('/posts', async function (req, res) {
-		if ('title' in req.body && 'body' in req.body) {
+		if (validatePost(req)) {
 			postManager.addPost(req.body.title, req.body.body).then((result) => {
 				res.statusCode = 200;
 				res.send(result);

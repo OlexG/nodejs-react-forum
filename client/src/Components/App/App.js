@@ -1,21 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Post from '../Post/Post.js';
 import NavbarComponent from '../Navbar/Navbar.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import {Link} from 'react-router-dom';
+import usePostsFetch from '../../Hooks/usePostsFetch.js';
+
 const App = () => {
-	const [posts, setPosts] = useState([]);
-
-	useEffect(() => {
-		//get post data from server here
-		fetch('/posts').then(res => 
-			res.json()
-		).then((res) =>{
-			console.log(res);
-			setPosts(res);
-		});
-	}, []);
-
+	const posts = usePostsFetch();
 	return (
 		<div>
 			<NavbarComponent/>
