@@ -24,7 +24,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "standard"
     ],
     "rules": {
       "semi": [
@@ -41,6 +42,7 @@
       "operator-linebreak": 0,
       "react/react-in-jsx-scope": 0,
       "no-undef": "off",
+      "quote-props": ["error", "always"],
       "quotes": [
         1,
         "single"

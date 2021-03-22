@@ -29,9 +29,29 @@ class UserManager {
 		this.collection = collection;
 	}
 
+	async addUser (username, password) {
+		if (await this.collection.findOne({ username })) {
+			return 'username already exists';
+		}
+		await this.collection.insertOne({
+			username,
+			password
+		});
+		return 'success';
+	}
+
+	async verifyUser (username, password) {
+		const user = await this.collection.findOne({ username, password });
+		console.log(user);
+		if (user) {
+			return true;
+		}
+		return false;
+	}
+
 	async testAddUser () {
 		await this.collection.insertOne({
-			usename: 'test'
+			username: 'test'
 		});
 	}
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const { initDB } = require('./server/db/init_db.js');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./server/errorHandler.js');
 require('dotenv').config();
 const app = express();
@@ -8,6 +9,7 @@ const app = express();
 initDB().then(() => {
 	// eslint-disable-next-line node/global-require
 	const routes = require('./server/routes.js');
+	app.use(cookieParser());
 	app.use(bodyParser.json());
 	routes(app);
 	app.use(errorHandler);
