@@ -37,7 +37,6 @@ module.exports = function (app) {
 
 	// sign-up user
 	app.post('/users', async function (req, res, next) {
-		console.log("no");
 		const validationResult = validateUser(req);
 		if (validationResult === 'valid') {
 			const { username, password } = req.body;

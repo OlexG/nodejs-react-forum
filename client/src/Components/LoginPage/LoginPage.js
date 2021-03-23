@@ -25,12 +25,14 @@ const LoginPage = (props) => {
 		});
 		if (res.status === 200) {
 			history.push('/');
+		} else {
+			// display error here
 		}
 	}
 	return (
 		<>
 			<NavbarComponent/>
-			<div style = {{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', 'padding': '2em' }} className = 'card'>
+			<div style = {{ 'marginLeft': '20%', 'marginRight': '20%', 'marginTop': '2%', 'padding': '2em' }} className = 'card'>
 				<Form id = 'addPostForm' onSubmit = {handleClick}>
 					<div className = 'form-group'>
 						<label>Username</label>
@@ -38,7 +40,7 @@ const LoginPage = (props) => {
 					</div>
 					<div className ='form-group'>
 						<label>Password</label>
-						<Form.Control name = 'password' className ='form-control' id='password' placeholder='Enter password'/>
+						<Form.Control type = 'password' name = 'password' className ='form-control' id='password' placeholder='Enter password'/>
 					</div>
 					<button type = 'submit' className ='btn btn-primary'>Submit</button>
 				</Form>
