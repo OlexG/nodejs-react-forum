@@ -42,7 +42,6 @@ class UserManager {
 
 	async verifyUser (username, password) {
 		const user = await this.collection.findOne({ username, password });
-		console.log(user);
 		if (user) {
 			return true;
 		}

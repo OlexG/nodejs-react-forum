@@ -2,16 +2,22 @@ const { initManagers } = require('./db/init_db.js');
 const validatePost = require('./validation/validatePost.js');
 const validateUser = require('./validation/validateUser.js');
 const jwt = require('jsonwebtoken');
+const validateJWT = require('./validation/validateJWT.js');
 // eslint-disable-next-line no-unused-vars
 const { postManager, userManager } = initManagers();
 
 module.exports = function (app) {
+	// submit a post
 	app.post('/posts', async function (req, res, next) {
+		if (!validateJWT(req, jwt)) {
+			res.sendStatus(401);
+			return next();
+		}
 		if (validatePost(req)) {
 			postManager.addPost(req.body.title, req.body.body).then((result) => {
 				res.statusCode = 200;
 				res.send(result);
-			}).catch(() => {
+			}).catch((e) => {
 				next(e);
 			});
 		} else {
@@ -19,6 +25,7 @@ module.exports = function (app) {
 		}
 	});
 
+	// retrieve all the posts
 	app.get('/posts', async function (req, res, next) {
 		postManager.getAllPosts().then((result) => {
 			res.send(result);
@@ -27,6 +34,7 @@ module.exports = function (app) {
 		});
 	});
 
+	// retrieve a post based on id
 	app.get('/posts/:id', async function (req, res, next) {
 		postManager.getPost(req.params.id).then((result) => {
 			res.send(result);
@@ -54,11 +62,11 @@ module.exports = function (app) {
 	// log-in the user and return their JWT
 	app.post('/token', async function (req, res, next) {
 		const { username, password } = req.body;
-		console.log(username, password);
 		userManager.verifyUser(username, password).then((valid) => {
 			if (valid) {
-				const accessToken = jwt.sign({ username: username }, process.env.JWT_TOKEN);
-				res.cookie('token', accessToken);
+				const accessToken = jwt.sign({ username }, process.env.JWT_TOKEN);
+				res.cookie('token', accessToken, { overwrite: true });
+				res.cookie('username', username, { overwrite: true });
 				res.sendStatus(200);
 			} else {
 				res.sendStatus(400);

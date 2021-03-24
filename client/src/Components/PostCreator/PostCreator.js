@@ -15,7 +15,8 @@ const PostCreator = (props) => {
 		const body = formData.get('body');
 		const res = await fetch('/posts', {
 			'headers': {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${Cookies.get('token')}`
 			},
 			'method': 'POST',
 			'body': JSON.stringify({
