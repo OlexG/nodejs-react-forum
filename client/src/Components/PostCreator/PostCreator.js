@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import NavbarComponent from '../Navbar/Navbar.js';
+import Popup from '../Popup/Popup.js';
 
 const PostCreator = (props) => {
 	const history = useHistory();
+	const [popup, setPopup] = useState({});
 
 	async function handleClick (e) {
 		e.preventDefault();
@@ -28,10 +30,14 @@ const PostCreator = (props) => {
 			const result = await res.json();
 			history.push(`/posts/${result}`);
 		}
+		if (res.status === 401) {
+			setPopup({ 'message': 'Invalid credentials. Please login again.' });
+		}
 	}
 	return (
 		<>
 			<NavbarComponent/>
+			{ popup.message ? <Popup error message = {popup.message}/> : <></> }
 			<div style = {{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', 'padding': '2em' }} className = 'card'>
 				<Form id = 'addPostForm' onSubmit = {handleClick}>
 					<div className ='form-group'>
