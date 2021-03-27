@@ -11,11 +11,11 @@ const { postManager } = initManagers();
 app.post('/posts', async function (req, res, next) {
 	if (!validateJWT(req, jwt)) {
 		res.sendStatus(401);
-		return next();
+		return;
 	}
 	if (!validatePost(req)) {
 		res.sendStatus(400);
-		return next();
+		return;
 	}
 	postManager.addPost(req.body.title, req.body.body).then((result) => {
 		res.statusCode = 200;
