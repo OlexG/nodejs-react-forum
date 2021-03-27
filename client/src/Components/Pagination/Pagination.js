@@ -1,7 +1,7 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Pagination } from 'react-bootstrap';
 
+// helper function for generating a range (1,3,1) -> [1,2,3]
 const range = (from, to, step = 1) => {
 	let i = from;
 	const range = [];
@@ -13,7 +13,7 @@ const range = (from, to, step = 1) => {
 };
 
 const PaginationBar = (props) => {
-	const totalPages = Math.floor(props.totalPosts / props.perPage);
+	const totalPages = Math.ceil(props.totalPosts / props.perPage);
 	// <<PaginationBar currentPage = {currentPage} setPage = {setCurrentPage} totalPosts = {totalPosts} perPage = {10}/>
 	const [shownPages, setShownPages] = useState(range(1, Math.min(totalPages, 3)));
 	function correctShownPages (value) {
@@ -27,21 +27,24 @@ const PaginationBar = (props) => {
 		}
 		console.log(shownPages);
 	}
+
+	function proccessNewPage (page) {
+		page = Math.max(1, page);
+		page = Math.min(totalPages, page);
+		correctShownPages(page);
+		props.setPage(page);
+	}
 	return (
 		<Pagination>
-			<Pagination.First onClick = {() => { correctShownPages(1); props.setPage(1); }}/>
-			<Pagination.Prev onClick = {() => { correctShownPages(Math.max(1, props.currentPage - 3)); props.setPage(Math.max(1, props.currentPage - 3)); }}/>
+			<Pagination.First onClick={() => { proccessNewPage(1); }}/>
+			<Pagination.Prev onClick={() => { proccessNewPage(props.currentPage - 3); }}/>
 			{
 				shownPages.map((value, index) => {
-					if (value === props.currentPage) {
-						return <Pagination.Item active onClick = {() => { correctShownPages(value); props.setPage(value); }}>{value}</Pagination.Item>;
-					} else {
-						return <Pagination.Item onClick = {() => { correctShownPages(value); props.setPage(value); }}>{value}</Pagination.Item>;
-					}
+					return <Pagination.Item active={value === props.currentPage && 'active'} key={value} onClick={() => { proccessNewPage(value); }}>{value}</Pagination.Item>;
 				})
 			}
-			<Pagination.Next onClick = {() => { correctShownPages(Math.min(totalPages, props.currentPage + 3)); props.setPage(Math.min(totalPages, props.currentPage + 3)); }}/>
-			<Pagination.Last onClick = {() => { correctShownPages(totalPages); props.setPage(totalPages); }}/>
+			<Pagination.Next onClick={() => { proccessNewPage(props.currentPage + 3); }}/>
+			<Pagination.Last onClick={() => { proccessNewPage(totalPages); }}/>
 		</Pagination>
 	);
 };

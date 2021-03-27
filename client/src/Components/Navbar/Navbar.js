@@ -11,7 +11,7 @@ const NavbarComponent = () => {
 				<Nav className='mr-auto'>
 					<Nav.Link href='/'>Home</Nav.Link>
 				</Nav>
-				<Nav.Link className = 'mr-sm-2' href='/signup'>Sign Up</Nav.Link>
+				<Nav.Link className='mr-sm-2' href='/signup'>Sign Up</Nav.Link>
 				<Nav.Link href='/login'>Log In</Nav.Link>
 			</Navbar.Collapse>
 		</Navbar>

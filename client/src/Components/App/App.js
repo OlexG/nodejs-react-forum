@@ -24,12 +24,12 @@ const App = () => {
 	return (
 		<div>
 			<NavbarComponent/>
-			<div className = 'row'>
-				<div className = 'd-flex flex-column align-items-center col-8 align-self-start'>
+			<div className='row'>
+				<div className='d-flex flex-column align-items-center col-8 align-self-start'>
 					{posts ?
 						(
 							posts.map((post, idx) => {
-								return <Post key = {post._id} title = {post.title} body = {post.body}/>;
+								return <Post key={post._id} title={post.title} body={post.body}/>;
 							})
 						) :
 						(
@@ -37,9 +37,9 @@ const App = () => {
 						)
 					}
 				</div>
-				<div className = 'col-3 d-flex flex-column align-items-center'>
-					<Link className='btn btn-primary align-self-top mt-3 mb-3 pr-5 pl-5' to = '/create'>Create a Post</Link>
-					{ totalPosts ? <PaginationBar currentPage = {currentPage} setPage = {setCurrentPage} totalPosts = {totalPosts} perPage = {postsPerPage}/> : <></> }
+				<div className='col-3 d-flex flex-column align-items-center'>
+					<Link className='btn btn-primary align-self-top mt-3 mb-3 pr-5 pl-5' to='/create'>Create a Post</Link>
+					{ totalPosts && <PaginationBar currentPage={currentPage} setPage={setCurrentPage} totalPosts={totalPosts} perPage={postsPerPage}/> }
 				</div>
 			</div>
 		</div>

@@ -29,15 +29,20 @@ const SignupPage = (props) => {
 			})
 		});
 		if (res.status === 200) {
-			// redirect to success page
-			history.push('/');
+			// redirect to success page if result is a success
+			const result = await res.json();
+			if (result.result !== 'success') {
+				setFormAttributes({ 'formError': result.result });
+			} else {
+				history.push('/');
+			}
 		} else if (res.status === 400) {
 			const result = await res.json();
 			console.log(result);
 		}
 	}
 	function handleUserInput (e) {
-		const formElement = document.querySelector('form');
+		const formElement = e.currentTarget;
 		const formData = new FormData(formElement);
 		const username = formData.get('username');
 		const password = formData.get('password');
@@ -50,7 +55,6 @@ const SignupPage = (props) => {
 		if (passwordError !== 'valid') {
 			formError.push(passwordError);
 		}
-		console.log(formError);
 		if (formError.length === 0) {
 			setFormAttributes({ username, password });
 		} else {
@@ -62,22 +66,22 @@ const SignupPage = (props) => {
 			<NavbarComponent/>
 			{formAttributes.formError ?
 				(
-					<Popup message = {formAttributes.formError} error/>
+					<Popup message={formAttributes.formError} error/>
 				) :
 				(
-					<Popup message = 'username and password look good!'/>
+					<Popup message='username and password look good!'/>
 				)}
-			<div style = {{ 'marginLeft': '20%', 'marginRight': '20%', 'marginTop': '2%', 'padding': '2em' }} className = 'card'>
-				<Form id = 'addPostForm' onSubmit = {handleClick} onChange={(event) => handleUserInput(event)}>
-					<div className = 'form-group'>
-						<label>Username</label>
-						<Form.Control name = 'username' className ='form-control' id='username' placeholder='Enter username' value = {formAttributes.email}/>
-					</div>
-					<div className ='form-group'>
-						<label>Password</label>
-						<Form.Control type='password' name = 'password' className ='form-control' id='password' placeholder='Enter password' value = {formAttributes.password}/>
-					</div>
-					<button type = 'submit' className ='btn btn-primary'>Submit</button>
+			<div style={{ 'marginLeft': '20%', 'marginRight': '20%', 'marginTop': '2%', 'padding': '2em' }} className='card'>
+				<Form id='addUserForm' onSubmit={handleClick} onChange={handleUserInput}>
+					<Form.Group>
+						<Form.Label>Username</Form.Label>
+						<Form.Control name='username' className='form-control' id='username' placeholder='Enter username' value={formAttributes.email}/>
+					</Form.Group>
+					<Form.Group className='form-group'>
+						<Form.Label>Password</Form.Label>
+						<Form.Control type='password' name='password' className='form-control' id='password' placeholder='Enter password' value={formAttributes.password}/>
+					</Form.Group>
+					<button type='submit' className='btn btn-primary'>Submit</button>
 				</Form>
 			</div>
 		</>

@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import NavbarComponent from '../Navbar/Navbar.js';
 import Popup from '../Popup/Popup.js';
+import Cookies from 'js-cookie';
 
 const PostCreator = (props) => {
 	const history = useHistory();
@@ -11,7 +12,7 @@ const PostCreator = (props) => {
 
 	async function handleClick (e) {
 		e.preventDefault();
-		const formElement = document.querySelector('form');
+		const formElement = e.currentTarget;
 		const formData = new FormData(formElement);
 		const title = formData.get('title');
 		const body = formData.get('body');
@@ -37,18 +38,18 @@ const PostCreator = (props) => {
 	return (
 		<>
 			<NavbarComponent/>
-			{ popup.message ? <Popup error message = {popup.message}/> : <></> }
-			<div style = {{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', 'padding': '2em' }} className = 'card'>
-				<Form id = 'addPostForm' onSubmit = {handleClick}>
-					<div className ='form-group'>
+			{ popup.message && <Popup error message={popup.message}/> }
+			<div style={{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', 'padding': '2em' }} className='card'>
+				<Form id='addPostForm' onSubmit={handleClick}>
+					<div className='form-group'>
 						<label>Title</label>
-						<Form.Control name = 'title' className ='form-control' id='title' placeholder='Enter title'/>
+						<Form.Control name='title' className='form-control' id='title' placeholder='Enter title'/>
 					</div>
-					<div className ='form-group'>
+					<div className='form-group'>
 						<label>Body</label>
-						<Form.Control name = 'body' className ='form-control' id='body' placeholder='Enter text'/>
+						<Form.Control name='body' className='form-control' id='body' placeholder='Enter text'/>
 					</div>
-					<button type = 'submit' className ='btn btn-primary'>Submit</button>
+					<button type='submit' className='btn btn-primary'>Submit</button>
 				</Form>
 			</div>
 		</>

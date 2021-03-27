@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "^4.6.0",
+    "js-cookie": "^2.2.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.1",
@@ -42,7 +43,10 @@
       "operator-linebreak": 0,
       "react/react-in-jsx-scope": 0,
       "no-undef": "off",
-      "quote-props": ["error", "always"],
+      "quote-props": [
+        "error",
+        "always"
+      ],
       "quotes": [
         1,
         "single"
@@ -81,7 +85,12 @@
       "react/prefer-es6-class": 1,
       "react/self-closing-comp": 1,
       "react/sort-comp": 1,
-      "no-restricted-globals":0
+      "no-restricted-globals": 0,
+      "react/jsx-props-no-multi-spaces": 1,
+      "react/jsx-equals-spacing": [
+        1,
+        "never"
+      ]
     }
   },
   "browserslist": {
