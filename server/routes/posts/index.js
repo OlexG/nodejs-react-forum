@@ -13,7 +13,10 @@ app.post('/posts', async function (req, res, next) {
 		res.sendStatus(401);
 		return next();
 	}
-	if (!validatePost(req)) res.sendStatus(400);
+	if (!validatePost(req)) {
+		res.sendStatus(400);
+		return next();
+	}
 	postManager.addPost(req.body.title, req.body.body).then((result) => {
 		res.statusCode = 200;
 		res.send(result);
