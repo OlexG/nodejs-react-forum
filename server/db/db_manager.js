@@ -21,6 +21,23 @@ class PostManager {
 		});
 		return post.insertedId;
 	}
+
+	async getNumberOfPosts () {
+		return await this.collection.countDocuments();
+	}
+
+	async getPostsPage (pageSize, pageNum) {
+		pageSize = parseInt(pageSize);
+		pageNum = parseInt(pageNum);
+		if (pageNum < 0) {
+			return [];
+		}
+		const count = await this.getNumberOfPosts();
+		if (pageSize * (pageNum - 1) > count) {
+			return [];
+		}
+		return await this.collection.find().skip(pageSize * (pageNum - 1)).limit(pageSize).toArray();
+	}
 }
 
 class UserManager {

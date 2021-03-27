@@ -43,6 +43,24 @@ module.exports = function (app) {
 		});
 	});
 
+	app.get('/posts-number', async function (req, res, next) {
+		postManager.getNumberOfPosts().then((result) => {
+			res.send({ result });
+		}).catch((e) => {
+			next(e);
+		});
+	});
+
+	// retrieve posts based on page number
+	app.get('/posts/:page/:number', async function (req, res, next) {
+		postManager.getPostsPage(req.params.number, req.params.page).then((result) => {
+			console.log(result);
+			res.send(result);
+		}).catch((e) => {
+			next(e);
+		});
+	});
+
 	// sign-up user
 	app.post('/users', async function (req, res, next) {
 		const validationResult = validateUser(req);

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-export default function useSinglePostFetch (id) {
-	const [totalPosts, setPosts] = useState([]);
+export default function usePostsNumberFetch (id) {
+	const [totalPosts, setTotalPosts] = useState(0);
 
 	useEffect(() => {
 		// get post data from server here
-		fetch('/posts').then(res =>
+		fetch('/posts-number').then(res =>
 			res.json()
 		).then((res) => {
-			setPosts(res);
+			setTotalPosts(res);
 		});
 	}, []);
 
