@@ -20,22 +20,24 @@ const PaginationBar = ({ currentPage, setPage, totalPosts, perPage }) => {
 	}
 
 	function proccessNewPage (page) {
-		page = Math.max(1, page);
-		page = Math.min(totalPages, page);
-		correctShownPages(page);
-		setPage(page);
+		return () => {
+			page = Math.max(1, page);
+			page = Math.min(totalPages, page);
+			correctShownPages(page);
+			setPage(page);
+		};
 	}
 	return (
 		<Pagination>
-			<Pagination.First onClick={() => { proccessNewPage(1); }}/>
-			<Pagination.Prev onClick={() => { proccessNewPage(currentPage - 3); }}/>
+			<Pagination.First onClick={proccessNewPage(1)}/>
+			<Pagination.Prev onClick={proccessNewPage(currentPage - 3)}/>
 			{
 				shownPages.map((value, index) => {
-					return <Pagination.Item active={value === currentPage && 'active'} key={value} onClick={() => { proccessNewPage(value); }}>{value}</Pagination.Item>;
+					return <Pagination.Item active={value === currentPage && 'active'} key={value} onClick={proccessNewPage(value)}>{value}</Pagination.Item>;
 				})
 			}
-			<Pagination.Next onClick={() => { proccessNewPage(currentPage + 3); }}/>
-			<Pagination.Last onClick={() => { proccessNewPage(totalPages); }}/>
+			<Pagination.Next onClick={proccessNewPage(currentPage + 3)}/>
+			<Pagination.Last onClick={proccessNewPage(totalPages)}/>
 		</Pagination>
 	);
 };
