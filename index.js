@@ -3,6 +3,7 @@ const express = require('express');
 const { initDB } = require('./server/db/initDB.js');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const errorHandler = require('./server/errorHandler.js');
 require('dotenv').config();
 const app = express();
@@ -14,6 +15,7 @@ initDB().then(() => {
 	app.use(bodyParser.json());
 	app.use(posts);
 	app.use(users);
+	app.use(errors());
 	app.use(errorHandler);
 	app.listen(process.env.PORT, () => console.log('listening on %d', process.env.PORT));
 }).catch(error => {

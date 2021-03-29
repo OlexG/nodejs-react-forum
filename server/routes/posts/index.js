@@ -1,20 +1,16 @@
 const jwt = require('jsonwebtoken');
-const validateJWT = require('../../validation/validateJWT.js');
-const validatePost = require('../../validation/validatePost.js');
-const { initManagers } = require('../../db/initDB.js');
+const { celebrate } = require('celebrate');
 const express = require('express');
+const validateJWT = require('../../validation/validateJWT.js');
+const postSchema = require('../../schemas/postSchema.js');
+const { initManagers } = require('../../db/initDB.js');
 const app = module.exports = express();
-
 const { postManager } = initManagers();
 
 // submit a post
-app.post('/posts', async function (req, res, next) {
+app.post('/posts', celebrate(postSchema), async function (req, res, next) {
 	if (!validateJWT(req, jwt)) {
 		res.sendStatus(401);
-		return;
-	}
-	if (!validatePost(req)) {
-		res.sendStatus(400);
 		return;
 	}
 	postManager.addPost(req.body.title, req.body.body).then((result) => {
