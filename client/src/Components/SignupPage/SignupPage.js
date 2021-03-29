@@ -30,15 +30,11 @@ const SignupPage = (props) => {
 		});
 		if (res.status === 200) {
 			// redirect to success page if result is a success
-			const result = await res.json();
-			if (result.result !== 'success') {
-				setFormAttributes({ 'formError': result.result });
-			} else {
-				history.push('/');
-			}
+			history.push('/');
 		} else if (res.status === 400) {
 			const result = await res.json();
 			console.log(result);
+			setFormAttributes({ 'formError': result.validation.body.message });
 		}
 	}
 	function handleUserInput (e) {

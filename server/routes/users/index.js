@@ -1,24 +1,22 @@
-const { initManagers } = require('../../db/initDB.js');
-const validateUser = require('../../validation/validateUser.js');
 const jwt = require('jsonwebtoken');
+const { celebrate } = require('celebrate');
 const express = require('express');
+const { initManagers } = require('../../db/initDB.js');
+const userSchema = require('../../schemas/userSchema.js');
 const app = module.exports = express();
 const { userManager } = initManagers();
 
 // sign-up user
-app.post('/users', async function (req, res, next) {
-	const validationResult = validateUser(req);
-	if (validationResult === 'valid') {
-		const { username, password } = req.body;
-		userManager.addUser(username, password).then((result) => {
-			res.send({ result });
-		}).catch((e) => {
-			next(e);
-		});
-	} else {
-		res.statusCode = 400;
-		res.send({ result: validationResult });
-	}
+app.post('/users', celebrate(userSchema), async function (req, res, next) {
+	const { username, password } = req.body;
+	userManager.addUser(username, password).then((result) => {
+		if (result === 'username already exists') {
+			res.statusCode = 400;
+		}
+		res.send({ validation: { body: { message: result } } });
+	}).catch((e) => {
+		next(e);
+	});
 });
 
 // log-in the user and return their JWT

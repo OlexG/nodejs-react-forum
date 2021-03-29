@@ -1,5 +1,5 @@
 export default function validatePassword (password) {
-	if (password.length < 4) {
+	if (password.length < 8) {
 		return 'password is too short';
 	}
 	if (password.length > 20) {
