@@ -4,12 +4,11 @@ import { Pagination } from 'react-bootstrap';
 // helper function for generating a range (1,3,1) -> [1,2,3]
 const range = (start, end) => new Array(end - start + 1).fill().map((el, ind) => ind + start);
 
-const PaginationBar = (props) => {
-	const totalPages = Math.ceil(props.totalPosts / props.perPage);
-	// <<PaginationBar currentPage = {currentPage} setPage = {setCurrentPage} totalPosts = {totalPosts} perPage = {10}/>
+const PaginationBar = ({ currentPage, setPage, totalPosts, perPage }) => {
+	const totalPages = Math.ceil(totalPosts / perPage);
 	const [shownPages, setShownPages] = useState(range(1, Math.min(totalPages, 3)));
 	function correctShownPages (value) {
-		console.log(props.totalPosts);
+		console.log(totalPosts);
 		if (value === 1) {
 			setShownPages(range(value, Math.min(totalPages, value + 2)));
 		} else if (value === totalPages) {
@@ -24,18 +23,18 @@ const PaginationBar = (props) => {
 		page = Math.max(1, page);
 		page = Math.min(totalPages, page);
 		correctShownPages(page);
-		props.setPage(page);
+		setPage(page);
 	}
 	return (
 		<Pagination>
 			<Pagination.First onClick={() => { proccessNewPage(1); }}/>
-			<Pagination.Prev onClick={() => { proccessNewPage(props.currentPage - 3); }}/>
+			<Pagination.Prev onClick={() => { proccessNewPage(currentPage - 3); }}/>
 			{
 				shownPages.map((value, index) => {
-					return <Pagination.Item active={value === props.currentPage && 'active'} key={value} onClick={() => { proccessNewPage(value); }}>{value}</Pagination.Item>;
+					return <Pagination.Item active={value === currentPage && 'active'} key={value} onClick={() => { proccessNewPage(value); }}>{value}</Pagination.Item>;
 				})
 			}
-			<Pagination.Next onClick={() => { proccessNewPage(props.currentPage + 3); }}/>
+			<Pagination.Next onClick={() => { proccessNewPage(currentPage + 3); }}/>
 			<Pagination.Last onClick={() => { proccessNewPage(totalPages); }}/>
 		</Pagination>
 	);
