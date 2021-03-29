@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 import { Pagination } from 'react-bootstrap';
 
 // helper function for generating a range (1,3,1) -> [1,2,3]
-const range = (from, to, step = 1) => {
-	let i = from;
-	const range = [];
-	while (i <= to) {
-		range.push(i);
-		i += step;
-	}
-	return range;
-};
+const range = (start, end) => new Array(end - start + 1).fill().map((el, ind) => ind + start);
 
 const PaginationBar = (props) => {
 	const totalPages = Math.ceil(props.totalPosts / props.perPage);
