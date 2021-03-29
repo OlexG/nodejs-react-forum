@@ -1,26 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Post from '../Post/Post.js';
 import NavbarComponent from '../Navbar/Navbar.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import usePostsNumberFetch from '../../Hooks/usePostsNumberFetch.js';
+import usePostsPaginationFetch from '../../Hooks/usePostsPaginationFetch.js';
 import PaginationBar from '../Pagination/Pagination.js';
 
 const App = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const totalPosts = usePostsNumberFetch().result;
-	const postsPerPage = 10;
-	const [posts, setPosts] = useState([]);
-
-	useEffect(() => {
-		// get post data from server here
-		fetch(`/posts/${currentPage}/${postsPerPage}`).then(res =>
-			res.json()
-		).then((res) => {
-			setPosts(res);
-		});
-	}, [currentPage]);
-
+	const postsPerPage = 3;
+	const posts = usePostsPaginationFetch(currentPage, postsPerPage);
 	return (
 		<div>
 			<NavbarComponent/>
