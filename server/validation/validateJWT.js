@@ -1,15 +1,17 @@
-module.exports = function (req, jwt) {
+const jwt = require('jsonwebtoken');
+module.exports = function (req, res, next) {
 	const authHeader = req.headers.authorization;
 	if (authHeader) {
 		const token = authHeader.split(' ')[1];
 		try {
 			const result = jwt.verify(token, process.env.JWT_TOKEN);
 			if (result.username === req.cookies.username) {
-				return true;
+				next();
+				return;
 			}
 		} catch (e) {
-			return false;
+			return res.sendStatus(401);
 		}
 	}
-	return false;
+	return res.sendStatus(401);
 };

@@ -1,57 +1,21 @@
-const jwt = require('jsonwebtoken');
 const { celebrate } = require('celebrate');
 const express = require('express');
 const validateJWT = require('../../validation/validateJWT.js');
 const postSchema = require('../../schemas/postSchema.js');
-const { initManagers } = require('../../db/initDB.js');
+const postController = require('../../controllers/postController.js');
+const wrap = require('../../controllers/wrap.js');
 const app = module.exports = express();
-const { postManager } = initManagers();
 
 // submit a post
-app.post('/posts', celebrate(postSchema), async function (req, res, next) {
-	if (!validateJWT(req, jwt)) {
-		res.sendStatus(401);
-		return;
-	}
-	postManager.addPost(req.body.title, req.body.body).then((result) => {
-		res.statusCode = 200;
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
-});
+app.post('/posts', validateJWT, celebrate(postSchema), wrap(postController.postPosts));
 
 // retrieve all the posts
-app.get('/posts', async function (req, res, next) {
-	postManager.getAllPosts().then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
-});
+app.get('/posts', wrap(postController.getPosts));
 
 // retrieve a post based on id
-app.get('/posts/:id', async function (req, res, next) {
-	postManager.getPost(req.params.id).then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
-});
+app.get('/posts/:id', wrap(postController.getPostsId));
 
-app.get('/posts-number', async function (req, res, next) {
-	postManager.getNumberOfPosts().then((result) => {
-		res.send({ result });
-	}).catch((e) => {
-		next(e);
-	});
-});
+app.get('/posts-number', wrap(postController.getPostsNumber));
 
 // retrieve posts based on page number
-app.get('/posts/:page/:number', async function (req, res, next) {
-	postManager.getPostsPage(req.params.number, req.params.page).then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
-});
+app.get('/posts/:page/:number', wrap(postController.getPostsPage));
