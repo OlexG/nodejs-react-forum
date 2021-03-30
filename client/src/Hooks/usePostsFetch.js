@@ -4,7 +4,7 @@ export default function useSinglePostFetch (id) {
 
 	useEffect(() => {
 		// get post data from server here
-		fetch('/posts').then(res =>
+		fetch('/api/v1/posts').then(res =>
 			res.json()
 		).then((res) => {
 			setPosts(res);

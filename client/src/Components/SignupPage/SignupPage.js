@@ -18,7 +18,7 @@ const SignupPage = (props) => {
 		const username = formData.get('username');
 		const password = formData.get('password');
 
-		const res = await fetch('/users', {
+		const res = await fetch('/api/v1/users', {
 			'headers': {
 				'Content-Type': 'application/json'
 			},

@@ -16,7 +16,7 @@ const PostCreator = (props) => {
 		const formData = new FormData(formElement);
 		const title = formData.get('title');
 		const body = formData.get('body');
-		const res = await fetch('/posts', {
+		const res = await fetch('/api/v1/posts', {
 			'headers': {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${Cookies.get('token')}`

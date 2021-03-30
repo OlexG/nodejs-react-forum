@@ -7,15 +7,15 @@ const wrap = require('../../controllers/wrap.js');
 const app = module.exports = express();
 
 // submit a post
-app.post('/posts', validateJWT, celebrate(postSchema), wrap(postController.postPosts));
+app.post('/api/v1/posts', validateJWT, celebrate(postSchema), wrap(postController.postPosts));
 
 // retrieve all the posts
-app.get('/posts', wrap(postController.getPosts));
+app.get('/api/v1/posts', wrap(postController.getPosts));
 
 // retrieve a post based on id
-app.get('/posts/:id', wrap(postController.getPostsId));
+app.get('/api/v1/posts/:id', wrap(postController.getPostsId));
 
-app.get('/posts-number', wrap(postController.getPostsNumber));
+app.get('/api/v1/posts-number', wrap(postController.getPostsNumber));
 
 // retrieve posts based on page number
-app.get('/posts/:page/:number', wrap(postController.getPostsPage));
+app.get('/api/v1/posts/:page/:number', wrap(postController.getPostsPage));

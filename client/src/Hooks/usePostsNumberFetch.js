@@ -4,7 +4,7 @@ export default function usePostsNumberFetch (id) {
 
 	useEffect(() => {
 		// get post data from server here
-		fetch('/posts-number').then(res =>
+		fetch('/api/v1/posts-number').then(res =>
 			res.json()
 		).then((res) => {
 			setTotalPosts(res);

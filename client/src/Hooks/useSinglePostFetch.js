@@ -4,7 +4,7 @@ export default function useSinglePostFetch (id) {
 	const [data, setData] = useState();
 
 	useEffect(() => {
-		fetch(`/posts/${id}`, {}).then((res) =>
+		fetch(`/api/v1/posts/${id}`, {}).then((res) =>
 			res.json()
 		).then((res) => {
 			if (typeof res.title === 'string' && typeof res.body === 'string') {
