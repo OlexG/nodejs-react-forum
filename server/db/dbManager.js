@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb');
+const bcrypt = require('bcrypt');
 
 class PostManager {
 	// class with functions relating to accessing and editing post data
@@ -50,17 +51,18 @@ class UserManager {
 		if (await this.collection.findOne({ username })) {
 			return 'username already exists';
 		}
+		const hashedPassword = await bcrypt.hash(password, 8);
 		await this.collection.insertOne({
 			username,
-			password
+			password: hashedPassword
 		});
 		return 'success';
 	}
 
 	async verifyUser (username, password) {
-		const user = await this.collection.findOne({ username, password });
+		const user = await this.collection.findOne({ username });
 		if (user) {
-			return true;
+			return await bcrypt.compare(password, user.password);
 		}
 		return false;
 	}
@@ -69,6 +71,10 @@ class UserManager {
 		await this.collection.insertOne({
 			username: 'test'
 		});
+	}
+
+	async DELETE_ALL_USERS () {
+		await this.collection.remove();
 	}
 }
 
