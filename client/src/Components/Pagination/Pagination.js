@@ -19,14 +19,12 @@ const PaginationBar = ({ currentPage, setPage, totalPosts, perPage }) => {
 		console.log(shownPages);
 	}
 
-	function proccessNewPage (page) {
-		return () => {
-			page = Math.max(1, page);
-			page = Math.min(totalPages, page);
-			correctShownPages(page);
-			setPage(page);
-		};
-	}
+	const proccessNewPage = (page) => () => {
+		page = Math.max(1, page);
+		page = Math.min(totalPages, page);
+		correctShownPages(page);
+		setPage(page);
+	};
 	return (
 		<Pagination>
 			<Pagination.First onClick={proccessNewPage(1)}/>

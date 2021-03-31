@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
+import Cookies from 'js-cookie';
 
 const NavbarComponent = () => {
 	return (
@@ -11,8 +12,14 @@ const NavbarComponent = () => {
 				<Nav className='mr-auto'>
 					<Nav.Link href='/'>Home</Nav.Link>
 				</Nav>
-				<Nav.Link className='mr-sm-2' href='/signup'>Sign Up</Nav.Link>
-				<Nav.Link href='/login'>Log In</Nav.Link>
+				{Cookies.get('username') ?
+					<Navbar.Text>{Cookies.get('username')}</Navbar.Text>
+					:
+					<React.Fragment>
+						<Nav.Link className='mr-sm-2' href='/signup'>Sign Up</Nav.Link>
+						<Nav.Link href='/login'>Log In</Nav.Link>
+					</React.Fragment>
+				}
 			</Navbar.Collapse>
 		</Navbar>
 	);
