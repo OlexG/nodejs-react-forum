@@ -4,7 +4,7 @@ module.exports = function (req, res, next) {
 	if (authHeader) {
 		const token = authHeader.split(' ')[1];
 		try {
-			const result = jwt.verify(token, process.env.JWT_TOKEN);
+			const result = jwt.verify(token, process.env.JWT_SECRET);
 			if (result.username === req.cookies.username) {
 				next();
 				return;

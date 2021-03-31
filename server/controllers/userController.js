@@ -18,7 +18,7 @@ async function postToken (req, res, next) {
 	const { username, password } = req.body;
 	userManager.verifyUser(username, password).then((valid) => {
 		if (valid) {
-			const accessToken = jwt.sign({ username }, process.env.JWT_TOKEN);
+			const accessToken = jwt.sign({ username }, process.env.JWT_SECRET);
 			res.cookie('token', accessToken, { overwrite: true });
 			res.cookie('username', username, { overwrite: true });
 			res.sendStatus(200);
