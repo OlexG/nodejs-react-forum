@@ -4,7 +4,7 @@ export default function usePostsPaginationFetch (currentPage, postsPerPage) {
 
 	useEffect(() => {
 		// get post data from server here
-		fetch(`/api/v1/posts/${currentPage}/${postsPerPage}`).then(res =>
+		fetch(`/api/v1/posts?page=${currentPage}&number=${postsPerPage}`).then(res =>
 			res.json()
 		).then((res) => {
 			setPosts(res);

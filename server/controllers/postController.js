@@ -11,11 +11,19 @@ async function postPosts (req, res, next) {
 };
 
 async function getPosts (req, res, next) {
-	postManager.getAllPosts().then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
+	if (req.query.number && req.query.page) {
+		postManager.getPostsPage(req.query.number, req.query.page).then((result) => {
+			res.send(result);
+		}).catch((e) => {
+			next(e);
+		});
+	} else {
+		postManager.getAllPosts().then((result) => {
+			res.send(result);
+		}).catch((e) => {
+			next(e);
+		});
+	}
 }
 
 async function getPostsId (req, res, next) {
@@ -34,18 +42,9 @@ async function getPostsNumber (req, res, next) {
 	});
 };
 
-async function getPostsPage (req, res, next) {
-	postManager.getPostsPage(req.params.number, req.params.page).then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
-};
-
 module.exports = {
 	postPosts,
 	getPosts,
 	getPostsId,
-	getPostsNumber,
-	getPostsPage
+	getPostsNumber
 };

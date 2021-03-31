@@ -9,13 +9,10 @@ const app = module.exports = express();
 // submit a post
 app.post('/api/v1/posts', validateAccessJWT, celebrate(postSchema), wrap(postController.postPosts));
 
-// retrieve all the posts
+// retrieve posts
 app.get('/api/v1/posts', wrap(postController.getPosts));
 
 // retrieve a post based on id
 app.get('/api/v1/posts/:id', wrap(postController.getPostsId));
 
 app.get('/api/v1/posts-number', wrap(postController.getPostsNumber));
-
-// retrieve posts based on page number
-app.get('/api/v1/posts/:page/:number', wrap(postController.getPostsPage));
