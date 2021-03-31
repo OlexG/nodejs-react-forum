@@ -59,6 +59,22 @@ class UserManager {
 		return 'success';
 	}
 
+	async addRefreshToken (username, refreshToken) {
+		await this.collection.updateOne({ username }, { $set: { refreshToken } });
+	}
+
+	async deleteRefreshToken (refreshToken) {
+		await this.collection.updateOne({ refreshToken }, { $unset: { refreshToken: '' } });
+	}
+
+	async findRefreshToken (refreshToken) {
+		const user = await this.collection.findOne({ refreshToken });
+		if (user) {
+			return user.username;
+		}
+		return false;
+	}
+
 	async verifyUser (username, password) {
 		const user = await this.collection.findOne({ username });
 		if (user) {

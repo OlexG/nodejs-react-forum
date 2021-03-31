@@ -13,7 +13,7 @@ const LoginPage = (props) => {
 		const formData = new FormData(formElement);
 		const username = formData.get('username');
 		const password = formData.get('password');
-		const res = await fetch('/api/v1/token', {
+		const res = await fetch('/api/v1/tokens', {
 			'headers': {
 				'Content-Type': 'application/json'
 			},

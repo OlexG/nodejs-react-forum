@@ -4,6 +4,19 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'js-cookie';
 
 const NavbarComponent = () => {
+	async function logoutUser () {
+		Cookies.remove('accessToken');
+		Cookies.remove('username');
+		await fetch('/api/v1/tokens', {
+			'headers': {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${Cookies.get('refreshToken')}`
+			},
+			'method': 'DELETE'
+		});
+
+		Cookies.remove('refreshToken');
+	}
 	return (
 		<Navbar bg='light' expand='lg'>
 			<Navbar.Brand href='#home'>Forum</Navbar.Brand>
@@ -13,7 +26,10 @@ const NavbarComponent = () => {
 					<Nav.Link href='/'>Home</Nav.Link>
 				</Nav>
 				{Cookies.get('username') ?
-					<Navbar.Text>{Cookies.get('username')}</Navbar.Text>
+					<React.Fragment>
+						<Navbar.Text>{Cookies.get('username')}</Navbar.Text>
+						<Nav.Link onClick={logoutUser} href='/'>Log Out</Nav.Link>
+					</React.Fragment>
 					:
 					<React.Fragment>
 						<Nav.Link className='mr-sm-2' href='/signup'>Sign Up</Nav.Link>

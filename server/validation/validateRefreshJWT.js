@@ -4,9 +4,9 @@ module.exports = function (req, res, next) {
 	if (!authHeader) {
 		return res.sendStatus(401);
 	}
-	const token = authHeader.split(' ')[1];
+	const refreshToken = authHeader.split(' ')[1];
 	try {
-		jwt.verify(token, process.env.JWT_SECRET);
+		jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
 		next();
 		return;
 	} catch (e) {
