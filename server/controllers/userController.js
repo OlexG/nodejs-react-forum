@@ -4,14 +4,11 @@ const { userManager } = initManagers();
 
 async function postUsers (req, res, next) {
 	const { username, password } = req.body;
-	userManager.addUser(username, password).then((result) => {
-		if (result === 'username already exists') {
-			res.statusCode = 400;
-		}
-		res.send({ validation: { body: { message: result } } });
-	}).catch((e) => {
-		next(e);
-	});
+	const result = await userManager.addUser(username, password);
+	if (result === 'username already exists') {
+		res.statusCode = 400;
+	}
+	res.send({ validation: { body: { message: result } } });
 }
 
 async function postTokens (req, res, next) {
@@ -37,13 +34,10 @@ async function postAccessToken (req, res, next) {
 	const refreshToken = req.headers.authorization.split(' ')[1];
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken);
-	if (decoded.username === username) {
-		const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
-		res.cookie('accessToken', accessToken, { overwrite: true });
-		res.sendStatus(200);
-		return;
-	}
-	res.sendStatus(401);
+	if (decoded.username !== username) res.sendStatus(401);
+	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
+	res.cookie('accessToken', accessToken, { overwrite: true });
+	res.sendStatus(200);
 }
 
 async function deleteTokens (req, res, next) {
