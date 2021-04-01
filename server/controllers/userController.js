@@ -17,7 +17,7 @@ async function login (req, res, next) {
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
 
 	res.cookie('accessToken', accessToken, { overwrite: true });
-	res.cookie('refreshToken', refreshToken, { overwrite: true });
+	res.cookie('refreshToken', refreshToken, { overwrite: true, httpOnly: true, sameSite: 'strict' });
 	res.cookie('username', username, { overwrite: true });
 
 	await userManager.addRefreshToken(username, refreshToken);
@@ -39,7 +39,7 @@ async function logout (req, res, next) {
 	const refreshToken = req.headers.authorization.split(' ')[1];
 	await userManager.deleteRefreshToken(refreshToken);
 	// delete the http ONLY refreshToken
-	res.cookie('refreshToken', '', { overwrite: true, maxAge: 0 });
+	res.clearCookie('refreshToken');
 	res.sendStatus(200);
 }
 

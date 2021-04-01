@@ -1,15 +1,13 @@
 const jwt = require('jsonwebtoken');
 module.exports = function (req, res, next) {
-	const authHeader = req.headers.authorization;
-	if (!authHeader) {
+	if (!req.cookies.refreshToken) {
 		return res.sendStatus(401);
 	}
-	const refreshToken = authHeader.split(' ')[1];
+	const refreshToken = req.cookies.refreshToken;
 	try {
 		jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
-		next();
-		return;
 	} catch (e) {
 		return res.sendStatus(401);
 	}
+	next();
 };

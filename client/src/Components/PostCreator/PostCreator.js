@@ -28,8 +28,7 @@ const PostCreator = (props) => {
 	async function sendTokenRequest () {
 		const res = await fetch('/api/v1/token', {
 			'headers': {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${Cookies.get('refreshToken')}`
+				'Content-Type': 'application/json'
 			},
 			'method': 'GET'
 		});
