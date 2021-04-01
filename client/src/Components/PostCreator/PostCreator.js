@@ -58,8 +58,10 @@ const PostCreator = (props) => {
 		if (res.status === 200) {
 			const result = await res.json();
 			history.push(`/posts/${result}`);
-		} else {
+		} else if (res.status === 401) {
 			setPopup({ 'message': 'Invalid credentials. Please login again.' });
+		} else {
+			setPopup({ 'message': 'Sorry something went wrong.' });
 		}
 	}
 	return (
