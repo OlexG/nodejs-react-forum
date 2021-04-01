@@ -7,15 +7,13 @@ const NavbarComponent = () => {
 	async function logoutUser () {
 		Cookies.remove('accessToken');
 		Cookies.remove('username');
-		await fetch('/api/v1/tokens', {
+		await fetch('/api/v1/logout', {
 			'headers': {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${Cookies.get('refreshToken')}`
 			},
 			'method': 'DELETE'
 		});
-
-		Cookies.remove('refreshToken');
 	}
 	return (
 		<Navbar bg='light' expand='lg'>
