@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
+import api from '../api.js';
 export default function useSinglePostFetch (id) {
 	const [posts, setPosts] = useState([]);
 
 	useEffect(() => {
 		// get post data from server here
-		fetch('/api/v1/posts').then(res =>
-			res.json()
-		).then((res) => {
-			setPosts(res);
-		});
+		api.sendPostsRequest().then((res) => {
+			setPosts(res.data);
+		}).catch((error) =>
+			console.log(error)
+		);
 	}, []);
 
 	return posts;

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import NavbarComponent from '../Navbar/Navbar.js';
+import api from '../../api.js';
 
 const LoginPage = (props) => {
 	const history = useHistory();
@@ -13,15 +14,9 @@ const LoginPage = (props) => {
 		const formData = new FormData(formElement);
 		const username = formData.get('username');
 		const password = formData.get('password');
-		const res = await fetch('/api/v1/login', {
-			'headers': {
-				'Content-Type': 'application/json'
-			},
-			'method': 'POST',
-			'body': JSON.stringify({
-				username,
-				password
-			})
+		const res = await api.login({
+			username,
+			password
 		});
 		if (res.status === 200) {
 			history.push('/');

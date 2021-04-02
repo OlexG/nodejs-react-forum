@@ -2,18 +2,13 @@ import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'js-cookie';
+import api from '../../api.js';
 
 const NavbarComponent = () => {
 	async function logoutUser () {
 		Cookies.remove('accessToken');
 		Cookies.remove('username');
-		await fetch('/api/v1/logout', {
-			'headers': {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${Cookies.get('refreshToken')}`
-			},
-			'method': 'DELETE'
-		});
+		await api.logout();
 	}
 	return (
 		<Navbar bg='light' expand='lg'>

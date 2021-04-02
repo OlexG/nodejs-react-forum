@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
+import api from '../api.js';
 export default function useSinglePostFetch (id) {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState();
 
 	useEffect(() => {
-		fetch(`/api/v1/posts/${id}`, {}).then((res) =>
-			res.json()
-		).then((res) => {
-			if (typeof res.title === 'string' && typeof res.body === 'string') {
-				setData(res);
+		api.sendSinglePostRequest(id).then((res) => {
+			if (typeof res.data.title === 'string' && typeof res.data.body === 'string') {
+				setData(res.data);
 				setLoading(false);
 			}
 		}).catch((error) =>

@@ -14,7 +14,7 @@ app.post('/api/v1/users', celebrate(userSchema), wrap(userController.postUsers))
 app.post('/api/v1/login', verifyUser, wrap(userController.login));
 
 // return the access token providing that the refresh token is valid
-app.get('/api/v1/token', validateRefreshJWT, wrap(userController.postAccessToken));
+app.get('/api/v1/token', validateRefreshJWT, wrap(userController.getAccessToken));
 
 // logout user
 app.delete('/api/v1/logout', validateRefreshJWT, wrap(userController.logout));

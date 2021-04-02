@@ -7,9 +7,8 @@ module.exports = function (req, res, next) {
 	const token = authHeader.split(' ')[1];
 	try {
 		jwt.verify(token, process.env.ACCESS_JWT_SECRET);
-		next();
-		return;
 	} catch (e) {
 		return res.sendStatus(401);
 	}
+	next();
 };

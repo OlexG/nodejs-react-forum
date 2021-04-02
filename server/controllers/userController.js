@@ -25,8 +25,8 @@ async function login (req, res, next) {
 	res.sendStatus(200);
 }
 
-async function postAccessToken (req, res, next) {
-	const refreshToken = req.headers.authorization.split(' ')[1];
+async function getAccessToken (req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken);
 	if (decoded.username !== username) res.sendStatus(401);
@@ -36,7 +36,7 @@ async function postAccessToken (req, res, next) {
 }
 
 async function logout (req, res, next) {
-	const refreshToken = req.headers.authorization.split(' ')[1];
+	const refreshToken = req.cookies.refreshToken;
 	await userManager.deleteRefreshToken(refreshToken);
 	// delete the http ONLY refreshToken
 	res.clearCookie('refreshToken');
@@ -46,6 +46,6 @@ async function logout (req, res, next) {
 module.exports = {
 	postUsers,
 	login,
-	postAccessToken,
+	getAccessToken,
 	logout
 };
