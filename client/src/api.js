@@ -1,6 +1,13 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-
+import sendPostSubmitRequest from './Requests/sendPostSubmitRequest.js';
+import sendPostsRequest from './Requests/sendPostsRequest.js';
+import sendPostsPageRequest from './Requests/sendPostsPageRequest.js';
+import sendSinglePostRequest from './Requests/sendSinglePostRequest.js';
+import sendPostNumberRequest from './Requests/sendPostNumberRequest.js';
+import logout from './Requests/logout.js';
+import signup from './Requests/signup.js';
+import login from './Requests/login.js';
 // request interceptor to add the auth token header to requests
 axios.interceptors.request.use(
 	(config) => {
@@ -23,41 +30,28 @@ axios.interceptors.response.use(
 		if (error.response.status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 			return axios
-				.get('api/v1/token')
+				.get('api/v1/token', { '_retry': true })
 				.then((res) => {
 					if (res.status === 200) {
 						return axios(originalRequest);
+					} else {
+						return res;
 					}
 				});
 		}
-		return Promise.reject(error);
+		Promise.reject(error);
+		return { 'status': 401 };
 	}
 );
 // functions to make api calls
 const api = {
-	'sendPostSubmitRequest': (body) => {
-		return axios.post('/api/v1/posts', body);
-	},
-	'sendPostsRequest': () => {
-		return axios.get('/api/v1/posts');
-	},
-	'sendPostsPageRequest': (currentPage, postsPerPage) => {
-		return axios.get(`/api/v1/posts?page=${currentPage}&number=${postsPerPage}`);
-	},
-	'sendSinglePostRequest': (id) => {
-		return axios.get(`/api/v1/posts/${id}`);
-	},
-	'sendPostNumberRequest': () => {
-		return axios.get('/api/v1/posts-number');
-	},
-	'logout': () => {
-		return axios.delete('/api/v1/logout');
-	},
-	'signup': (body) => {
-		return axios.post('/api/v1/users', body);
-	},
-	'login': (body) => {
-		return axios.post('/api/v1/login', body);
-	}
+	sendPostSubmitRequest,
+	sendPostsRequest,
+	sendPostsPageRequest,
+	sendSinglePostRequest,
+	sendPostNumberRequest,
+	logout,
+	signup,
+	login
 };
 export default api;
