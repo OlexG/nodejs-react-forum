@@ -1,1 +1,3 @@
-export const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 5;
+const REFRESH_TOKEN_TIME = 5000;
+export { POSTS_PER_PAGE, REFRESH_TOKEN_TIME };

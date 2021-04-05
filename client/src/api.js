@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import sendPostSubmitRequest from './Requests/sendPostSubmitRequest.js';
@@ -8,6 +9,11 @@ import sendPostNumberRequest from './Requests/sendPostNumberRequest.js';
 import logout from './Requests/logout.js';
 import signup from './Requests/signup.js';
 import login from './Requests/login.js';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import Worker from 'worker-loader!./Worker.js';
+
+const workerInstance = Worker();
+
 // request interceptor to add the auth token header to requests
 axios.interceptors.request.use(
 	(config) => {
