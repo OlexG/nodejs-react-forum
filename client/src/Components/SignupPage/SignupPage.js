@@ -6,6 +6,7 @@ import NavbarComponent from '../Navbar/Navbar.js';
 import Popup from '../Popup/Popup.js';
 import validatePassword from '../../Validation/validatePassword.js';
 import validateUsername from '../../Validation/validateUsername.js';
+import api from '../../api.js';
 
 const SignupPage = (props) => {
 	const history = useHistory();
@@ -18,21 +19,16 @@ const SignupPage = (props) => {
 		const username = formData.get('username');
 		const password = formData.get('password');
 
-		const res = await fetch('/api/v1/users', {
-			'headers': {
-				'Content-Type': 'application/json'
-			},
-			'method': 'POST',
-			'body': JSON.stringify({
-				username,
-				password
-			})
+		const res = await api.signup({
+			username,
+			password
 		});
+
 		if (res.status === 200) {
 			// redirect to success page if result is a success
 			history.push('/');
 		} else if (res.status === 400) {
-			const result = await res.json();
+			const result = res.data;
 			console.log(result);
 			setFormAttributes({ 'formError': result.validation.body.message });
 		}

@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import NavbarComponent from '../Navbar/Navbar.js';
 import Popup from '../Popup/Popup.js';
-import Cookies from 'js-cookie';
+import api from '../../api.js';
 
 const PostCreator = (props) => {
 	const history = useHistory();
@@ -16,23 +16,16 @@ const PostCreator = (props) => {
 		const formData = new FormData(formElement);
 		const title = formData.get('title');
 		const body = formData.get('body');
-		const res = await fetch('/api/v1/posts', {
-			'headers': {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${Cookies.get('token')}`
-			},
-			'method': 'POST',
-			'body': JSON.stringify({
-				title,
-				body
-			})
+		const res = await api.sendPostSubmitRequest({
+			title,
+			body
 		});
 		if (res.status === 200) {
-			const result = await res.json();
-			history.push(`/posts/${result}`);
-		}
-		if (res.status === 401) {
+			history.push(`/posts/${res.data}`);
+		} else if (res.status === 401) {
 			setPopup({ 'message': 'Invalid credentials. Please login again.' });
+		} else {
+			setPopup({ 'message': 'Sorry something went wrong.' });
 		}
 	}
 	return (

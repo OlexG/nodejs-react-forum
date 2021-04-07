@@ -2,50 +2,34 @@ const { initManagers } = require('../db/initDB');
 const { postManager } = initManagers();
 
 async function postPosts (req, res, next) {
-	postManager.addPost(req.body.title, req.body.body).then((result) => {
-		res.statusCode = 200;
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
+	const result = await postManager.addPost(req.body.title, req.body.body);
+	res.statusCode = 200;
+	res.send(result);
 };
 
 async function getPosts (req, res, next) {
-	postManager.getAllPosts().then((result) => {
+	if (req.query.number && req.query.page) {
+		const result = await postManager.getPostsPage(req.query.number, req.query.page);
 		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
+	} else {
+		const result = await postManager.getAllPosts();
+		res.send(result);
+	}
 }
 
 async function getPostsId (req, res, next) {
-	postManager.getPost(req.params.id).then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
+	const result = await postManager.getPost(req.params.id);
+	res.send(result);
 };
 
 async function getPostsNumber (req, res, next) {
-	postManager.getNumberOfPosts().then((result) => {
-		res.send({ result });
-	}).catch((e) => {
-		next(e);
-	});
-};
-
-async function getPostsPage (req, res, next) {
-	postManager.getPostsPage(req.params.number, req.params.page).then((result) => {
-		res.send(result);
-	}).catch((e) => {
-		next(e);
-	});
+	const result = await postManager.getNumberOfPosts();
+	res.send({ result });
 };
 
 module.exports = {
 	postPosts,
 	getPosts,
 	getPostsId,
-	getPostsNumber,
-	getPostsPage
+	getPostsNumber
 };

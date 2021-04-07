@@ -8,11 +8,11 @@ class PostManager {
 	}
 
 	async getPost (postId) {
-		return await this.collection.findOne({ _id: ObjectId(postId) });
+		return this.collection.findOne({ _id: ObjectId(postId) });
 	};
 
 	async getAllPosts () {
-		return await this.collection.find({}).toArray();
+		return this.collection.find({}).toArray();
 	};
 
 	async addPost (title, body) {
@@ -24,7 +24,7 @@ class PostManager {
 	}
 
 	async getNumberOfPosts () {
-		return await this.collection.countDocuments();
+		return this.collection.countDocuments();
 	}
 
 	async getPostsPage (pageSize, pageNum) {
@@ -37,7 +37,7 @@ class PostManager {
 		if (pageSize * (pageNum - 1) > count) {
 			return [];
 		}
-		return await this.collection.find().skip(pageSize * (pageNum - 1)).limit(pageSize).toArray();
+		return this.collection.find().skip(pageSize * (pageNum - 1)).limit(pageSize).toArray();
 	}
 }
 
@@ -59,6 +59,22 @@ class UserManager {
 		return 'success';
 	}
 
+	async addRefreshToken (username, refreshToken) {
+		this.collection.updateOne({ username }, { $set: { refreshToken } });
+	}
+
+	async deleteRefreshToken (refreshToken) {
+		this.collection.updateOne({ refreshToken }, { $unset: { refreshToken: '' } });
+	}
+
+	async findRefreshToken (refreshToken) {
+		const user = await this.collection.findOne({ refreshToken });
+		if (user) {
+			return user.username;
+		}
+		return null;
+	}
+
 	async verifyUser (username, password) {
 		const user = await this.collection.findOne({ username });
 		if (user) {
@@ -68,13 +84,13 @@ class UserManager {
 	}
 
 	async testAddUser () {
-		await this.collection.insertOne({
+		this.collection.insertOne({
 			username: 'test'
 		});
 	}
 
 	async DELETE_ALL_USERS () {
-		await this.collection.remove();
+		this.collection.remove();
 	}
 }
 
