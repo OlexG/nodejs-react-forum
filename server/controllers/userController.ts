@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const { initManagers } = require('../db/initDB');
+import jwt = require('jsonwebtoken');
+import { initManagers } from '../db/initDB';
 const { userManager } = initManagers();
 
 async function postUsers (req, res, next) {
@@ -28,7 +28,7 @@ async function login (req, res, next) {
 async function getAccessToken (req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const decoded = jwt.decode(refreshToken);
+	const decoded = jwt.decode(refreshToken, {complete: true});
 	if (decoded.username !== username) res.sendStatus(401);
 	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
 	res.cookie('accessToken', accessToken, { overwrite: true });
@@ -43,7 +43,7 @@ async function logout (req, res, next) {
 	res.sendStatus(200);
 }
 
-module.exports = {
+export default {
 	postUsers,
 	login,
 	getAccessToken,

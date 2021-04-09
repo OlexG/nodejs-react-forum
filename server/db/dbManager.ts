@@ -1,35 +1,52 @@
-const { ObjectId } = require('mongodb');
-const bcrypt = require('bcrypt');
+import mongo = require('mongodb');
+import { MongoClient, ObjectId } from 'mongodb';
+import bcrypt = require('bcrypt');
 
-class PostManager {
+declare interface Post {
+	_id: mongo.ObjectID;
+	title: string;
+	body: string;
+}
+
+declare interface User {
+	_id: mongo.ObjectID;
+	username: string;
+	password: string;
+}
+
+
+export class PostManager {
 	// class with functions relating to accessing and editing post data
+
+	collection: mongo.Collection;
+
 	constructor (collection) {
 		this.collection = collection;
 	}
 
-	async getPost (postId) {
-		return this.collection.findOne({ _id: ObjectId(postId) });
+	async getPost (postId: number): Promise<Post> {
+		return this.collection.findOne({ _id: new ObjectId(postId) });
 	};
 
-	async getAllPosts () {
+	async getAllPosts (): Promise<Post[]> {
 		return this.collection.find({}).toArray();
 	};
 
-	async addPost (title, body) {
+	async addPost (title: string, body: string) {
 		const post = await this.collection.insertOne({
 			title,
 			body
-		});
+		} as Post);
 		return post.insertedId;
 	}
 
-	async getNumberOfPosts () {
+	async getNumberOfPosts (): Promise<number> {
 		return this.collection.countDocuments();
 	}
 
-	async getPostsPage (pageSize, pageNum) {
-		pageSize = parseInt(pageSize);
-		pageNum = parseInt(pageNum);
+	async getPostsPage (pageSize: number | string, pageNum: number | string): Promise<Post[]> {
+		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
+		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
 			return [];
 		}
@@ -41,13 +58,16 @@ class PostManager {
 	}
 }
 
-class UserManager {
+export class UserManager {
 	// class with functions relating to accessing and editing user data
+
+	collection: mongo.Collection;
+
 	constructor (collection) {
 		this.collection = collection;
 	}
 
-	async addUser (username, password) {
+	async addUser (username: string, password: string): Promise<string> {
 		if (await this.collection.findOne({ username })) {
 			return 'username already exists';
 		}
@@ -55,19 +75,19 @@ class UserManager {
 		await this.collection.insertOne({
 			username,
 			password: hashedPassword
-		});
+		} as User);
 		return 'success';
 	}
 
-	async addRefreshToken (username, refreshToken) {
+	async addRefreshToken (username: string, refreshToken: string): Promise<void> {
 		this.collection.updateOne({ username }, { $set: { refreshToken } });
 	}
 
-	async deleteRefreshToken (refreshToken) {
+	async deleteRefreshToken (refreshToken: string): Promise<void> {
 		this.collection.updateOne({ refreshToken }, { $unset: { refreshToken: '' } });
 	}
 
-	async findRefreshToken (refreshToken) {
+	async findRefreshToken (refreshToken: string): Promise<string | null> {
 		const user = await this.collection.findOne({ refreshToken });
 		if (user) {
 			return user.username;
@@ -75,7 +95,7 @@ class UserManager {
 		return null;
 	}
 
-	async verifyUser (username, password) {
+	async verifyUser (username: string, password: string): Promise<boolean> {
 		const user = await this.collection.findOne({ username });
 		if (user) {
 			return await bcrypt.compare(password, user.password);
@@ -83,15 +103,16 @@ class UserManager {
 		return false;
 	}
 
-	async testAddUser () {
+	async testAddUser (): Promise<void> {
 		this.collection.insertOne({
 			username: 'test'
 		});
 	}
 
-	async DELETE_ALL_USERS () {
-		this.collection.remove();
+	async DELETE_ALL_USERS (): Promise<void> {
+		this.collection.remove({});
 	}
 }
 
-module.exports = { PostManager, UserManager };
+
+

@@ -1,4 +1,4 @@
-const { initManagers } = require('../db/initDB');
+import { initManagers } from '../db/initDB';
 const { postManager } = initManagers();
 
 async function postPosts (req, res, next) {
@@ -27,7 +27,7 @@ async function getPostsNumber (req, res, next) {
 	res.send({ result });
 };
 
-module.exports = {
+export default {
 	postPosts,
 	getPosts,
 	getPostsId,
