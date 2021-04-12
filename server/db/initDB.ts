@@ -1,11 +1,15 @@
 import {PostManager, UserManager } from './dbManager';
 import { MongoClient } from 'mongodb';
+import { Func } from 'mocha';
 require('dotenv').config();
 const client = new MongoClient(process.env.URI);
 
-export async function initDB () {
+export async function initDB (callback?: Function) {
 	try {
 		await client.connect();
+		if (callback) {
+			callback();
+		}
 	} catch (e) {
 		await client.close();
 		throw e;
