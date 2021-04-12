@@ -1,7 +1,7 @@
-import mongo = require('mongodb');
-import { MongoClient, ObjectId } from 'mongodb';
-import bcrypt = require('bcrypt');
+import { ObjectId } from 'mongodb';
 import * as models from './models';
+import mongo = require('mongodb');
+import bcrypt = require('bcrypt');
 
 export class PostManager {
 	// class with functions relating to accessing and editing post data
@@ -101,6 +101,3 @@ export class UserManager {
 		this.collection.remove({});
 	}
 }
-
-
-

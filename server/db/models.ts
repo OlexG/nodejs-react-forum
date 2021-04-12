@@ -12,5 +12,5 @@ interface User {
 	password: string;
 }
 
-export {Post};
-export {User};
+export { Post };
+export { User };

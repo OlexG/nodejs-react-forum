@@ -1,5 +1,5 @@
 import jwt = require('jsonwebtoken');
-export default function validateAccessJWT(req, res, next) {
+export default function validateAccessJWT (req, res, next) {
 	const authHeader = req.headers.authorization;
 	if (!authHeader) {
 		return res.sendStatus(401);

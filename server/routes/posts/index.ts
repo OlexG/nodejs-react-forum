@@ -1,10 +1,10 @@
 import { celebrate } from 'celebrate';
-import express = require('express');
 import validateAccessJWT from '../../validation/validateAccessJWT';
 import postSchema from '../../schemas/postSchema';
 import postRequestSchema from '../../schemas/postRequestSchema';
 import postController from '../../controllers/postController';
 import wrap from '../../controllers/wrap';
+import express = require('express');
 const app = express();
 
 // submit a post

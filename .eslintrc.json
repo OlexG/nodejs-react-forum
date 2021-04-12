@@ -5,8 +5,10 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "standard",
+		"plugin:import/typescript"
     ],
+	"parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -16,7 +18,8 @@
     },
     "plugins": [
         "react",
-        "node"
+        "node",
+		"@typescript-eslint"
     ],
     "rules": {
         "semi": [2, "always"],
