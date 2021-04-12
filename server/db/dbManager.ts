@@ -1,19 +1,7 @@
 import mongo = require('mongodb');
 import { MongoClient, ObjectId } from 'mongodb';
 import bcrypt = require('bcrypt');
-
-declare interface Post {
-	_id: mongo.ObjectID;
-	title: string;
-	body: string;
-}
-
-declare interface User {
-	_id: mongo.ObjectID;
-	username: string;
-	password: string;
-}
-
+import * as models from './models';
 
 export class PostManager {
 	// class with functions relating to accessing and editing post data
@@ -24,11 +12,11 @@ export class PostManager {
 		this.collection = collection;
 	}
 
-	async getPost (postId: number): Promise<Post> {
+	async getPost (postId: number): Promise<models.Post> {
 		return this.collection.findOne({ _id: new ObjectId(postId) });
 	};
 
-	async getAllPosts (): Promise<Post[]> {
+	async getAllPosts (): Promise<models.Post[]> {
 		return this.collection.find({}).toArray();
 	};
 
@@ -36,7 +24,7 @@ export class PostManager {
 		const post = await this.collection.insertOne({
 			title,
 			body
-		} as Post);
+		} as models.Post);
 		return post.insertedId;
 	}
 
@@ -44,7 +32,7 @@ export class PostManager {
 		return this.collection.countDocuments();
 	}
 
-	async getPostsPage (pageSize: number | string, pageNum: number | string): Promise<Post[]> {
+	async getPostsPage (pageSize: number | string, pageNum: number | string): Promise<models.Post[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -75,7 +63,7 @@ export class UserManager {
 		await this.collection.insertOne({
 			username,
 			password: hashedPassword
-		} as User);
+		} as models.User);
 		return 'success';
 	}
 
