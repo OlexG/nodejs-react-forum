@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-module.exports = function (req, res, next) {
+import jwt = require('jsonwebtoken');
+export default function validateRefreshJWT(req, res, next) {
 	if (!req.cookies.refreshToken) {
 		return res.sendStatus(401);
 	}

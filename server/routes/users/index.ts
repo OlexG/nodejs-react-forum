@@ -1,11 +1,11 @@
-const { celebrate } = require('celebrate');
-const express = require('express');
-const userSchema = require('../../schemas/userSchema.js');
-const userController = require('../../controllers/userController.js');
-const validateRefreshJWT = require('../../validation/validateRefreshJWT.js');
-const verifyUser = require('../../validation/verifyUser.js');
-const wrap = require('../../controllers/wrap.js');
-const app = module.exports = express();
+import { celebrate } from 'celebrate';
+import express = require('express');
+import userSchema from '../../schemas/userSchema';
+import userController from '../../controllers/userController';
+import validateRefreshJWT from '../../validation/validateRefreshJWT';
+import verifyUser from '../../validation/verifyUser';
+import wrap from '../../controllers/wrap';
+const app = express();
 
 // sign-up user
 app.post('/api/v1/users', celebrate(userSchema), wrap(userController.postUsers));
@@ -18,3 +18,5 @@ app.get('/api/v1/token', validateRefreshJWT, wrap(userController.getAccessToken)
 
 // logout user
 app.delete('/api/v1/logout', validateRefreshJWT, wrap(userController.logout));
+
+module.exports = app;

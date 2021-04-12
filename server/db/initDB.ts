@@ -1,9 +1,9 @@
-const { PostManager, UserManager } = require('./dbManager');
-const { MongoClient } = require('mongodb');
+import {PostManager, UserManager } from './dbManager';
+import { MongoClient } from 'mongodb';
 require('dotenv').config();
 const client = new MongoClient(process.env.URI);
 
-async function initDB () {
+export async function initDB () {
 	try {
 		await client.connect();
 	} catch (e) {
@@ -12,7 +12,7 @@ async function initDB () {
 	}
 };
 
-function initManagers () {
+export function initManagers () {
 	const postCollection = client.db('Forum_DB').collection('posts');
 	const userCollection = client.db('Forum_DB').collection('users');
 	const postManager = new PostManager(postCollection);
@@ -20,4 +20,3 @@ function initManagers () {
 	return { postManager, userManager };
 }
 
-module.exports = { initDB, initManagers };

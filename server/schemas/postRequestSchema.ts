@@ -1,8 +1,9 @@
-const { Joi, Segments } = require('celebrate');
+import { Joi, Segments } from 'celebrate';
 
-module.exports = {
+export default {
 	[Segments.QUERY]: Joi.object().required().keys({
 		page: Joi.string().optional(),
 		number: Joi.number().integer().optional()
 	})
 };
+

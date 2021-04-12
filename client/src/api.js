@@ -8,6 +8,19 @@ import Worker from 'worker-loader!./Worker.js';
 
 const workerInstance = Worker();
 
+// request interceptor to add the auth token header to requests
+axios.interceptors.request.use(
+	(config) => {
+		if (Cookies.get('accessToken')) {
+			config.headers.Authorization = `Bearer ${Cookies.get('accessToken')}`;
+		}
+		return config;
+	},
+	(error) => {
+		Promise.reject(error);
+	}
+);
+
 // prevent axios from returning an error and instead just return the response
 axios.interceptors.response.use(
 	function (response) {
