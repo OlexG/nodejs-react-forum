@@ -12,7 +12,7 @@ export class PostManager {
 		this.collection = collection;
 	}
 
-	async getPost (postId: number): Promise<models.Post> {
+	async getPost (postId: string): Promise<models.Post> {
 		return this.collection.findOne({ _id: new ObjectId(postId) });
 	};
 

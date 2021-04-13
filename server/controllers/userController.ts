@@ -29,7 +29,7 @@ async function getAccessToken (req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken, { complete: true });
-	if (decoded.username !== username) res.sendStatus(401);
+	if (decoded.payload.username !== username) return res.sendStatus(401);
 	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
 	res.cookie('accessToken', accessToken, { overwrite: true });
 	res.sendStatus(200);

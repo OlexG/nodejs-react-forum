@@ -8,7 +8,7 @@ async function postPosts (req, res, next) {
 };
 
 async function getPosts (req, res, next) {
-	if (req.query.number && req.query.page) {
+	if ('number' in req.query && 'page' in req.query) {
 		const result = await postManager.getPostsPage(req.query.number, req.query.page);
 		res.send(result);
 	} else {
