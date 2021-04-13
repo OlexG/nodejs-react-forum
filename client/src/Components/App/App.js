@@ -7,6 +7,7 @@ import usePostsNumberFetch from '../../Hooks/usePostsNumberFetch.js';
 import usePostsPaginationFetch from '../../Hooks/usePostsPaginationFetch.js';
 import PaginationBar from '../Pagination/Pagination.js';
 import { POSTS_PER_PAGE } from '../../constants.js';
+import './styles.css';
 
 const App = () => {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -16,11 +17,11 @@ const App = () => {
 		<div>
 			<NavbarComponent/>
 			<div className='row'>
-				<div className='d-flex flex-column align-items-center col-8 align-self-start'>
+				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>
 					{posts ?
 						(
 							posts.map((post, idx) => {
-								return <Post key={post._id} title={post.title} body={post.body}/>;
+								return <Post key={post._id} id={post._id} title={post.title} body={post.body}/>;
 							})
 						) :
 						(
