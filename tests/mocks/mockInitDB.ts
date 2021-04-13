@@ -1,40 +1,48 @@
 export default {
 	initManagers: function () {
-		const postManager = {
-			getPost: async function (postId: number): Promise<string> {
+		class PostManager {
+			async getPost (postId: number): Promise<string> {
 				return 'test';
-			},
-			getAllPosts: async function (): Promise<Array<any>> {
+			}
+
+			async getAllPosts (): Promise<Array<any>> {
 				return ['test', 'test', 'test', 'test', 'test'];
-			},
-			addPost: async function (title: string, body: string) {
+			}
+
+			async addPost (title: string, body: string) {
 				return 'testid';
-			},
-			getNumberOfPosts: async function (): Promise<number> {
+			}
+
+			async getNumberOfPosts (): Promise<number> {
 				return 5;
-			},
-			getPostsPage: async function (pageSize: number | string, pageNum: number | string): Promise<Array<any>> {
+			}
+
+			async getPostsPage (pageSize: number | string, pageNum: number | string): Promise<Array<any>> {
 				return ['test', 'test', 'test'];
 			}
 		};
-		const userManager = {
-			addUser: async function (username: string, password: string): Promise<string> {
+		class UserManager {
+			async addUser (username: string, password: string): Promise<string> {
 				return 'success';
-			},
-			addRefreshToken: async function (username: string, refreshToken: string): Promise<void> {
+			}
 
-			},
-			deleteRefreshToken: async function (refreshToken: string): Promise<void> {
+			async addRefreshToken (username: string, refreshToken: string): Promise<void> {
 
-			},
-			findRefreshToken: async function (refreshToken: string): Promise<string | null> {
+			}
+
+			async deleteRefreshToken (refreshToken: string): Promise<void> {
+
+			}
+
+			async findRefreshToken (refreshToken: string): Promise<string | null> {
 				return 'testUsername';
-			},
-			verifyUser: async function (username: string, password: string): Promise<boolean> {
+			}
+
+			async verifyUser (username: string, password: string): Promise<boolean> {
 				return true;
 			}
 		};
 
-		return { postManager, userManager };
+		return { postManager: new PostManager(), userManager: new UserManager() };
 	}
 };
