@@ -8,6 +8,16 @@ const expect = chai.expect;
 const postController = proxyquire('../server/controllers/postController.ts', { '../db/initDB': mockInitDB }).default;
 
 describe('Unit testing of post controllers', function() {
+	let res;
+	let resSpy;
+	beforeEach(function() {
+		resSpy = sinon.spy();
+		// eslint-disable-next-line no-unused-vars
+		res = {
+			send: resSpy
+		};
+	});
+
 	it('should attempt to post', async function() {
 		const req = {
 			body: {
@@ -15,11 +25,7 @@ describe('Unit testing of post controllers', function() {
 				body: 'testBody'
 			}
 		};
-		const resSpy = sinon.spy();
-		const res = {
-			send: resSpy,
-			statusCode: -1
-		};
+		res.statusCode = -1;
 		await postController.postPosts(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.calledWith('testid')).to.equal(true);
@@ -28,10 +34,6 @@ describe('Unit testing of post controllers', function() {
 	it('should get all posts', async function() {
 		const req = {
 			query: {}
-		};
-		const resSpy = sinon.spy();
-		const res = {
-			send: resSpy
 		};
 		await postController.getPosts(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
@@ -44,10 +46,6 @@ describe('Unit testing of post controllers', function() {
 				page: 0
 			}
 		};
-		const resSpy = sinon.spy();
-		const res = {
-			send: resSpy
-		};
 		await postController.getPosts(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.args[0][0]).to.eql(['test', 'test', 'test']);
@@ -58,20 +56,12 @@ describe('Unit testing of post controllers', function() {
 				id: 0
 			}
 		};
-		const resSpy = sinon.spy();
-		const res = {
-			send: resSpy
-		};
 		await postController.getPostsId(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.calledWith('test')).to.equal(true);
 	});
 	it('should get the number of posts', async function() {
 		const req = {};
-		const resSpy = sinon.spy();
-		const res = {
-			send: resSpy
-		};
 		await postController.getPostsNumber(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.args[0][0]).to.eql({ result: 5 });

@@ -1,4 +1,5 @@
 import { initManagers } from '../db/initDB';
+
 const { postManager } = initManagers();
 
 async function postPosts(req, res, next) {

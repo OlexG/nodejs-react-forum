@@ -1,46 +1,27 @@
+import sinon = require('sinon');
 export default {
 	initManagers: function() {
 		class PostManager {
-			async getPost(postId: number): Promise<string> {
-				return 'test';
-			}
+			getPost = sinon.stub().resolves('test');
 
-			async getAllPosts(): Promise<Array<any>> {
-				return ['test', 'test', 'test', 'test', 'test'];
-			}
+			getAllPosts = sinon.stub().resolves(['test', 'test', 'test', 'test', 'test']);
 
-			async addPost(title: string, body: string) {
-				return 'testid';
-			}
+			addPost = sinon.stub().resolves('testid');
 
-			async getNumberOfPosts(): Promise<number> {
-				return 5;
-			}
+			getNumberOfPosts = sinon.stub().resolves(5);
 
-			async getPostsPage(pageSize: number | string, pageNum: number | string): Promise<Array<any>> {
-				return ['test', 'test', 'test'];
-			}
+			getPostsPage = sinon.stub().resolves(['test', 'test', 'test']);
 		};
 		class UserManager {
-			async addUser(username: string, password: string): Promise<string> {
-				return 'success';
-			}
+			addUser = sinon.stub().resolves('success');
 
-			async addRefreshToken(username: string, refreshToken: string): Promise<void> {
+			addRefreshToken = sinon.stub();
 
-			}
+			deleteRefreshToken = sinon.stub();
 
-			async deleteRefreshToken(refreshToken: string): Promise<void> {
+			findRefreshToken = sinon.stub().resolves('testUsername');
 
-			}
-
-			async findRefreshToken(refreshToken: string): Promise<string | null> {
-				return 'testUsername';
-			}
-
-			async verifyUser(username: string, password: string): Promise<boolean> {
-				return true;
-			}
+			verifyUser = sinon.stub().resolves(true);
 		};
 
 		return { postManager: new PostManager(), userManager: new UserManager() };
