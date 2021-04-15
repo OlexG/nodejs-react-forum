@@ -8,8 +8,8 @@ const expect = chai.expect;
 
 const userController = proxyquire('../server/controllers/userController.ts', { '../db/initDB': mockInitDB }).default;
 
-describe('Unit testing of user controllers', function () {
-	it('should post user', async function () {
+describe('Unit testing of user controllers', function() {
+	it('should post user', async function() {
 		const req = {
 			body: {
 				username: 'testUsername',
@@ -25,7 +25,7 @@ describe('Unit testing of user controllers', function () {
 		expect(resSpy.args[0][0]).to.eql({ validation: { body: { message: 'success' } } });
 	});
 
-	it('should login', async function () {
+	it('should login', async function() {
 		const req = {
 			body: {
 				username: 'testUsername'
@@ -47,7 +47,7 @@ describe('Unit testing of user controllers', function () {
 		expect(cookieSpy.getCall(2).args[0]).to.equal('username');
 	});
 
-	it('should get access token', async function () {
+	it('should get access token', async function() {
 		const req = {
 			cookies: {
 				refreshToken: jwt.sign({ username: 'testUsername' }, 'testSecret')
@@ -67,7 +67,7 @@ describe('Unit testing of user controllers', function () {
 		expect(cookieSpy.calledWith('accessToken')).to.equal(true);
 	});
 
-	it('should logout', async function () {
+	it('should logout', async function() {
 		const req = {
 			cookies: {
 				refreshToken: 'testToken'

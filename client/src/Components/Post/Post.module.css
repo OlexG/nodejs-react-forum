@@ -5,11 +5,7 @@
 	transition: height .5s ease-out;
 }
 
-.post-item {
-	z-index: 3;
-}
-
-.dropdown-hover {
+.dropdown_hover {
 	transition: opacity .5s, height .25s ease-out;
 	margin-bottom: 15px;
 	margin-left: 15px;
@@ -17,6 +13,6 @@
 	opacity:1;
 }
 
-.post-title {
+.post_title {
 	font-size: 1.5rem;
 }

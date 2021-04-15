@@ -30,7 +30,8 @@
         "operator-linebreak": 0,
         "react/react-in-jsx-scope": 0,
         "no-undef":"off",
-        "node/global-require":"error"
+        "node/global-require":"error",
+		"space-before-function-paren": ["error", "never"]
     }
 }
 
