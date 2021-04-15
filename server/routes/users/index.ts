@@ -1,10 +1,10 @@
 import { celebrate } from 'celebrate';
-import express = require('express');
 import userSchema from '../../schemas/userSchema';
 import userController from '../../controllers/userController';
 import validateRefreshJWT from '../../validation/validateRefreshJWT';
 import verifyUser from '../../validation/verifyUser';
 import wrap from '../../controllers/wrap';
+import express = require('express');
 const app = express();
 
 // sign-up user

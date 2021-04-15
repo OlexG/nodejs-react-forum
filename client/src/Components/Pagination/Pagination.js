@@ -8,7 +8,6 @@ const PaginationBar = ({ currentPage, setPage, totalPosts, perPage }) => {
 	const totalPages = Math.ceil(totalPosts / perPage);
 	const [shownPages, setShownPages] = useState(range(1, Math.min(totalPages, 3)));
 	function correctShownPages (value) {
-		console.log(totalPosts);
 		if (value === 1) {
 			setShownPages(range(value, Math.min(totalPages, value + 2)));
 		} else if (value === totalPages) {
@@ -16,7 +15,6 @@ const PaginationBar = ({ currentPage, setPage, totalPosts, perPage }) => {
 		} else {
 			setShownPages(range(value - 1, value + 1));
 		}
-		console.log(shownPages);
 	}
 
 	const proccessNewPage = (page) => () => {

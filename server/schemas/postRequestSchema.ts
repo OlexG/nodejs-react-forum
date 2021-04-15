@@ -6,4 +6,3 @@ export default {
 		number: Joi.number().integer().optional()
 	})
 };
-

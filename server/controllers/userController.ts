@@ -1,8 +1,8 @@
-import jwt = require('jsonwebtoken');
 import { initManagers } from '../db/initDB';
+import jwt = require('jsonwebtoken');
 const { userManager } = initManagers();
 
-async function postUsers (req, res, next) {
+async function postUsers(req, res, next) {
 	const { username, password } = req.body;
 	const result = await userManager.addUser(username, password);
 	if (result === 'username already exists') {
@@ -11,7 +11,7 @@ async function postUsers (req, res, next) {
 	res.send({ validation: { body: { message: result } } });
 }
 
-async function login (req, res, next) {
+async function login(req, res, next) {
 	const { username } = req.body;
 	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
@@ -25,17 +25,17 @@ async function login (req, res, next) {
 	res.sendStatus(200);
 }
 
-async function getAccessToken (req, res, next) {
+async function getAccessToken(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const decoded = jwt.decode(refreshToken, {complete: true});
-	if (decoded.username !== username) res.sendStatus(401);
+	const decoded = jwt.decode(refreshToken, { complete: true });
+	if (decoded.payload.username !== username) return res.sendStatus(401);
 	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
 	res.cookie('accessToken', accessToken, { overwrite: true });
 	res.sendStatus(200);
 }
 
-async function logout (req, res, next) {
+async function logout(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	await userManager.deleteRefreshToken(refreshToken);
 	// delete the http ONLY refreshToken

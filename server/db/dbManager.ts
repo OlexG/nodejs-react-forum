@@ -1,26 +1,26 @@
-import mongo = require('mongodb');
-import { MongoClient, ObjectId } from 'mongodb';
-import bcrypt = require('bcrypt');
+import { ObjectId } from 'mongodb';
 import * as models from './models';
+import mongo = require('mongodb');
+import bcrypt = require('bcrypt');
 
 export class PostManager {
 	// class with functions relating to accessing and editing post data
 
 	collection: mongo.Collection;
 
-	constructor (collection) {
+	constructor(collection) {
 		this.collection = collection;
 	}
 
-	async getPost (postId: number): Promise<models.Post> {
+	async getPost(postId: string): Promise<models.Post> {
 		return this.collection.findOne({ _id: new ObjectId(postId) });
 	};
 
-	async getAllPosts (): Promise<models.Post[]> {
+	async getAllPosts(): Promise<models.Post[]> {
 		return this.collection.find({}).toArray();
 	};
 
-	async addPost (title: string, body: string) {
+	async addPost(title: string, body: string) {
 		const post = await this.collection.insertOne({
 			title,
 			body
@@ -28,11 +28,11 @@ export class PostManager {
 		return post.insertedId;
 	}
 
-	async getNumberOfPosts (): Promise<number> {
+	async getNumberOfPosts(): Promise<number> {
 		return this.collection.countDocuments();
 	}
 
-	async getPostsPage (pageSize: number | string, pageNum: number | string): Promise<models.Post[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string): Promise<models.Post[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -51,11 +51,11 @@ export class UserManager {
 
 	collection: mongo.Collection;
 
-	constructor (collection) {
+	constructor(collection) {
 		this.collection = collection;
 	}
 
-	async addUser (username: string, password: string): Promise<string> {
+	async addUser(username: string, password: string): Promise<string> {
 		if (await this.collection.findOne({ username })) {
 			return 'username already exists';
 		}
@@ -67,15 +67,15 @@ export class UserManager {
 		return 'success';
 	}
 
-	async addRefreshToken (username: string, refreshToken: string): Promise<void> {
+	async addRefreshToken(username: string, refreshToken: string): Promise<void> {
 		this.collection.updateOne({ username }, { $set: { refreshToken } });
 	}
 
-	async deleteRefreshToken (refreshToken: string): Promise<void> {
+	async deleteRefreshToken(refreshToken: string): Promise<void> {
 		this.collection.updateOne({ refreshToken }, { $unset: { refreshToken: '' } });
 	}
 
-	async findRefreshToken (refreshToken: string): Promise<string | null> {
+	async findRefreshToken(refreshToken: string): Promise<string | null> {
 		const user = await this.collection.findOne({ refreshToken });
 		if (user) {
 			return user.username;
@@ -83,7 +83,7 @@ export class UserManager {
 		return null;
 	}
 
-	async verifyUser (username: string, password: string): Promise<boolean> {
+	async verifyUser(username: string, password: string): Promise<boolean> {
 		const user = await this.collection.findOne({ username });
 		if (user) {
 			return await bcrypt.compare(password, user.password);
@@ -91,16 +91,13 @@ export class UserManager {
 		return false;
 	}
 
-	async testAddUser (): Promise<void> {
+	async testAddUser(): Promise<void> {
 		this.collection.insertOne({
 			username: 'test'
 		});
 	}
 
-	async DELETE_ALL_USERS (): Promise<void> {
+	async DELETE_ALL_USERS(): Promise<void> {
 		this.collection.remove({});
 	}
 }
-
-
-

@@ -21,3 +21,5 @@ initDB().then(() => {
 }).catch(error => {
 	console.error(error);
 });
+
+export { app };
