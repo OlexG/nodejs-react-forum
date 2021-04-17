@@ -1,10 +1,10 @@
 /* eslint-disable node/global-require */
-import express = require('express');
 import { initDB } from './server/db/initDB';
-import bodyParser = require('body-parser');
-import cookieParser = require('cookie-parser');
 import { errors } from 'celebrate';
 import { errorHandler } from './server/errorHandler';
+import express = require('express');
+import bodyParser = require('body-parser');
+import cookieParser = require('cookie-parser');
 require('dotenv').config();
 const app = express();
 

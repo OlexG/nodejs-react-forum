@@ -1,9 +1,11 @@
 import { initManagers } from '../db/initDB';
 
-const { postManager } = initManagers();
+const { postManager, userManager } = initManagers();
 
 async function postPosts(req, res, next) {
-	const result = await postManager.addPost(req.body.title, req.body.body);
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.addPost(req.body.title, req.body.body, username);
 	res.statusCode = 200;
 	res.send(result);
 };

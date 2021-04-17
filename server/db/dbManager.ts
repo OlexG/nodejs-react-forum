@@ -20,10 +20,13 @@ export class PostManager {
 		return this.collection.find({}).toArray();
 	};
 
-	async addPost(title: string, body: string) {
+	async addPost(title: string, body: string, username: string) {
 		const post = await this.collection.insertOne({
 			title,
-			body
+			body,
+			upvotes: 0,
+			author: username,
+			date: new Date()
 		} as models.Post);
 		return post.insertedId;
 	}
@@ -44,6 +47,10 @@ export class PostManager {
 		}
 		return this.collection.find().skip(pageSize * (pageNum - 1)).limit(pageSize).toArray();
 	}
+
+	async DELETE_ALL_POSTS(): Promise<void> {
+		this.collection.deleteMany({});
+	}
 }
 
 export class UserManager {
@@ -62,7 +69,9 @@ export class UserManager {
 		const hashedPassword = await bcrypt.hash(password, 8);
 		await this.collection.insertOne({
 			username,
-			password: hashedPassword
+			password: hashedPassword,
+			upvotes: {},
+			downvotes: {}
 		} as models.User);
 		return 'success';
 	}
@@ -98,6 +107,6 @@ export class UserManager {
 	}
 
 	async DELETE_ALL_USERS(): Promise<void> {
-		this.collection.remove({});
+		this.collection.deleteMany({});
 	}
 }
