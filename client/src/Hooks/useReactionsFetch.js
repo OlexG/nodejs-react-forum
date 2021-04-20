@@ -4,7 +4,6 @@ export default function useReactionsFetch () {
 	const [reactions, setReactions] = useState({});
 
 	useEffect(() => {
-		// get post data from server here
 		api.sendReactionsRequest().then((res) => {
 			setReactions(res.data);
 		}).catch((error) =>
