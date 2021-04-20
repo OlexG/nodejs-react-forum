@@ -82,6 +82,21 @@ export class PostManager {
 		return false;
 	}
 
+	async removeReactions(postID: string, username: string, userManager: UserManager) {
+		if (await userManager.removePostUpvote(postID, username)) {
+			this.collection.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: -1 } }
+			);
+		}
+		if (await userManager.removePostDownvote(postID, username)) {
+			this.collection.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: 1 } }
+			);
+		}
+	}
+
 	async DELETE_ALL_POSTS(): Promise<void> {
 		this.collection.deleteMany({});
 	}

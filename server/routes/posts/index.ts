@@ -22,4 +22,6 @@ app.post('/api/v1/posts/:id/upvote', validateAccessJWT, wrap(postController.upvo
 
 app.post('/api/v1/posts/:id/downvote', validateAccessJWT, wrap(postController.downvotePost));
 
+app.post('/api/v1/posts/:id/remove-reactions', validateAccessJWT, wrap(postController.removePostReactions));
+
 module.exports = app;

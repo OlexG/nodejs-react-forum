@@ -1,28 +1,48 @@
 import api from '../../api.js';
 const Reactions = (props) => {
 	async function handleUpvote () {
-		const res = await api.sendUpvotePostRequest(props.postID);
+		let res;
+		if (props.status === 1) {
+			// already liked the post
+			res = await api.sendRemovePostReactionsRequest(props.postID);
+		} else {
+			res = await api.sendUpvotePostRequest(props.postID);
+		}
 		if (res.status === 200) {
 			if (props.status === -1) {
 				// already disliked, increase upvotes by 2
 				props.setUpvotes(props.upvotes + 2);
+				props.setStatus(1);
 			} else if (props.status !== 1) {
 				props.setUpvotes(props.upvotes + 1);
+				props.setStatus(1);
+			} else {
+				props.setUpvotes(props.upvotes - 1);
+				props.setStatus(0);
 			}
-			props.setStatus(1);
 		}
 	}
 
 	async function handleDownvote () {
-		const res = await api.sendDownvotePostRequest(props.postID);
+		let res;
+		if (props.status === -1) {
+			// already disliked the post
+			res = await api.sendRemovePostReactionsRequest(props.postID);
+		} else {
+			res = await api.sendDownvotePostRequest(props.postID);
+		}
 		if (res.status === 200) {
 			if (props.status === 1) {
 				// already liked, decrease upvotes by 2
 				props.setUpvotes(props.upvotes - 2);
+				props.setStatus(-1);
 			} else if (props.status !== -1) {
 				props.setUpvotes(props.upvotes - 1);
+				props.setStatus(-1);
+			} else {
+				props.setUpvotes(props.upvotes + 1);
+				props.setStatus(0);
 			}
-			props.setStatus(-1);
 		}
 	}
 	return (

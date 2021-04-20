@@ -10,11 +10,14 @@ const postController = proxyquire('../server/controllers/postController.ts', { '
 describe('Unit testing of post controllers', function() {
 	let res;
 	let resSpy;
+	let resStatusSpy;
 	beforeEach(function() {
 		resSpy = sinon.spy();
+		resStatusSpy = sinon.spy();
 		// eslint-disable-next-line no-unused-vars
 		res = {
-			send: resSpy
+			send: resSpy,
+			sendStatus: resStatusSpy
 		};
 	});
 
@@ -96,5 +99,19 @@ describe('Unit testing of post controllers', function() {
 		await postController.upvotePost(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.args[0][0]).to.equal(true);
+	});
+
+	it('should remove post reactions', async function() {
+		const req = {
+			cookies: {
+				refreshToken: 'testToken'
+			},
+			params: {
+				id: 'testId'
+			}
+		};
+		await postController.removePostReactions(req, res);
+		expect(resStatusSpy.calledOnce).to.equal(true);
+		expect(resStatusSpy.args[0][0]).to.equal(200);
 	});
 });

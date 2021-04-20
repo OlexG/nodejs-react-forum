@@ -44,11 +44,19 @@ async function downvotePost(req, res, next) {
 	res.send(result);
 }
 
+async function removePostReactions(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	await postManager.removeReactions(req.params.id, username, userManager);
+	res.sendStatus(200);
+}
+
 export default {
 	postPosts,
 	getPosts,
 	getPostsId,
 	getPostsNumber,
 	upvotePost,
-	downvotePost
+	downvotePost,
+	removePostReactions
 };
