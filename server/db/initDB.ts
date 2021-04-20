@@ -17,7 +17,5 @@ export function initManagers() {
 	const userCollection = client.db('Forum_DB').collection('users');
 	const postManager = new PostManager(postCollection);
 	const userManager = new UserManager(userCollection);
-	// postManager.DELETE_ALL_POSTS();
-	// userManager.DELETE_ALL_USERS();
 	return { postManager, userManager };
 }

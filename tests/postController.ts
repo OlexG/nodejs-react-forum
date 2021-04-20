@@ -23,6 +23,9 @@ describe('Unit testing of post controllers', function() {
 			body: {
 				title: 'testTitle',
 				body: 'testBody'
+			},
+			cookies: {
+				refreshToken: 'testToken'
 			}
 		};
 		res.statusCode = -1;
@@ -65,5 +68,33 @@ describe('Unit testing of post controllers', function() {
 		await postController.getPostsNumber(req, res);
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.args[0][0]).to.eql({ result: 5 });
+	});
+
+	it('should downvote post', async function() {
+		const req = {
+			cookies: {
+				refreshToken: 'testToken'
+			},
+			params: {
+				id: 'testId'
+			}
+		};
+		await postController.downvotePost(req, res);
+		expect(resSpy.calledOnce).to.equal(true);
+		expect(resSpy.args[0][0]).to.equal(true);
+	});
+
+	it('should upvote post', async function() {
+		const req = {
+			cookies: {
+				refreshToken: 'testToken'
+			},
+			params: {
+				id: 'testId'
+			}
+		};
+		await postController.upvotePost(req, res);
+		expect(resSpy.calledOnce).to.equal(true);
+		expect(resSpy.args[0][0]).to.equal(true);
 	});
 });

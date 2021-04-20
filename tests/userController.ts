@@ -86,4 +86,22 @@ describe('Unit testing of user controllers', function() {
 		expect(clearCookieSpy.calledOnce).to.equal(true);
 		expect(clearCookieSpy.calledWith('refreshToken')).to.equal(true);
 	});
+
+	it('should get user reactions', async function() {
+		const req = {
+			cookies: {
+				refreshToken: 'testToken'
+			}
+		};
+		const resSpy = sinon.spy();
+		const clearCookieSpy = sinon.spy();
+		const res = {
+			send: resSpy,
+			clearCookie: clearCookieSpy
+		};
+
+		await userController.getUserReactions(req, res);
+		expect(resSpy.calledOnce).to.equal(true);
+		expect(resSpy.args[0][0]).to.eql({ downvotes: {}, upvotes: {} });
+	});
 });

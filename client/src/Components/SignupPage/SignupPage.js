@@ -29,7 +29,6 @@ const SignupPage = (props) => {
 			history.push('/');
 		} else if (res.status === 400) {
 			const result = res.data;
-			console.log(result);
 			setFormAttributes({ 'formError': result.validation.body.message });
 		}
 	}
