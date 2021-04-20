@@ -2,3 +2,15 @@ body {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+*:focus { 
+	outline: 0 !important;
+	box-shadow:
+	0 0 0 .2rem #fff,
+	0 0 0 .35rem #069 !important;
+}
+
+*:focus:not(.focus-visible) {
+	outline: 0 !important;
+	box-shadow: none !important;
+}

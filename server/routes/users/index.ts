@@ -19,4 +19,7 @@ app.get('/api/v1/token', validateRefreshJWT, wrap(userController.getAccessToken)
 // logout user
 app.delete('/api/v1/logout', validateRefreshJWT, wrap(userController.logout));
 
+// get user reactions
+app.get('/api/v1/users/reactions', validateRefreshJWT, wrap(userController.getUserReactions));
+
 module.exports = app;

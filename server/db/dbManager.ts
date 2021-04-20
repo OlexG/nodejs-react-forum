@@ -48,6 +48,40 @@ export class PostManager {
 		return this.collection.find().skip(pageSize * (pageNum - 1)).limit(pageSize).toArray();
 	}
 
+	async upvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
+		if (await userManager.removePostDownvote(postID, username)) {
+			this.collection.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: 1 } }
+			);
+		}
+		if (await userManager.addPostUpvote(postID, username)) {
+			this.collection.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: 1 } }
+			);
+			return true;
+		}
+		return false;
+	}
+
+	async downvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
+		if (await userManager.removePostUpvote(postID, username)) {
+			this.collection.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: -1 } }
+			);
+		}
+		if (await userManager.addPostDownvote(postID, username)) {
+			this.collection.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: -1 } }
+			);
+			return true;
+		}
+		return false;
+	}
+
 	async DELETE_ALL_POSTS(): Promise<void> {
 		this.collection.deleteMany({});
 	}
@@ -60,6 +94,54 @@ export class UserManager {
 
 	constructor(collection) {
 		this.collection = collection;
+	}
+
+	async addPostUpvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.collection.findOne({ username });
+		if (user && !Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
+			const update = { $addFields: {} };
+			// eslint-disable-next-line dot-notation
+			update.$addFields['upvotes'] = { [postID]: 1 };
+			this.collection.updateOne({ username }, [update]);
+			return true;
+		}
+		return false;
+	}
+
+	async addPostDownvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.collection.findOne({ username });
+		if (user && !Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
+			const update = { $addFields: {} };
+			// eslint-disable-next-line dot-notation
+			update.$addFields['downvotes'] = { [postID]: 1 };
+			this.collection.updateOne({ username }, [update]);
+			return true;
+		}
+		return false;
+	}
+
+	async removePostDownvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.collection.findOne({ username });
+		if (user && postID in user.downvotes) {
+			const update = { $unset: [] };
+			// eslint-disable-next-line dot-notation
+			update.$unset.push(`downvotes.${postID}`);
+			this.collection.updateOne({ username }, [update]);
+			return true;
+		}
+		return false;
+	}
+
+	async removePostUpvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.collection.findOne({ username });
+		if (user && postID in user.upvotes) {
+			const update = { $unset: [] };
+			// eslint-disable-next-line dot-notation
+			update.$unset.push(`upvotes.${postID}`);
+			this.collection.updateOne({ username }, [update]);
+			return true;
+		}
+		return false;
 	}
 
 	async addUser(username: string, password: string): Promise<string> {
@@ -88,6 +170,14 @@ export class UserManager {
 		const user = await this.collection.findOne({ refreshToken });
 		if (user) {
 			return user.username;
+		}
+		return null;
+	}
+
+	async getUserReactions(username: string): Promise<Object | null> {
+		const user = await this.collection.findOne({ username });
+		if (user) {
+			return { downvotes: user.downvotes, upvotes: user.upvotes };
 		}
 		return null;
 	}

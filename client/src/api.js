@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { sendPostSubmitRequest, sendPostsRequest, sendPostsPageRequest, sendSinglePostRequest, sendPostNumberRequest } from './Requests/posts.js';
-import { logout, signup, login } from './Requests/users.js';
+import { sendPostSubmitRequest, sendPostsRequest, sendPostsPageRequest, sendSinglePostRequest, sendPostNumberRequest, sendUpvotePostRequest, sendDownvotePostRequest } from './Requests/posts.js';
+import { logout, signup, login, sendReactionsRequest } from './Requests/users.js';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Worker from 'worker-loader!./Worker.js';
 
@@ -38,8 +38,11 @@ const api = {
 	sendPostsPageRequest,
 	sendSinglePostRequest,
 	sendPostNumberRequest,
+	sendUpvotePostRequest,
+	sendDownvotePostRequest,
 	logout,
 	signup,
-	login
+	login,
+	sendReactionsRequest
 };
 export default api;

@@ -8,8 +8,10 @@ import usePostsPaginationFetch from '../../Hooks/usePostsPaginationFetch.js';
 import PaginationBar from '../Pagination/Pagination.js';
 import { POSTS_PER_PAGE } from '../../constants.js';
 import './styles.css';
+import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 
 const App = () => {
+	const reactions = useReactionsFetch();
 	const [currentPage, setCurrentPage] = useState(1);
 	const totalPosts = usePostsNumberFetch().result;
 	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE);
@@ -21,7 +23,12 @@ const App = () => {
 					{posts ?
 						(
 							posts.map((post, idx) => {
-								return <Post key={post._id} id={post._id} title={post.title} body={post.body}/>;
+								if (reactions.downvotes && Object.prototype.hasOwnProperty.call(reactions.downvotes, post._id)) {
+									return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={-1}/>;
+								} else if (reactions.upvotes && Object.prototype.hasOwnProperty.call(reactions.upvotes, post._id)) {
+									return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={1}/>;
+								}
+								return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={0}/>;
 							})
 						) :
 						(

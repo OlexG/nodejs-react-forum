@@ -4,5 +4,6 @@ const sendPostsPageRequest = async (currentPage, postsPerPage) => axios.get(`/ap
 const sendPostsRequest = async () => axios.get('/api/v1/posts');
 const sendPostSubmitRequest = async (body) => axios.post('/api/v1/posts', body);
 const sendSinglePostRequest = async (id) => axios.get(`/api/v1/posts/${id}`);
-
-export { sendPostNumberRequest, sendPostsPageRequest, sendPostsRequest, sendPostSubmitRequest, sendSinglePostRequest };
+const sendUpvotePostRequest = async (id) => axios.post(`/api/v1/posts/${id}/upvote`);
+const sendDownvotePostRequest = async (id) => axios.post(`/api/v1/posts/${id}/downvote`);
+export { sendPostNumberRequest, sendPostsPageRequest, sendPostsRequest, sendPostSubmitRequest, sendSinglePostRequest, sendUpvotePostRequest, sendDownvotePostRequest };

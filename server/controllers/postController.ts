@@ -30,9 +30,25 @@ async function getPostsNumber(req, res, next) {
 	res.send({ result });
 };
 
+async function upvotePost(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.upvotePost(req.params.id, username, userManager);
+	res.send(result);
+}
+
+async function downvotePost(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.downvotePost(req.params.id, username, userManager);
+	res.send(result);
+}
+
 export default {
 	postPosts,
 	getPosts,
 	getPostsId,
-	getPostsNumber
+	getPostsNumber,
+	upvotePost,
+	downvotePost
 };
