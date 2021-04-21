@@ -86,32 +86,28 @@ describe('Unit testing of post controllers', function() {
 		expect(resSpy.calledOnce).to.equal(true);
 		expect(resSpy.args[0][0]).to.equal(true);
 	});
+	describe('Unit testing reactions', function() {
+		let req;
+		beforeEach(function() {
+			req = {
+				cookies: {
+					refreshToken: 'testToken'
+				},
+				params: {
+					id: 'testId'
+				}
+			};
+		});
+		it('should upvote post', async function() {
+			await postController.upvotePost(req, res);
+			expect(resSpy.calledOnce).to.equal(true);
+			expect(resSpy.args[0][0]).to.equal(true);
+		});
 
-	it('should upvote post', async function() {
-		const req = {
-			cookies: {
-				refreshToken: 'testToken'
-			},
-			params: {
-				id: 'testId'
-			}
-		};
-		await postController.upvotePost(req, res);
-		expect(resSpy.calledOnce).to.equal(true);
-		expect(resSpy.args[0][0]).to.equal(true);
-	});
-
-	it('should remove post reactions', async function() {
-		const req = {
-			cookies: {
-				refreshToken: 'testToken'
-			},
-			params: {
-				id: 'testId'
-			}
-		};
-		await postController.removePostReactions(req, res);
-		expect(resStatusSpy.calledOnce).to.equal(true);
-		expect(resStatusSpy.args[0][0]).to.equal(200);
+		it('should remove post reactions', async function() {
+			await postController.removePostReactions(req, res);
+			expect(resStatusSpy.calledOnce).to.equal(true);
+			expect(resStatusSpy.args[0][0]).to.equal(200);
+		});
 	});
 });

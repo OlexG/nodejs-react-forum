@@ -9,13 +9,19 @@ const expect = chai.expect;
 const userController = proxyquire('../server/controllers/userController.ts', { '../db/initDB': mockInitDB }).default;
 
 describe('Unit testing of user controllers', function() {
-	it('should post user', async function() {
-		const req = {
+	let req;
+	beforeEach(function() {
+		req = {
 			body: {
 				username: 'testUsername',
 				password: 'testPassword'
+			},
+			cookies: {
+				refreshToken: jwt.sign({ username: 'testUsername' }, 'testSecret')
 			}
 		};
+	});
+	it('should post user', async function() {
 		const resSpy = sinon.spy();
 		const res = {
 			send: resSpy
@@ -26,11 +32,6 @@ describe('Unit testing of user controllers', function() {
 	});
 
 	it('should login', async function() {
-		const req = {
-			body: {
-				username: 'testUsername'
-			}
-		};
 		const resSpy = sinon.spy();
 		const cookieSpy = sinon.spy();
 		const res = {
@@ -48,11 +49,6 @@ describe('Unit testing of user controllers', function() {
 	});
 
 	it('should get access token', async function() {
-		const req = {
-			cookies: {
-				refreshToken: jwt.sign({ username: 'testUsername' }, 'testSecret')
-			}
-		};
 		const resSpy = sinon.spy();
 		const cookieSpy = sinon.spy();
 		const res = {
@@ -68,11 +64,6 @@ describe('Unit testing of user controllers', function() {
 	});
 
 	it('should logout', async function() {
-		const req = {
-			cookies: {
-				refreshToken: 'testToken'
-			}
-		};
 		const resSpy = sinon.spy();
 		const clearCookieSpy = sinon.spy();
 		const res = {
@@ -88,11 +79,6 @@ describe('Unit testing of user controllers', function() {
 	});
 
 	it('should get user reactions', async function() {
-		const req = {
-			cookies: {
-				refreshToken: 'testToken'
-			}
-		};
 		const resSpy = sinon.spy();
 		const clearCookieSpy = sinon.spy();
 		const res = {
