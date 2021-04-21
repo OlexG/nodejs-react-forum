@@ -23,12 +23,15 @@ const App = () => {
 					{posts ?
 						(
 							posts.map((post, idx) => {
+								let status;
 								if (reactions.downvotes && Object.prototype.hasOwnProperty.call(reactions.downvotes, post._id)) {
-									return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={-1}/>;
+									status = -1;
 								} else if (reactions.upvotes && Object.prototype.hasOwnProperty.call(reactions.upvotes, post._id)) {
-									return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={1}/>;
+									status = 1;
+								} else {
+									status = 0;
 								}
-								return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={0}/>;
+								return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={status}/>;
 							})
 						) :
 						(
