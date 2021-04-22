@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import usePostsNumberFetch from '../../Hooks/usePostsNumberFetch.js';
 import usePostsPaginationFetch from '../../Hooks/usePostsPaginationFetch.js';
 import PaginationBar from '../Pagination/Pagination.js';
+import PostMenu from '../PostMenu/PostMenu.js';
 import { POSTS_PER_PAGE } from '../../constants.js';
 import './styles.css';
 import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
@@ -13,13 +14,15 @@ import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 const App = () => {
 	const reactions = useReactionsFetch();
 	const [currentPage, setCurrentPage] = useState(1);
+	const [sortingMethod, setSortingMethod] = useState('default');
 	const totalPosts = usePostsNumberFetch().result;
-	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE);
+	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE, sortingMethod);
 	return (
 		<div>
 			<NavbarComponent/>
 			<div className='row'>
 				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>
+					<PostMenu setSortingMethod={setSortingMethod}/>
 					{posts ?
 						(
 							posts.map((post, idx) => {

@@ -35,7 +35,7 @@ export class PostManager {
 		return this.model.countDocuments().exec();
 	}
 
-	async getPostsPage(pageSize: number | string, pageNum: number | string): Promise<models.IPost[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string, sort: 'default' | 'recent' | 'most-upvotes' | 'oldest'): Promise<models.IPost[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -45,7 +45,17 @@ export class PostManager {
 		if (pageSize * (pageNum - 1) > count) {
 			return [];
 		}
-		return this.model.find().skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
+		let sorted;
+		if (sort === 'default') {
+			sorted = this.model.find();
+		} else if (sort === 'recent') {
+			sorted = this.model.find().sort({ date: -1 });
+		} else if (sort === 'oldest') {
+			sorted = this.model.find().sort({ date: 1 });
+		} else if (sort === 'most-upvotes') {
+			sorted = this.model.find().sort({ upvotes: -1 });
+		}
+		return sorted.skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
 	}
 
 	async upvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
