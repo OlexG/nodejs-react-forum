@@ -16,3 +16,8 @@
 .post_title {
 	font-size: 1.5rem;
 }
+
+.post_upvotes {
+	font-size: 1.5rem;
+	color: grey;	
+}

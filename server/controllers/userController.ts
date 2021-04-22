@@ -35,6 +35,14 @@ async function getAccessToken(req, res, next) {
 	res.sendStatus(200);
 }
 
+async function getUserReactions(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const reactions = await userManager.getUserReactions(username);
+	if (reactions) return res.send(reactions);
+	res.sendStatus(400);
+}
+
 async function logout(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	await userManager.deleteRefreshToken(refreshToken);
@@ -47,5 +55,6 @@ export default {
 	postUsers,
 	login,
 	getAccessToken,
+	getUserReactions,
 	logout
 };

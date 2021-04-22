@@ -4,7 +4,6 @@ export default function usePostsNumberFetch (id) {
 	const [totalPosts, setTotalPosts] = useState(0);
 
 	useEffect(() => {
-		// get post data from server here
 		api.sendPostNumberRequest().then((res) => {
 			setTotalPosts(res.data);
 		}).catch((error) =>

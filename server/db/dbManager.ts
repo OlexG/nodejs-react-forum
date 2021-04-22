@@ -1,38 +1,41 @@
 import { ObjectId } from 'mongodb';
 import * as models from './models';
-import mongo = require('mongodb');
 import bcrypt = require('bcrypt');
+import mongoose = require('mongoose');
 
 export class PostManager {
 	// class with functions relating to accessing and editing post data
 
-	collection: mongo.Collection;
+	model: mongoose.Model<models.IPost>;
 
-	constructor(collection) {
-		this.collection = collection;
+	constructor() {
+		this.model = mongoose.model('post', models.PostSchema);
 	}
 
-	async getPost(postId: string): Promise<models.Post> {
-		return this.collection.findOne({ _id: new ObjectId(postId) });
+	async getPost(postId: string): Promise<models.IPost> {
+		return this.model.findById(postId).exec();
 	};
 
-	async getAllPosts(): Promise<models.Post[]> {
-		return this.collection.find({}).toArray();
+	async getAllPosts(): Promise<models.IPost[]> {
+		return this.model.find({}).exec();
 	};
 
-	async addPost(title: string, body: string) {
-		const post = await this.collection.insertOne({
+	async addPost(title: string, body: string, username: string) {
+		const post: models.IPost = await this.model.create({
 			title,
-			body
-		} as models.Post);
-		return post.insertedId;
+			body,
+			upvotes: 0,
+			author: username,
+			date: new Date()
+		});
+		return post._id;
 	}
 
 	async getNumberOfPosts(): Promise<number> {
-		return this.collection.countDocuments();
+		return this.model.countDocuments().exec();
 	}
 
-	async getPostsPage(pageSize: number | string, pageNum: number | string): Promise<models.Post[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string): Promise<models.IPost[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -42,62 +45,163 @@ export class PostManager {
 		if (pageSize * (pageNum - 1) > count) {
 			return [];
 		}
-		return this.collection.find().skip(pageSize * (pageNum - 1)).limit(pageSize).toArray();
+		return this.model.find().skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
+	}
+
+	async upvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
+		if (await userManager.removePostDownvote(postID, username)) {
+			this.model.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: 1 } }
+			).exec();
+		}
+		if (await userManager.addPostUpvote(postID, username)) {
+			this.model.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: 1 } }
+			).exec();
+			return true;
+		}
+		return false;
+	}
+
+	async downvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
+		if (await userManager.removePostUpvote(postID, username)) {
+			this.model.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: -1 } }
+			).exec();
+		}
+		if (await userManager.addPostDownvote(postID, username)) {
+			this.model.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: -1 } }
+			).exec();
+			return true;
+		}
+		return false;
+	}
+
+	async removeReactions(postID: string, username: string, userManager: UserManager) {
+		if (await userManager.removePostUpvote(postID, username)) {
+			this.model.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: -1 } }
+			).exec();
+		}
+		if (await userManager.removePostDownvote(postID, username)) {
+			this.model.updateOne(
+				{ _id: new ObjectId(postID) },
+				{ $inc: { upvotes: 1 } }
+			).exec();
+		}
+	}
+
+	async DELETE_ALL_POSTS(): Promise<void> {
+		this.model.remove({}).exec();
 	}
 }
 
 export class UserManager {
 	// class with functions relating to accessing and editing user data
 
-	collection: mongo.Collection;
+	model: mongoose.Model<models.IUser>;
 
-	constructor(collection) {
-		this.collection = collection;
+	constructor() {
+		this.model = mongoose.model('user', models.UserSchema);
+	}
+
+	async addPostUpvote(postID: string, username: string): Promise<boolean> {
+		const user: models.IUser = await this.model.findOne({ username }).exec();
+		if (user && !Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
+			user.upvotes[postID] = 1;
+			user.markModified('upvotes');
+			await user.save();
+			return true;
+		}
+		return false;
+	}
+
+	async addPostDownvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.model.findOne({ username }).exec();
+		if (user && !Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
+			user.downvotes[postID] = 1;
+			user.markModified('downvotes');
+			await user.save();
+			return true;
+		}
+		return false;
+	}
+
+	async removePostDownvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.model.findOne({ username }).exec();
+		if (user && Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
+			delete user.downvotes[postID];
+			user.markModified('downvotes');
+			await user.save();
+			return true;
+		}
+		return false;
+	}
+
+	async removePostUpvote(postID: string, username: string): Promise<boolean> {
+		const user = await this.model.findOne({ username }).exec();
+		if (user && Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
+			delete user.upvotes[postID];
+			user.markModified('upvotes');
+			await user.save();
+			return true;
+		}
+		return false;
 	}
 
 	async addUser(username: string, password: string): Promise<string> {
-		if (await this.collection.findOne({ username })) {
+		if (await this.model.findOne({ username }).exec()) {
 			return 'username already exists';
 		}
 		const hashedPassword = await bcrypt.hash(password, 8);
-		await this.collection.insertOne({
+		await this.model.create({
 			username,
-			password: hashedPassword
-		} as models.User);
+			password: hashedPassword,
+			upvotes: {},
+			downvotes: {}
+		});
 		return 'success';
 	}
 
 	async addRefreshToken(username: string, refreshToken: string): Promise<void> {
-		this.collection.updateOne({ username }, { $set: { refreshToken } });
+		this.model.updateOne({ username }, { $set: { refreshToken } }).exec();
 	}
 
 	async deleteRefreshToken(refreshToken: string): Promise<void> {
-		this.collection.updateOne({ refreshToken }, { $unset: { refreshToken: '' } });
+		this.model.updateOne({ refreshToken }, { $unset: { refreshToken: '' } }).exec();
 	}
 
 	async findRefreshToken(refreshToken: string): Promise<string | null> {
-		const user = await this.collection.findOne({ refreshToken });
+		const user: models.IUser = await this.model.findOne({ refreshToken }).exec();
 		if (user) {
 			return user.username;
 		}
 		return null;
 	}
 
+	async getUserReactions(username: string): Promise<Object | null> {
+		const user: models.IUser = await this.model.findOne({ username }).exec();
+		if (user) {
+			return { downvotes: user.downvotes, upvotes: user.upvotes };
+		}
+		return null;
+	}
+
 	async verifyUser(username: string, password: string): Promise<boolean> {
-		const user = await this.collection.findOne({ username });
+		const user: models.IUser = await this.model.findOne({ username }).exec();
 		if (user) {
 			return await bcrypt.compare(password, user.password);
 		}
 		return false;
 	}
 
-	async testAddUser(): Promise<void> {
-		this.collection.insertOne({
-			username: 'test'
-		});
-	}
-
 	async DELETE_ALL_USERS(): Promise<void> {
-		this.collection.remove({});
+		this.model.remove({}).exec();
 	}
 }

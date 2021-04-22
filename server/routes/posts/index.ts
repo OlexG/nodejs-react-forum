@@ -18,4 +18,10 @@ app.get('/api/v1/posts/:id', wrap(postController.getPostsId));
 
 app.get('/api/v1/posts-number', wrap(postController.getPostsNumber));
 
+app.post('/api/v1/posts/:id/upvote', validateAccessJWT, wrap(postController.upvotePost));
+
+app.post('/api/v1/posts/:id/downvote', validateAccessJWT, wrap(postController.downvotePost));
+
+app.post('/api/v1/posts/:id/remove-reactions', validateAccessJWT, wrap(postController.removePostReactions));
+
 module.exports = app;

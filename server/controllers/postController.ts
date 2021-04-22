@@ -1,9 +1,11 @@
 import { initManagers } from '../db/initDB';
 
-const { postManager } = initManagers();
+const { postManager, userManager } = initManagers();
 
 async function postPosts(req, res, next) {
-	const result = await postManager.addPost(req.body.title, req.body.body);
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.addPost(req.body.title, req.body.body, username);
 	res.statusCode = 200;
 	res.send(result);
 };
@@ -28,9 +30,33 @@ async function getPostsNumber(req, res, next) {
 	res.send({ result });
 };
 
+async function upvotePost(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.upvotePost(req.params.id, username, userManager);
+	res.send(result);
+}
+
+async function downvotePost(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.downvotePost(req.params.id, username, userManager);
+	res.send(result);
+}
+
+async function removePostReactions(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	await postManager.removeReactions(req.params.id, username, userManager);
+	res.sendStatus(200);
+}
+
 export default {
 	postPosts,
 	getPosts,
 	getPostsId,
-	getPostsNumber
+	getPostsNumber,
+	upvotePost,
+	downvotePost,
+	removePostReactions
 };
