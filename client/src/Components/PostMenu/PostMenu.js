@@ -1,18 +1,19 @@
+import React from 'react';
 import styles from './PostMenu.module.css';
 import { Form } from 'react-bootstrap';
 
 const PostMenu = (props) => {
-	async function handleClick (e) {
-		e.preventDefault();
-		const formElement = e.currentTarget;
-		const formData = new FormData(formElement);
+	const formElement = React.useRef();
+
+	async function changeSortOption (e) {
+		const formData = new FormData(formElement.current);
 		const sort = formData.get('select');
 		props.setSortingMethod(sort);
 	}
 	return (
-		<Form className={`${styles.menu} ml-5 d-flex flex-row align-items-center`} style={{ 'width': '90%' }} onSubmit={handleClick}>
+		<Form ref={formElement} className={`${styles.menu} ml-5 d-flex flex-row align-items-center`} style={{ 'width': '90%' }}>
 			<p className={`${styles.menuText}`}>Sort by</p>
-			<select className='form-control' name='select' style={{ 'width': '10%' }}>
+			<select className='form-control' name='select' style={{ 'width': '10%' }} onChange={changeSortOption}>
 				<option>default</option>
 				<option>most-upvotes</option>
 				<option>recent</option>

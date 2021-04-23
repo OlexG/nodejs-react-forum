@@ -1,7 +1,15 @@
+/* eslint-disable no-unused-vars */
 import { ObjectId } from 'mongodb';
 import * as models from './models';
 import bcrypt = require('bcrypt');
 import mongoose = require('mongoose');
+
+enum SortOption {
+	DEFAULT = 'default',
+	RECENT = 'recent',
+	MOST_UPVOTES = 'most-upvotes',
+	OLDEST = 'oldest'
+}
 
 export class PostManager {
 	// class with functions relating to accessing and editing post data
@@ -35,7 +43,7 @@ export class PostManager {
 		return this.model.countDocuments().exec();
 	}
 
-	async getPostsPage(pageSize: number | string, pageNum: number | string, sort: 'default' | 'recent' | 'most-upvotes' | 'oldest'): Promise<models.IPost[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string, sort: SortOption = SortOption.DEFAULT): Promise<models.IPost[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -46,14 +54,19 @@ export class PostManager {
 			return [];
 		}
 		let sorted;
-		if (sort === 'default') {
+		switch (sort) {
+		case SortOption.DEFAULT:
 			sorted = this.model.find();
-		} else if (sort === 'recent') {
+			break;
+		case SortOption.RECENT:
 			sorted = this.model.find().sort({ date: -1 });
-		} else if (sort === 'oldest') {
+			break;
+		case SortOption.OLDEST:
 			sorted = this.model.find().sort({ date: 1 });
-		} else if (sort === 'most-upvotes') {
+			break;
+		case SortOption.MOST_UPVOTES:
 			sorted = this.model.find().sort({ upvotes: -1 });
+			break;
 		}
 		return sorted.skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
 	}
