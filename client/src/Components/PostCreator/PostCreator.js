@@ -6,11 +6,11 @@ import NavbarComponent from '../Navbar/Navbar.js';
 import Popup from '../Popup/Popup.js';
 import api from '../../api.js';
 
-const PostCreator = (props) => {
+const PostCreator = ({ match }) => {
 	const history = useHistory();
 	const [popup, setPopup] = useState({});
 
-	async function handleClick (e) {
+	async function handleClickPost (e) {
 		e.preventDefault();
 		const formElement = e.currentTarget;
 		const formData = new FormData(formElement);
@@ -28,16 +28,37 @@ const PostCreator = (props) => {
 			setPopup({ 'message': 'Sorry something went wrong.' });
 		}
 	}
+
+	async function handleClickComment (e) {
+		e.preventDefault();
+		const formElement = e.currentTarget;
+		const formData = new FormData(formElement);
+		const body = formData.get('body');
+		const res = await api.sendPostSubmitRequest({
+			'title': 'Comment',
+			body,
+			'parent': match.params.id
+		});
+		if (res.status === 200) {
+			history.push(`/posts/${match.params.id}`);
+		} else if (res.status === 401) {
+			setPopup({ 'message': 'Invalid credentials. Please login again.' });
+		} else {
+			setPopup({ 'message': 'Sorry something went wrong.' });
+		}
+	}
 	return (
 		<>
 			<NavbarComponent/>
 			{ popup.message && <Popup error message={popup.message}/> }
 			<div style={{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', 'padding': '2em' }} className='card'>
-				<Form id='addPostForm' onSubmit={handleClick}>
-					<div className='form-group'>
-						<label>Title</label>
-						<Form.Control name='title' className='form-control' id='title' placeholder='Enter title'/>
-					</div>
+				<Form id='addPostForm' onSubmit={(match.params.id ? handleClickComment : handleClickPost)}>
+					{!match.params.id &&
+						<div className='form-group'>
+							<label>Title</label>
+							<Form.Control name='title' className='form-control' id='title' placeholder='Enter title'/>
+						</div>
+					}
 					<div className='form-group'>
 						<label>Body</label>
 						<Form.Control name='body' className='form-control' id='body' placeholder='Enter text'/>

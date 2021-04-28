@@ -24,29 +24,15 @@ export class PostManager {
 		return this.model.findById(postId).exec();
 	};
 
-	async getAllPosts(sort: SortOption = SortOption.DEFAULT, parent?: mongoose.Types.ObjectId): Promise<models.IPost[]> {
-		let sorted;
+	async getAllPosts(parent?: mongoose.Types.ObjectId): Promise<models.IPost[]> {
+		let posts;
 		if (parent) {
-			sorted = this.model.find({ parent });
+			posts = this.model.find({ parent });
 		} else {
-			sorted = this.model.find({ parent: undefined });
+			posts = this.model.find({ parent: undefined });
 		}
-		switch (sort) {
-		case SortOption.DEFAULT:
-			break;
-		case SortOption.RECENT:
-			sorted = sorted.sort({ date: -1 });
-			break;
-		case SortOption.OLDEST:
-			sorted = sorted.sort({ date: 1 });
-			break;
-		case SortOption.MOST_UPVOTES:
-			sorted = sorted.sort({ upvotes: -1 });
-			break;
-		default:
-			break;
-		}
-		return sorted.exec();
+		posts = posts.sort({ upvotes: -1 });
+		return posts.exec();
 	};
 
 	async addPost(title: string, body: string, username: string, parent?: mongoose.Types.ObjectId) {

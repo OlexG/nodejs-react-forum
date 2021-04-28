@@ -1,10 +1,11 @@
 import axios from 'axios';
 const sendPostNumberRequest = async () => axios.get('/api/v1/posts-number');
 const sendPostsPageRequest = async (currentPage, postsPerPage, sort) => axios.get(`/api/v1/posts?page=${currentPage}&number=${postsPerPage}&sort=${sort}`);
+const sendPostCommentsRequest = async (parent) => axios.get(`/api/v1/posts?parent=${parent}`);
 const sendPostsRequest = async () => axios.get('/api/v1/posts');
 const sendPostSubmitRequest = async (body) => axios.post('/api/v1/posts', body);
 const sendSinglePostRequest = async (id) => axios.get(`/api/v1/posts/${id}`);
 const sendUpvotePostRequest = async (id) => axios.post(`/api/v1/posts/${id}/upvote`);
 const sendDownvotePostRequest = async (id) => axios.post(`/api/v1/posts/${id}/downvote`);
 const sendRemovePostReactionsRequest = async (id) => axios.post(`/api/v1/posts/${id}/remove-reactions`);
-export { sendPostNumberRequest, sendPostsPageRequest, sendPostsRequest, sendPostSubmitRequest, sendSinglePostRequest, sendUpvotePostRequest, sendDownvotePostRequest, sendRemovePostReactionsRequest };
+export { sendPostNumberRequest, sendPostsPageRequest, sendPostCommentsRequest, sendPostsRequest, sendPostSubmitRequest, sendSinglePostRequest, sendUpvotePostRequest, sendDownvotePostRequest, sendRemovePostReactionsRequest };

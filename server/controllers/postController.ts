@@ -5,20 +5,29 @@ const { postManager, userManager } = initManagers();
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const result = await postManager.addPost(req.body.title, req.body.body, username);
+	let result;
+	if (req.body.parent) {
+		result = await postManager.addPost(req.body.title, req.body.body, username, req.body.parent);
+	} else {
+		result = await postManager.addPost(req.body.title, req.body.body, username);
+	}
 	res.statusCode = 200;
 	res.send(result);
 };
 
 async function getPosts(req, res, next) {
+	let result;
 	if ('number' in req.query && 'page' in req.query) {
 		const { query: { number }, query: { page }, query: { sort } } = req;
-		const result = await postManager.getPostsPage(number, page, sort);
-		res.send(result);
+		result = await postManager.getPostsPage(number, page, sort);
 	} else {
-		const result = await postManager.getAllPosts();
-		res.send(result);
+		if (req.query.parent) {
+			result = await postManager.getAllPosts(req.query.parent);
+		} else {
+			result = await postManager.getAllPosts();
+		}
 	}
+	res.send(result);
 }
 
 async function getPostsId(req, res, next) {

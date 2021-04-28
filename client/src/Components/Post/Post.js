@@ -18,7 +18,6 @@ const Post = (props) => {
 			dropDownText.current.style.height = '0';
 		}
 	}
-	console.log(props.author);
 	return (
 		<>
 			<div className='list-group-item p-0 ml-5' style={{ 'width': '90%' }}>
