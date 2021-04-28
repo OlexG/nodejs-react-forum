@@ -24,17 +24,39 @@ export class PostManager {
 		return this.model.findById(postId).exec();
 	};
 
-	async getAllPosts(): Promise<models.IPost[]> {
-		return this.model.find({}).exec();
+	async getAllPosts(sort: SortOption = SortOption.DEFAULT, parent?: mongoose.Types.ObjectId): Promise<models.IPost[]> {
+		let sorted;
+		if (parent) {
+			sorted = this.model.find({ parent });
+		} else {
+			sorted = this.model.find({ parent: undefined });
+		}
+		switch (sort) {
+		case SortOption.DEFAULT:
+			break;
+		case SortOption.RECENT:
+			sorted = sorted.sort({ date: -1 });
+			break;
+		case SortOption.OLDEST:
+			sorted = sorted.sort({ date: 1 });
+			break;
+		case SortOption.MOST_UPVOTES:
+			sorted = sorted.sort({ upvotes: -1 });
+			break;
+		default:
+			break;
+		}
+		return sorted.exec();
 	};
 
-	async addPost(title: string, body: string, username: string) {
+	async addPost(title: string, body: string, username: string, parent?: mongoose.Types.ObjectId) {
 		const post: models.IPost = await this.model.create({
 			title,
 			body,
 			upvotes: 0,
 			author: username,
-			date: new Date()
+			date: new Date(),
+			...parent && { parent }
 		});
 		return post._id;
 	}
@@ -53,22 +75,21 @@ export class PostManager {
 		if (pageSize * (pageNum - 1) > count) {
 			return [];
 		}
-		let sorted;
+		let sorted = this.model.find({ parent: undefined });
 		switch (sort) {
 		case SortOption.DEFAULT:
-			sorted = this.model.find();
 			break;
 		case SortOption.RECENT:
-			sorted = this.model.find().sort({ date: -1 });
+			sorted = sorted.sort({ date: -1 });
 			break;
 		case SortOption.OLDEST:
-			sorted = this.model.find().sort({ date: 1 });
+			sorted = sorted.sort({ date: 1 });
 			break;
 		case SortOption.MOST_UPVOTES:
-			sorted = this.model.find().sort({ upvotes: -1 });
+			sorted = sorted.sort({ upvotes: -1 });
 			break;
 		default:
-			sorted = this.model.find();
+			break;
 		}
 		return sorted.skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
 	}

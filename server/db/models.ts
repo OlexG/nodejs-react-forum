@@ -6,6 +6,7 @@ interface IPost extends mongoose.Document {
 	upvotes: number;
 	author: string;
 	date: Date;
+	parent?: mongoose.Types.ObjectId;
 }
 
 const PostSchema = new mongoose.Schema({
@@ -23,6 +24,9 @@ const PostSchema = new mongoose.Schema({
 	},
 	date: {
 		type: Date
+	},
+	parent: {
+		type: mongoose.Types.ObjectId
 	}
 }, { minimize: false });
 
