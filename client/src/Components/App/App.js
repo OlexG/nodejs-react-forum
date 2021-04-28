@@ -34,7 +34,7 @@ const App = () => {
 								} else {
 									status = 0;
 								}
-								return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={status}/>;
+								return <Post key={post._id} id={post._id} title={post.title} body={post.body} upvotes={post.upvotes} date={post.date} status={status} author={post.author}/>;
 							})
 						) :
 						(
