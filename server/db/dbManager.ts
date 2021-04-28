@@ -67,6 +67,8 @@ export class PostManager {
 		case SortOption.MOST_UPVOTES:
 			sorted = this.model.find().sort({ upvotes: -1 });
 			break;
+		default:
+			sorted = this.model.find();
 		}
 		return sorted.skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
 	}
