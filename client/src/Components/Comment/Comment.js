@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import useCommentsFetch from '../../Hooks/useCommentsFetch';
-import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 import Reactions from '../Reactions/Reactions.js';
 import { MAX_COMMENT_DEPTH } from '../../constants.js';
 
 const Comment = (props) => {
-	const { reactions, loading } = useReactionsFetch();
 	const [upvotes, setUpvotes] = useState(props.upvotes);
 	const [status, setStatus] = useState(props.status);
 	const [loadComments, setLoadComments] = useState(false);
@@ -34,18 +32,18 @@ const Comment = (props) => {
 				</div>
 			</div>
 			<div className='ml-5'>
-				{(comments && (loadComments || props.depth <= MAX_COMMENT_DEPTH) && !loading) &&
+				{(comments && (loadComments || props.depth <= MAX_COMMENT_DEPTH)) &&
 				(
 					comments.map((comment, idx) => {
 						let status;
-						if (reactions.downvotes && Object.prototype.hasOwnProperty.call(reactions.downvotes, comment._id)) {
+						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
 							status = -1;
-						} else if (reactions.upvotes && Object.prototype.hasOwnProperty.call(reactions.upvotes, comment._id)) {
+						} else if (props.reactions.upvotes && Object.prototype.hasOwnProperty.call(props.reactions.upvotes, comment._id)) {
 							status = 1;
 						} else {
 							status = 0;
 						}
-						return <Comment depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+						return <Comment reactions={props.reactions} depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
 					})
 				)
 				}
