@@ -12,7 +12,7 @@ import './styles.css';
 import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 
 const App = () => {
-	const reactions = useReactionsFetch();
+	const { reactions, loading } = useReactionsFetch();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [sortingMethod, setSortingMethod] = useState('default');
 	const totalPosts = usePostsNumberFetch().result;
@@ -23,7 +23,7 @@ const App = () => {
 			<div className='row'>
 				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>
 					<PostMenu setSortingMethod={setSortingMethod}/>
-					{posts ?
+					{(posts && !loading) ?
 						(
 							posts.map((post, idx) => {
 								let status;

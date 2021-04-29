@@ -7,10 +7,10 @@ import Reactions from '../Reactions/Reactions.js';
 import { MAX_COMMENT_DEPTH } from '../../constants.js';
 
 const Comment = (props) => {
+	const { reactions, loading } = useReactionsFetch();
 	const [upvotes, setUpvotes] = useState(props.upvotes);
 	const [status, setStatus] = useState(props.status);
 	const [loadComments, setLoadComments] = useState(false);
-	const reactions = useReactionsFetch();
 	const comments = useCommentsFetch(props.id);
 	return (
 		<>
@@ -34,7 +34,7 @@ const Comment = (props) => {
 				</div>
 			</div>
 			<div className='ml-5'>
-				{(comments && (loadComments || props.depth <= MAX_COMMENT_DEPTH)) &&
+				{(comments && (loadComments || props.depth <= MAX_COMMENT_DEPTH) && !loading) &&
 				(
 					comments.map((comment, idx) => {
 						let status;
