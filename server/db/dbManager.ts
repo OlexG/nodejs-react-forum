@@ -48,7 +48,7 @@ export class PostManager {
 	}
 
 	async getNumberOfPosts(): Promise<number> {
-		return this.model.countDocuments().exec();
+		return this.model.find({ parent: undefined }).countDocuments().exec();
 	}
 
 	async getPostsPage(pageSize: number | string, pageNum: number | string, sort: SortOption = SortOption.DEFAULT): Promise<models.IPost[]> {
