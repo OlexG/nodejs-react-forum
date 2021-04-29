@@ -5,7 +5,6 @@ export default function useCommentsFetch (parent) {
 
 	useEffect(() => {
 		api.sendPostCommentsRequest(parent).then((res) => {
-			console.log(res.data);
 			setComments(res.data);
 		}).catch((error) =>
 			console.log(error)
