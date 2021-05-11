@@ -30,8 +30,8 @@ const PostSchema = new mongoose.Schema({
 	}
 }, { minimize: false });
 
-// Index the title of the post for searching
-PostSchema.index({ title: 'text' });
+// Index the title of the post and parent of the post for searching
+PostSchema.index({ title: 'text' }, { parent: 1 });
 
 interface IUser extends mongoose.Document {
 	username: string;
