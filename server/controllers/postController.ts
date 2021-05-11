@@ -18,8 +18,12 @@ async function postPosts(req, res, next) {
 async function getPosts(req, res, next) {
 	let result;
 	if ('number' in req.query && 'page' in req.query) {
-		const { query: { number }, query: { page }, query: { sort } } = req;
-		result = await postManager.getPostsPage(number, page, sort);
+		const { query: { number }, query: { page }, query: { sort }, query: { search } } = req;
+		const filterObject: any = {};
+		if (sort !== undefined) filterObject.sort = sort;
+		if (search !== undefined) filterObject.search = search;
+
+		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
 		if (req.query.parent) {
 			result = await postManager.getAllPosts(req.query.parent);

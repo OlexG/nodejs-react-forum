@@ -14,15 +14,15 @@ import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 const App = () => {
 	const { reactions, loading } = useReactionsFetch();
 	const [currentPage, setCurrentPage] = useState(1);
-	const [sortingMethod, setSortingMethod] = useState('default');
+	const [filterOptions, setFilterOptions] = useState({});
 	const totalPosts = usePostsNumberFetch().result;
-	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE, sortingMethod);
+	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE, filterOptions);
 	return (
 		<div>
 			<NavbarComponent/>
 			<div className='row'>
 				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>
-					<PostMenu setSortingMethod={setSortingMethod}/>
+					<PostMenu setFilterOptions={setFilterOptions} filterOptions={filterOptions}/>
 					{(posts && !loading) ?
 						(
 							posts.map((post, idx) => {

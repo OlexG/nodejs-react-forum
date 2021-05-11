@@ -30,6 +30,9 @@ const PostSchema = new mongoose.Schema({
 	}
 }, { minimize: false });
 
+// Index the title and body of the post for searching
+PostSchema.index({ title: 'text' });
+
 interface IUser extends mongoose.Document {
 	username: string;
 	password: string;

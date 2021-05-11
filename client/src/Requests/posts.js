@@ -1,6 +1,12 @@
 import axios from 'axios';
 const sendPostNumberRequest = async () => axios.get('/api/v1/posts-number');
-const sendPostsPageRequest = async (currentPage, postsPerPage, sort) => axios.get(`/api/v1/posts?page=${currentPage}&number=${postsPerPage}&sort=${sort}`);
+const sendPostsPageRequest = async (currentPage, postsPerPage, filterOptions) => {
+	let requestString = `/api/v1/posts?page=${currentPage}&number=${postsPerPage}`;
+	for (const [key, value] of Object.entries(filterOptions)) {
+		requestString += `&${key}=${value}`;
+	}
+	return axios.get(requestString);
+};
 const sendPostCommentsRequest = async (parent) => axios.get(`/api/v1/posts?parent=${parent}`);
 const sendPostsRequest = async () => axios.get('/api/v1/posts');
 const sendPostSubmitRequest = async (body) => axios.post('/api/v1/posts', body);

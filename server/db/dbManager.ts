@@ -51,7 +51,7 @@ export class PostManager {
 		return this.model.find({ parent: undefined }).countDocuments().exec();
 	}
 
-	async getPostsPage(pageSize: number | string, pageNum: number | string, sort: SortOption = SortOption.DEFAULT): Promise<models.IPost[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string, { sort = SortOption.DEFAULT, search = '' }: { sort?: SortOption, search?: string }): Promise<models.IPost[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -62,6 +62,9 @@ export class PostManager {
 			return [];
 		}
 		let sorted = this.model.find({ parent: undefined });
+		if (search !== '') {
+			sorted = sorted.find({ $text: { $search: search } });
+		}
 		switch (sort) {
 		case SortOption.DEFAULT:
 			break;

@@ -5,6 +5,7 @@ export default {
 		page: Joi.string().optional(),
 		number: Joi.number().integer().optional(),
 		sort: Joi.string().valid('default', 'recent', 'most-upvotes', 'oldest').optional(),
-		parent: Joi.string().optional()
+		parent: Joi.string().optional(),
+		search: Joi.string().optional()
 	})
 };
