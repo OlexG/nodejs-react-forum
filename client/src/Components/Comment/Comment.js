@@ -13,7 +13,7 @@ const Comment = (props) => {
 	const [comments, setComments] = useState([]);
 	async function fetchComments () {
 		if (showChildren === 'unloaded') {
-			const res = await api.sendPostCommentsRequest(props.id, props.depth + 1);
+			const res = await api.sendPostCommentsRequest(props.id, false);
 			setComments(res.data);
 		}
 		setShowChildren('shown');
@@ -42,7 +42,7 @@ const Comment = (props) => {
 			<div className='ml-5'>
 				{props.children &&
 				(
-					props.children.map((comment, idx) => {
+					props.children.sort((a, b) => b.upvotes - a.upvotes).map((comment, idx) => {
 						let status;
 						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
 							status = -1;
@@ -58,7 +58,7 @@ const Comment = (props) => {
 				{(showChildren === 'shown' && comments) &&
 				(
 					// react converts 1 elemenet object arrays to just that object in state
-					comments.map((comment, idx) => {
+					comments.sort((a, b) => b.upvotes - a.upvotes).map((comment, idx) => {
 						let status;
 						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
 							status = -1;

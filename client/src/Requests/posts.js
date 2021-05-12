@@ -8,7 +8,7 @@ const sendPostsPageRequest = async (currentPage, postsPerPage, filterOptions) =>
 	}
 	return axios.get(requestString + searchParams.toString());
 };
-const sendPostCommentsRequest = async (parent, depth) => axios.get(`/api/v1/posts?parent=${parent}&depth=${depth}`);
+const sendPostCommentsRequest = async (parent, recursive) => axios.get(`/api/v1/posts?parent=${parent}&recursive=${recursive}`);
 const sendPostsRequest = async () => axios.get('/api/v1/posts');
 const sendPostSubmitRequest = async (body) => axios.post('/api/v1/posts', body);
 const sendSinglePostRequest = async (id) => axios.get(`/api/v1/posts/${id}`);

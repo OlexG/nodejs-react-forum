@@ -6,7 +6,7 @@ async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	let result;
-	const { body: { title }, body: { postBody } } = req;
+	const { body: { title }, body: { body: postBody } } = req;
 	if (req.body.parent) {
 		const { body: { parent } } = req;
 		result = await postManager.addPost(title, postBody, username, parent);
@@ -28,9 +28,9 @@ async function getPosts(req, res, next) {
 		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
 		if (req.query.parent) {
-			result = await postManager.getAllPosts(req.query.parent, req.query.depth);
+			result = await postManager.getAllPosts(req.query.recursive, req.query.parent);
 		} else {
-			result = await postManager.getAllPosts();
+			result = await postManager.getAllPosts(false);
 		}
 	}
 	res.send(result);
