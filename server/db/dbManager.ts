@@ -24,15 +24,23 @@ export class PostManager {
 		return this.model.findById(postId).exec();
 	};
 
-	async getAllPosts(parent?: mongoose.Types.ObjectId): Promise<models.IPost[]> {
+	async getAllPosts(parent?: mongoose.Types.ObjectId, depth: number = 0, parentObject = { children: [] }): Promise<models.IPost[]> {
 		let posts;
 		if (parent) {
-			posts = this.model.find({ parent });
+			posts = await this.model.find({ parent }).sort({ upvotes: -1 }).lean().exec();
+			if (depth < parseInt(process.env.MAX_COMMENT_DEPTH)) {
+				for (const post of posts) {
+					post.children = [];
+					if (depth > 0) {
+						parentObject.children.push(post);
+					}
+					await this.getAllPosts(post._id, depth + 1, post);
+				}
+			}
 		} else {
-			posts = this.model.find({ parent: undefined });
+			posts = this.model.find({ parent: undefined }).lean().exec();
 		}
-		posts = posts.sort({ upvotes: -1 });
-		return posts.exec();
+		return posts;
 	};
 
 	async addPost(title: string, body: string, username: string, parent?: mongoose.Types.ObjectId) {
@@ -62,7 +70,7 @@ export class PostManager {
 			return [];
 		}
 		let sorted = this.model.find({ parent: undefined });
-		if (search !== '') {
+		if (search) {
 			sorted = sorted.find({ $text: { $search: search } });
 		}
 		switch (sort) {

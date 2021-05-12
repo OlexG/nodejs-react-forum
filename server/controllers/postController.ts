@@ -6,10 +6,12 @@ async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	let result;
+	const { body: { title }, body: { postBody } } = req;
 	if (req.body.parent) {
-		result = await postManager.addPost(req.body.title, req.body.body, username, req.body.parent);
+		const { body: { parent } } = req;
+		result = await postManager.addPost(title, postBody, username, parent);
 	} else {
-		result = await postManager.addPost(req.body.title, req.body.body, username);
+		result = await postManager.addPost(title, postBody, username);
 	}
 	res.statusCode = 200;
 	res.send(result);
@@ -19,14 +21,14 @@ async function getPosts(req, res, next) {
 	let result;
 	if ('number' in req.query && 'page' in req.query) {
 		const { query: { number }, query: { page }, query: { sort }, query: { search } } = req;
-		const filterObject: any = {};
-		if (sort !== undefined) filterObject.sort = sort;
-		if (search !== undefined) filterObject.search = search;
+		const filterObject: {sort?: any, search?: string} = {};
+		if (sort) filterObject.sort = sort;
+		if (search) filterObject.search = search;
 
 		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
 		if (req.query.parent) {
-			result = await postManager.getAllPosts(req.query.parent);
+			result = await postManager.getAllPosts(req.query.parent, req.query.depth);
 		} else {
 			result = await postManager.getAllPosts();
 		}

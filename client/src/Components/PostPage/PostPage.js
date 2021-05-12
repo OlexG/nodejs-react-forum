@@ -8,12 +8,11 @@ import Reactions from '../Reactions/Reactions.js';
 import { Link } from 'react-router-dom';
 
 const PostPage = ({ match }) => {
-	const { reactions, 'loading': reactionsLoading } = useReactionsFetch();
+	const { reactions, loading: reactionsLoading } = useReactionsFetch();
 	const [upvotes, setUpvotes] = useState(0);
 	const [status, setStatus] = useState(0);
 	const { data, loading } = useSinglePostFetch(match.params.id);
 	const comments = useCommentsFetch(match.params.id);
-
 	useEffect(() => {
 		if (reactions.downvotes && Object.prototype.hasOwnProperty.call(reactions.downvotes, match.params.id)) {
 			setStatus(-1);
@@ -59,7 +58,7 @@ const PostPage = ({ match }) => {
 					} else {
 						status = 0;
 					}
-					return <Comment reactions={reactions} depth={1} original={match.params.id} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+					return <Comment reactions={reactions} depth={1} original={match.params.id} children={comment.children} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
 				})
 			)
 			}

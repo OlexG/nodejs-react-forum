@@ -1,15 +1,23 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
-import useCommentsFetch from '../../Hooks/useCommentsFetch';
-import Reactions from '../Reactions/Reactions.js';
 import { MAX_COMMENT_DEPTH } from '../../constants.js';
+import Reactions from '../Reactions/Reactions.js';
+import api from '../../api.js';
 
 const Comment = (props) => {
 	const [upvotes, setUpvotes] = useState(props.upvotes);
 	const [status, setStatus] = useState(props.status);
-	const [loadComments, setLoadComments] = useState(false);
-	const comments = useCommentsFetch(props.id);
+	const [showChildren, setShowChildren] = useState('unloaded');
+	const [comments, setComments] = useState([]);
+	async function fetchComments () {
+		if (showChildren === 'unloaded') {
+			const res = await api.sendPostCommentsRequest(props.id, props.depth + 1);
+			setComments(res.data);
+		}
+		setShowChildren('shown');
+	}
 	return (
 		<>
 			<div className='p-2 ml-5' style={{ 'width': '90%' }}>
@@ -18,11 +26,11 @@ const Comment = (props) => {
 					<p>{props.body}</p>
 					<div className='align-items-center d-flex flex-row'>
 						<Link to={`/comment?parentId=${props.id}&originalId=${props.original}`}>Reply</Link>
-						{ props.depth > MAX_COMMENT_DEPTH &&
+						{ props.depth >= MAX_COMMENT_DEPTH &&
 						(
 							<>
-								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={() => { setLoadComments(true); }}>Load replies</p>
-								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={() => { setLoadComments(false); }}>Hide replies</p>
+								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={fetchComments}>Load replies</p>
+								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={() => { setShowChildren('hidden'); }}>Hide replies</p>
 							</>
 						)
 						}
@@ -32,8 +40,24 @@ const Comment = (props) => {
 				</div>
 			</div>
 			<div className='ml-5'>
-				{(comments && (loadComments || props.depth <= MAX_COMMENT_DEPTH)) &&
+				{props.children &&
 				(
+					props.children.map((comment, idx) => {
+						let status;
+						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
+							status = -1;
+						} else if (props.reactions.upvotes && Object.prototype.hasOwnProperty.call(props.reactions.upvotes, comment._id)) {
+							status = 1;
+						} else {
+							status = 0;
+						}
+						return <Comment reactions={props.reactions} children={comment.children} depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+					})
+				)
+				}
+				{(showChildren === 'shown' && comments) &&
+				(
+					// react converts 1 elemenet object arrays to just that object in state
 					comments.map((comment, idx) => {
 						let status;
 						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
@@ -43,7 +67,7 @@ const Comment = (props) => {
 						} else {
 							status = 0;
 						}
-						return <Comment reactions={props.reactions} depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+						return <Comment reactions={props.reactions} children={comment.children} depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
 					})
 				)
 				}

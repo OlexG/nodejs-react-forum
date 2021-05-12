@@ -47,7 +47,6 @@ const PostCreator = (props) => {
 			setPopup({ 'message': 'Sorry something went wrong.' });
 		}
 	}
-	console.log(props);
 	return (
 		<>
 			<NavbarComponent/>

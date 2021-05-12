@@ -46,8 +46,8 @@
       "react/react-in-jsx-scope": 0,
       "no-undef": "off",
       "quote-props": [
-        "error",
-        "always"
+        "warn",
+        "consistent"
       ],
       "quotes": [
         1,
