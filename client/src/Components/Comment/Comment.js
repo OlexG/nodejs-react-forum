@@ -6,17 +6,23 @@ import { MAX_COMMENT_DEPTH } from '../../constants.js';
 import Reactions from '../Reactions/Reactions.js';
 import api from '../../api.js';
 
+const repliesStateOptions = {
+	UNLOADED: 'unloaded',
+	SHOWN: 'shown',
+	HIDDEN: 'hidden'
+};
+
 const Comment = (props) => {
 	const [upvotes, setUpvotes] = useState(props.upvotes);
 	const [status, setStatus] = useState(props.status);
-	const [showChildren, setShowChildren] = useState('unloaded');
+	const [showChildren, setShowChildren] = useState(repliesStateOptions.UNLOADED);
 	const [comments, setComments] = useState([]);
 	async function fetchComments () {
-		if (showChildren === 'unloaded') {
+		if (showChildren === repliesStateOptions.UNLOADED) {
 			const res = await api.sendPostCommentsRequest(props.id, false);
 			setComments(res.data);
 		}
-		setShowChildren('shown');
+		setShowChildren(repliesStateOptions.SHOWN);
 	}
 	return (
 		<>
@@ -30,7 +36,7 @@ const Comment = (props) => {
 						(
 							<>
 								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={fetchComments}>Load replies</p>
-								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={() => { setShowChildren('hidden'); }}>Hide replies</p>
+								<p className='btn btn-link m-0 pr-0 pl-3 pt-0 pb-0' onClick={() => { setShowChildren(repliesStateOptions.HIDDEN); }}>Hide replies</p>
 							</>
 						)
 						}
@@ -51,7 +57,20 @@ const Comment = (props) => {
 						} else {
 							status = 0;
 						}
-						return <Comment reactions={props.reactions} children={comment.children} depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+						return (
+							<Comment
+								reactions={props.reactions}
+								children={comment.children}
+								depth={props.depth + 1}
+								original={props.original}
+								key={comment._id} id={comment._id}
+								body={comment.body}
+								upvotes={comment.upvotes}
+								date={comment.date}
+								status={status}
+								author={comment.author}
+							/>
+						);
 					})
 				)
 				}
@@ -67,7 +86,21 @@ const Comment = (props) => {
 						} else {
 							status = 0;
 						}
-						return <Comment reactions={props.reactions} children={comment.children} depth={props.depth + 1} original={props.original} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+						return (
+							<Comment
+								reactions={props.reactions}
+								children={comment.children}
+								depth={props.depth + 1}
+								original={props.original}
+								key={comment._id}
+								id={comment._id}
+								body={comment.body}
+								upvotes={comment.upvotes}
+								date={comment.date}
+								status={status}
+								author={comment.author}
+							/>
+						);
 					})
 				)
 				}

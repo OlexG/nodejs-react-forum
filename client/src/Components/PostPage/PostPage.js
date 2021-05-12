@@ -58,7 +58,20 @@ const PostPage = ({ match }) => {
 					} else {
 						status = 0;
 					}
-					return <Comment reactions={reactions} depth={1} original={match.params.id} children={comment.children} key={comment._id} id={comment._id} body={comment.body} upvotes={comment.upvotes} date={comment.date} status={status} author={comment.author}/>;
+					return (
+						<Comment
+							reactions={reactions}
+							depth={1}
+							original={match.params.id}
+							children={comment.children}
+							key={comment._id} id={comment._id}
+							body={comment.body}
+							upvotes={comment.upvotes}
+							date={comment.date}
+							status={status}
+							author={comment.author}
+						/>
+					);
 				})
 			)
 			}

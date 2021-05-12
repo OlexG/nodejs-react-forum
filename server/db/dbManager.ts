@@ -4,7 +4,7 @@ import * as models from './models';
 import bcrypt = require('bcrypt');
 import mongoose = require('mongoose');
 
-enum SortOption {
+export enum SortOption {
 	DEFAULT = 'default',
 	RECENT = 'recent',
 	MOST_UPVOTES = 'most-upvotes',
@@ -26,7 +26,7 @@ export class PostManager {
 
 	async getAllPosts(recursive: boolean, parent?: mongoose.Types.ObjectId, parentObject = { children: [] }): Promise<object> {
 		if (parent && recursive) {
-			const count = await this.model.find({ parent }).count();
+			const count = await this.model.find({ parent }).countDocuments();
 			if (count === 0) {
 				return [];
 			}

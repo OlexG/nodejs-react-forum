@@ -1,4 +1,5 @@
 import { initManagers } from '../db/initDB';
+import { SortOption } from '../db/dbManager';
 
 const { postManager, userManager } = initManagers();
 
@@ -21,7 +22,7 @@ async function getPosts(req, res, next) {
 	let result;
 	if ('number' in req.query && 'page' in req.query) {
 		const { query: { number }, query: { page }, query: { sort }, query: { search } } = req;
-		const filterObject: {sort?: any, search?: string} = {};
+		const filterObject: {sort?: SortOption, search?: string} = {};
 		if (sort) filterObject.sort = sort;
 		if (search) filterObject.search = search;
 
