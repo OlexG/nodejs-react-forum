@@ -48,7 +48,7 @@ const Comment = (props) => {
 			<div className='ml-5'>
 				{props.children &&
 				(
-					props.children.sort((a, b) => b.upvotes - a.upvotes).map((comment, idx) => {
+					props.children.map((comment, idx) => {
 						let status;
 						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
 							status = -1;
@@ -77,7 +77,7 @@ const Comment = (props) => {
 				{(showChildren === 'shown' && comments) &&
 				(
 					// react converts 1 elemenet object arrays to just that object in state
-					comments.sort((a, b) => b.upvotes - a.upvotes).map((comment, idx) => {
+					comments.map((comment, idx) => {
 						let status;
 						if (props.reactions.downvotes && Object.prototype.hasOwnProperty.call(props.reactions.downvotes, comment._id)) {
 							status = -1;

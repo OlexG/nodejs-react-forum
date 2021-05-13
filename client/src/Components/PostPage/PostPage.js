@@ -49,7 +49,7 @@ const PostPage = ({ match }) => {
 			}
 			{(comments && !reactionsLoading) &&
 			(
-				comments.sort((a, b) => { return b.upvotes - a.upvotes; }).map((comment, idx) => {
+				comments.map((comment, idx) => {
 					let status;
 					if (reactions.downvotes && Object.prototype.hasOwnProperty.call(reactions.downvotes, comment._id)) {
 						status = -1;

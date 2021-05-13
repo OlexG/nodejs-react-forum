@@ -30,103 +30,91 @@ export class PostManager {
 		return this.model.findById(postId).exec();
 	};
 
-	async getAllPosts(recursive: boolean, parent?: mongoose.Types.ObjectId, parentObject = { children: [] }): Promise<object> {
-		if (parent && recursive) {
+	async getAllPosts(returnWithComments: boolean, parent?: mongoose.Types.ObjectId, parentObject = { children: [] }): Promise<object> {
+		if (parent && returnWithComments) {
 			const count = await this.model.find({ parent }).countDocuments();
 			if (count === 0) {
 				return [];
 			}
 			const parentId = new ObjectId(parent);
-			const post = await this.model.aggregate([
-				{
-					$graphLookup: {
-						from: 'posts',
-						startWith: '$_id',
-						connectFromField: '_id',
-						connectToField: 'parent',
-						as: 'children',
-						maxDepth: parseInt(process.env.MAX_COMMENT_DEPTH) - 1,
-						depthField: 'level'
-					}
-				},
-				{
-					$unwind: '$children'
-				},
-				{
-					$sort: { 'children.level': -1 }
-				},
-				{
-					$group: {
+			const post = await this.model.aggregate()
+				.graphLookup({
+					from: 'posts',
+					startWith: '$_id',
+					connectFromField: '_id',
+					connectToField: 'parent',
+					as: 'children',
+					maxDepth: parseInt(process.env.MAX_COMMENT_DEPTH) - 1,
+					depthField: 'level'
+				})
+				.unwind('$children')
+				.sort({ 'children.level': -1, 'children.upvotes': -1 })
+				.group(
+					{
 						_id: '$_id',
 						children: { $push: '$children' }
 					}
-				},
-				{
-					$addFields: {
-						children: {
-							$reduce: {
-								input: '$children',
-								initialValue: {
-									currentLevel: -1,
-									currentLevelPosts: [],
-									previousLevelPosts: []
-								},
-								in: {
-									$let: {
-										vars: {
-											prev: {
-												$cond: [
-													{ $eq: ['$$value.currentLevel', '$$this.level'] },
-													'$$value.previousLevelPosts',
-													'$$value.currentLevelPosts'
-												]
-											},
-											current: {
-												$cond: [
-													{ $eq: ['$$value.currentLevel', '$$this.level'] },
-													'$$value.currentLevelPosts',
-													[]
-												]
-											}
+				).addFields({
+					children: {
+						$reduce: {
+							input: '$children',
+							initialValue: {
+								currentLevel: -1,
+								currentLevelPosts: [],
+								previousLevelPosts: []
+							},
+							in: {
+								$let: {
+									vars: {
+										prev: {
+											$cond: [
+												{ $eq: ['$$value.currentLevel', '$$this.level'] },
+												'$$value.previousLevelPosts',
+												'$$value.currentLevelPosts'
+											]
 										},
-										in: {
-											currentLevel: '$$this.level',
-											previousLevelPosts: '$$prev',
-											currentLevelPosts: {
-												$concatArrays: [
-													'$$current',
-													[
-														{
-															$mergeObjects: [
-																'$$this',
-																{ children: { $filter: { input: '$$prev', as: 'e', cond: { $eq: ['$$e.parent', '$$this._id'] } } } }
-															]
-														}
-													]
+										current: {
+											$cond: [
+												{ $eq: ['$$value.currentLevel', '$$this.level'] },
+												'$$value.currentLevelPosts',
+												[]
+											]
+										}
+									},
+									in: {
+										currentLevel: '$$this.level',
+										previousLevelPosts: '$$prev',
+										currentLevelPosts: {
+											$concatArrays: [
+												'$$current',
+												[
+													{
+														$mergeObjects: [
+															'$$this',
+															{ children: { $filter: { input: '$$prev', as: 'e', cond: { $eq: ['$$e.parent', '$$this._id'] } } } }
+														]
+													}
 												]
-											}
+											]
 										}
 									}
 								}
 							}
 						}
 					}
-				},
-				{
-					$addFields: { children: '$children.currentLevelPosts' }
-				},
-				{
-					$match: {
+				}
+				).addFields({ children: '$children.currentLevelPosts' })
+				.match(
+					{
 						_id: parentId
 					}
-				}
-			]).exec();
+				).exec();
 			const [{ children: posts }] = post;
 			return posts;
-		} else if (!recursive && parent) {
-			return this.model.find({ parent: parent }).lean().exec();
+		} else if (!returnWithComments && parent) {
+			return this.model.find({ parent }).lean().exec();
 		} else {
-			return this.model.find({ parent: undefined }).lean().exec();
+			return this.model.find({}).lean().exec();
 		}
 	};
 

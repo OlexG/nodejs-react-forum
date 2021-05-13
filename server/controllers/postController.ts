@@ -7,9 +7,8 @@ async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	let result;
-	const { body: { title }, body: { body: postBody } } = req;
-	if (req.body.parent) {
-		const { body: { parent } } = req;
+	const { body: { title }, body: { body: postBody }, body: { parent } } = req;
+	if (parent) {
 		result = await postManager.addPost(title, postBody, username, parent);
 	} else {
 		result = await postManager.addPost(title, postBody, username);
@@ -32,7 +31,7 @@ async function getPosts(req, res, next) {
 		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
 		if (req.query.parent) {
-			result = await postManager.getAllPosts(req.query.recursive, req.query.parent);
+			result = await postManager.getAllPosts(req.query.returnWithComments, req.query.parent);
 		} else {
 			result = await postManager.getAllPosts(false);
 		}

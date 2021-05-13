@@ -6,7 +6,7 @@ export default {
 		number: Joi.number().integer().optional(),
 		sort: Joi.string().valid('default', 'recent', 'most-upvotes', 'oldest').optional(),
 		parent: Joi.string().optional(),
-		recursive: Joi.boolean().optional(),
+		returnWithComments: Joi.boolean().optional(),
 		search: Joi.string().optional()
 	})
 };
