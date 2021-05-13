@@ -11,6 +11,11 @@ export enum SortOption {
 	OLDEST = 'oldest'
 }
 
+export interface FilterObject {
+	sort: SortOption,
+	search: string;
+}
+
 export class PostManager {
 	// class with functions relating to accessing and editing post data
 
@@ -140,7 +145,7 @@ export class PostManager {
 		return this.model.find({ parent: undefined }).countDocuments().exec();
 	}
 
-	async getPostsPage(pageSize: number | string, pageNum: number | string, { sort = SortOption.DEFAULT, search = '' }: { sort?: SortOption, search?: string }): Promise<models.IPost[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string, { sort = SortOption.DEFAULT, search = '' }: FilterObject): Promise<models.IPost[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
