@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import * as models from './models';
 import bcrypt = require('bcrypt');
 import mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
 export enum SortOption {
 	DEFAULT = 'default',
