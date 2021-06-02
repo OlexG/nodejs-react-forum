@@ -7,10 +7,10 @@ const { postManager, userManager } = initManagers();
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const { body: { title, body: postBody, parent, date, time } } = req;
+	const { body: { title, body: postBody, parent, date } } = req;
 	if (date) {
-		const dateObj = new Date(date.split('T')[0] + 'T' + time + 'Z');
-		schedule.scheduleJob(dateObj, function() {
+		console.log(date);
+		schedule.scheduleJob(date, function() {
 			postManager.addPost(title, postBody, username, parent);
 		});
 		res.sendStatus(200);

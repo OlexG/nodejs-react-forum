@@ -18,17 +18,15 @@ const PostCreator = (props) => {
 		const title = formData.get('title');
 		const body = formData.get('body');
 		const date = formData.get('date');
-		const time = formData.get('time');
-		if (!validateDate(date, time)) {
-			setPopup({ 'message': 'Please enter a valid date and time or leave both fields empty' });
+
+		if (!validateDate(date)) {
+			setPopup({ 'message': 'Please enter a valid date and time or leave field empty' });
 			formElement.querySelector('input[name="date"]').value = '';
-			formElement.querySelector('input[name="time"]').value = '';
 			return;
 		}
 		const reqBody = { title, body };
 		if (date !== '') {
 			reqBody.date = date;
-			reqBody.time = time;
 		}
 		const res = await api.sendPostSubmitRequest(reqBody);
 		if (res.status === 200) {
@@ -79,11 +77,9 @@ const PostCreator = (props) => {
 						<Form.Control name='body' className='form-control' id='body' placeholder='Enter text'/>
 					</div>
 					<div className='form-group'>
-						<label>Optional: shedule a post (UTC time)</label>
+						<label>Optional: shedule a post</label>
 
-						{/* Separate as datetime-local is not supported on a lot of browsers */}
-						<Form.Control name='date' className='form-control' id='date' type='date'/>
-						<Form.Control name='time' className='form-control mt-3' id='time' type='time'/>
+						<Form.Control name='date' className='form-control' id='date' type='datetime-local'/>
 					</div>
 					<button type='submit' className='btn btn-primary'>Submit</button>
 				</Form>
