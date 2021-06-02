@@ -3,12 +3,18 @@ import { ObjectId } from 'mongodb';
 import * as models from './models';
 import bcrypt = require('bcrypt');
 import mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
-enum SortOption {
+export enum SortOption {
 	DEFAULT = 'default',
 	RECENT = 'recent',
 	MOST_UPVOTES = 'most-upvotes',
 	OLDEST = 'oldest'
+}
+
+export interface FilterObject {
+	sort: SortOption,
+	search: string;
 }
 
 export class PostManager {
@@ -24,26 +30,111 @@ export class PostManager {
 		return this.model.findById(postId).exec();
 	};
 
-	async getAllPosts(): Promise<models.IPost[]> {
-		return this.model.find({}).exec();
+	async getAllPosts(returnWithComments: boolean, parent?: mongoose.Types.ObjectId, parentObject = { children: [] }): Promise<object> {
+		if (parent && returnWithComments) {
+			const count = await this.model.find({ parent }).countDocuments();
+			if (count === 0) {
+				return [];
+			}
+			const parentId = new ObjectId(parent);
+			const post = await this.model.aggregate()
+				.graphLookup({
+					from: 'posts',
+					startWith: '$_id',
+					connectFromField: '_id',
+					connectToField: 'parent',
+					as: 'children',
+					maxDepth: parseInt(process.env.MAX_COMMENT_DEPTH) - 1,
+					depthField: 'level'
+				})
+				.unwind('$children')
+				.sort({ 'children.level': -1, 'children.upvotes': -1 })
+				.group(
+					{
+						_id: '$_id',
+						children: { $push: '$children' }
+					}
+				).addFields({
+					children: {
+						$reduce: {
+							input: '$children',
+							initialValue: {
+								currentLevel: -1,
+								currentLevelPosts: [],
+								previousLevelPosts: []
+							},
+							in: {
+								$let: {
+									vars: {
+										prev: {
+											$cond: [
+												{ $eq: ['$$value.currentLevel', '$$this.level'] },
+												'$$value.previousLevelPosts',
+												'$$value.currentLevelPosts'
+											]
+										},
+										current: {
+											$cond: [
+												{ $eq: ['$$value.currentLevel', '$$this.level'] },
+												'$$value.currentLevelPosts',
+												[]
+											]
+										}
+									},
+									in: {
+										currentLevel: '$$this.level',
+										previousLevelPosts: '$$prev',
+										currentLevelPosts: {
+											$concatArrays: [
+												'$$current',
+												[
+													{
+														$mergeObjects: [
+															'$$this',
+															{ children: { $filter: { input: '$$prev', as: 'e', cond: { $eq: ['$$e.parent', '$$this._id'] } } } }
+														]
+													}
+												]
+											]
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				).addFields({ children: '$children.currentLevelPosts' })
+				.match(
+					{
+						_id: parentId
+					}
+				).exec();
+			const [{ children: posts }] = post;
+			return posts;
+		} else if (!returnWithComments && parent) {
+			return this.model.find({ parent }).lean().exec();
+		} else {
+			return this.model.find({}).lean().exec();
+		}
 	};
 
-	async addPost(title: string, body: string, username: string) {
+	async addPost(title: string, body: string, username: string, parent?: mongoose.Types.ObjectId) {
 		const post: models.IPost = await this.model.create({
 			title,
 			body,
 			upvotes: 0,
 			author: username,
-			date: new Date()
+			date: new Date(),
+			...parent && { parent }
 		});
 		return post._id;
 	}
 
 	async getNumberOfPosts(): Promise<number> {
-		return this.model.countDocuments().exec();
+		return this.model.find({ parent: undefined }).countDocuments().exec();
 	}
 
-	async getPostsPage(pageSize: number | string, pageNum: number | string, sort: SortOption = SortOption.DEFAULT): Promise<models.IPost[]> {
+	async getPostsPage(pageSize: number | string, pageNum: number | string, { sort = SortOption.DEFAULT, search = '' }: FilterObject): Promise<models.IPost[]> {
 		if (typeof pageSize === 'string') pageSize = parseInt(pageSize);
 		if (typeof pageNum === 'string') pageNum = parseInt(pageNum);
 		if (pageNum < 0) {
@@ -53,22 +144,24 @@ export class PostManager {
 		if (pageSize * (pageNum - 1) > count) {
 			return [];
 		}
-		let sorted;
+		let sorted = this.model.find({ parent: undefined });
+		if (search) {
+			sorted = sorted.find({ $text: { $search: search } });
+		}
 		switch (sort) {
 		case SortOption.DEFAULT:
-			sorted = this.model.find();
 			break;
 		case SortOption.RECENT:
-			sorted = this.model.find().sort({ date: -1 });
+			sorted = sorted.sort({ date: -1 });
 			break;
 		case SortOption.OLDEST:
-			sorted = this.model.find().sort({ date: 1 });
+			sorted = sorted.sort({ date: 1 });
 			break;
 		case SortOption.MOST_UPVOTES:
-			sorted = this.model.find().sort({ upvotes: -1 });
+			sorted = sorted.sort({ upvotes: -1 });
 			break;
 		default:
-			sorted = this.model.find();
+			break;
 		}
 		return sorted.skip(pageSize * (pageNum - 1)).limit(pageSize).exec();
 	}

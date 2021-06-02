@@ -12,6 +12,7 @@ const AppRouter = () => {
 			<Router>
 				<Route exact path='/' component={App} />
 				<Route path='/create' component={PostCreator} />
+				<Route path='/comment' component={PostCreator} />
 				<Route path='/posts/:id' component={PostPage} />
 				<Route path='/login' component={LoginPage} />
 				<Route path='/signup' component={SignupPage} />

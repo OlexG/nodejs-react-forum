@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import styles from './Post.module.css';
 import Reactions from '../Reactions/Reactions.js';
+import { Link } from 'react-router-dom';
 
 const Post = (props) => {
 	const [upvotes, setUpvotes] = useState(props.upvotes);
@@ -21,10 +22,15 @@ const Post = (props) => {
 		<>
 			<div className='list-group-item p-0 ml-5' style={{ 'width': '90%' }}>
 				<div className='p-3 d-flex flex-row'>
-					<p className={styles.post_title}>{props.title}</p>
+					<div>
+						<p className={styles.post_title}>{props.title}</p>
+						<h6>By: {props.author}</h6>
+						<Link to={`comment/?parentId=${props.id}&originalId=${props.id}`}>Reply</Link>
+					</div>
 					<div className='ml-auto d-flex flex-row'>
-						<p className={`${styles.post_upvotes} ml-3 pl-3 pr-3`}>{upvotes}</p>
+						<p className='upvotes ml-3 pl-3 pr-3'>{upvotes}</p>
 						<Reactions postID={props.id} setUpvotes={setUpvotes} upvotes={upvotes} status={status} setStatus={setStatus} className=''/>
+						<Link className='btn btn-outline-secondary ml-3 pl-3 pr-3' style={{ 'height': '40px' }} to={`/posts/${props.id}`}>Visit</Link>
 						<button type='button' className='btn btn-outline-secondary ml-3 pl-3 pr-3' style={{ 'height': '40px' }} onClick={swapDropdown}>Preview</button>
 					</div>
 				</div>

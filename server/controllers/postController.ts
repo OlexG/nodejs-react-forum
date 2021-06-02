@@ -1,24 +1,42 @@
 import { initManagers } from '../db/initDB';
+import { SortOption, FilterObject } from '../db/dbManager';
 
 const { postManager, userManager } = initManagers();
 
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const result = await postManager.addPost(req.body.title, req.body.body, username);
+	let result;
+	const { body: { title, body: postBody, parent } } = req;
+	if (parent) {
+		result = await postManager.addPost(title, postBody, username, parent);
+	} else {
+		result = await postManager.addPost(title, postBody, username);
+	}
 	res.statusCode = 200;
 	res.send(result);
 };
 
 async function getPosts(req, res, next) {
+	let result;
 	if ('number' in req.query && 'page' in req.query) {
-		const { query: { number }, query: { page }, query: { sort } } = req;
-		const result = await postManager.getPostsPage(number, page, sort);
-		res.send(result);
+		const { query: { number, page, sort, search } } = req;
+		const filterObject: FilterObject = {
+			sort: SortOption.DEFAULT,
+			search: ''
+		};
+		if (sort) filterObject.sort = sort;
+		if (search) filterObject.search = search;
+
+		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
-		const result = await postManager.getAllPosts();
-		res.send(result);
+		if (req.query.parent) {
+			result = await postManager.getAllPosts(req.query.returnWithComments, req.query.parent);
+		} else {
+			result = await postManager.getAllPosts(false);
+		}
 	}
+	res.send(result);
 }
 
 async function getPostsId(req, res, next) {

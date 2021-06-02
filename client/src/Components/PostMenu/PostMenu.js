@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './PostMenu.module.css';
 import { Form } from 'react-bootstrap';
 
 const PostMenu = (props) => {
 	const formElement = React.useRef();
+	const [searchText, setSearchText] = useState('');
 
-	async function changeSortOption (e) {
+	function changeSortOption (e) {
 		const formData = new FormData(formElement.current);
 		const sort = formData.get('select');
-		props.setSortingMethod(sort);
+		props.setFilterOptions({ ...props.filterOptions, 'sort': sort });
 	}
+
+	function handleSearchChange (e) {
+		setSearchText(e.target.value);
+	}
+
+	function setFilterOptions (e) {
+		if (searchText !== '') {
+			props.setFilterOptions({ ...props.filterOptions, 'search': searchText });
+		} else {
+			props.setFilterOptions((filterOptions) => {
+				const newFilterOptions = { ...filterOptions };
+				delete newFilterOptions.search;
+				return newFilterOptions;
+			});
+		};
+	}
+
 	return (
 		<Form ref={formElement} className={`${styles.menu} ml-5 d-flex flex-row align-items-center`} style={{ 'width': '90%' }}>
 			<p className={`${styles.menuText}`}>Sort by</p>
@@ -19,7 +37,8 @@ const PostMenu = (props) => {
 				<option>recent</option>
 				<option>oldest</option>
 			</select>
-			<button type='submit' className={`${styles.menuButton} btn btn-outline-secondary ml-3 pl-5 pr-5 btn-light ml-auto`}>Filter</button>
+			<input type='text' className='ml-5' value={searchText} onChange={handleSearchChange} />
+			<button type='button' onClick={setFilterOptions} className={`${styles.menuButton} btn btn-outline-secondary ml-3 pl-5 pr-5 btn-light ml-auto`}>Filter</button>
 		</Form>
 	);
 };
