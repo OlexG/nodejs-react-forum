@@ -7,7 +7,7 @@ async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	let result;
-	const { body: { title }, body: { body: postBody }, body: { parent } } = req;
+	const { body: { title, body: postBody, parent } } = req;
 	if (parent) {
 		result = await postManager.addPost(title, postBody, username, parent);
 	} else {
@@ -20,7 +20,7 @@ async function postPosts(req, res, next) {
 async function getPosts(req, res, next) {
 	let result;
 	if ('number' in req.query && 'page' in req.query) {
-		const { query: { number }, query: { page }, query: { sort }, query: { search } } = req;
+		const { query: { number, page, sort, search } } = req;
 		const filterObject: FilterObject = {
 			sort: SortOption.DEFAULT,
 			search: ''
