@@ -1,18 +1,22 @@
 import { initManagers } from '../db/initDB';
 import { SortOption, FilterObject } from '../db/dbManager';
+import schedule = require('node-schedule');
 
 const { postManager, userManager } = initManagers();
 
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	let result;
-	const { body: { title, body: postBody, parent } } = req;
-	if (parent) {
-		result = await postManager.addPost(title, postBody, username, parent);
-	} else {
-		result = await postManager.addPost(title, postBody, username);
+	const { body: { title, body: postBody, parent, date, time } } = req;
+	if (date) {
+		const dateObj = new Date(date.split('T')[0] + 'T' + time + 'Z');
+		schedule.scheduleJob(dateObj, function() {
+			postManager.addPost(title, postBody, username, parent);
+		});
+		res.sendStatus(200);
+		return;
 	}
+	const result = await postManager.addPost(title, postBody, username, parent);
 	res.statusCode = 200;
 	res.send(result);
 };
