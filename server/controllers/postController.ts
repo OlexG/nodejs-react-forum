@@ -9,7 +9,6 @@ async function postPosts(req, res, next) {
 	const username = await userManager.findRefreshToken(refreshToken);
 	const { body: { title, body: postBody, parent, date } } = req;
 	if (date) {
-		console.log(date);
 		schedule.scheduleJob(date, function() {
 			postManager.addPost(title, postBody, username, parent);
 		});
