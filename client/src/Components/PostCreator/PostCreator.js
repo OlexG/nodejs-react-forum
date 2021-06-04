@@ -76,11 +76,13 @@ const PostCreator = (props) => {
 						<label>Body</label>
 						<Form.Control name='body' className='form-control' id='body' placeholder='Enter text'/>
 					</div>
+					{!params.get('parentId') &&
 					<div className='form-group'>
 						<label>Optional: shedule a post</label>
 
 						<Form.Control name='date' className='form-control' id='date' type='datetime-local'/>
 					</div>
+					}
 					<button type='submit' className='btn btn-primary'>Submit</button>
 				</Form>
 			</div>

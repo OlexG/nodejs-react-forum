@@ -1,4 +1,5 @@
 import mongoose = require('mongoose');
+require('mongoose-function')(mongoose);
 
 interface IPost extends mongoose.Document {
 	title: string;
@@ -63,7 +64,24 @@ const UserSchema = new mongoose.Schema({
 	}
 }, { minimize: false });
 
+interface IJob extends mongoose.Document {
+	value: Function;
+	data: Partial<IPost>;
+}
+
+const JobSchema = new mongoose.Schema({
+	value: {
+		type: Function,
+		required: true
+	},
+	data: {
+		type: Object
+	}
+}, { collection: 'system.js' });
+
 export { IPost };
 export { PostSchema };
 export { IUser };
 export { UserSchema };
+export { IJob };
+export { JobSchema };

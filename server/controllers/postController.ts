@@ -1,6 +1,7 @@
 import { initManagers } from '../db/initDB';
 import { SortOption, FilterObject } from '../db/dbManager';
-import schedule = require('node-schedule');
+import { scheduleJob } from '../scheduling/scheduler';
+import { IPost } from '../db/models';
 
 const { postManager, userManager } = initManagers();
 
@@ -9,8 +10,8 @@ async function postPosts(req, res, next) {
 	const username = await userManager.findRefreshToken(refreshToken);
 	const { body: { title, body: postBody, parent, date } } = req;
 	if (date) {
-		schedule.scheduleJob(date, function() {
-			postManager.addPost(title, postBody, username, parent);
+		scheduleJob({ date, title, body: postBody, author: username, parent }, function(postManager, argsObj: Partial<IPost>) {
+			postManager.addPost(argsObj.title, argsObj.body, argsObj.author, argsObj.parent);
 		});
 		res.sendStatus(200);
 		return;

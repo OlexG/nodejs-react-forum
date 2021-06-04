@@ -323,3 +323,30 @@ export class UserManager {
 		this.model.remove({}).exec();
 	}
 }
+
+export class JobManager {
+	model: mongoose.Model<models.IJob>;
+
+	constructor() {
+		this.model = mongoose.model('Jobs', models.JobSchema);
+	}
+
+	async addJob(data: Partial<models.IPost>, fn: Function): Promise<mongoose.Types.ObjectId> {
+		return (await this.model.create({
+			data,
+			value: fn
+		}))._id;
+	}
+
+	deleteJob(id: mongoose.Types.ObjectId): void {
+		this.model.deleteOne({ _id: id }).exec();
+	}
+
+	async getAllJobs() {
+		return await this.model.find().exec();
+	}
+
+	async DELETE_ALL_JOBS() {
+		this.model.remove({}).exec();
+	}
+}
