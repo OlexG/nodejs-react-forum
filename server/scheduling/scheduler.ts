@@ -12,7 +12,9 @@ const lt = require('long-timeout');
 		if (dateDiff(new Date(), elem.data.date) < 0) {
 			jobManager.deleteJob(elem._id);
 		} else {
-			scheduleJob(elem.data, elem.value, elem._id);
+			// eslint-disable-next-line no-new-func
+			const fn = new Function('return ' + elem.value)();
+			scheduleJob(elem.data, fn, elem._id);
 		}
 	});
 })();

@@ -24,7 +24,6 @@
     "long-timeout": "^0.1.1",
     "mongodb": "^3.6.4",
     "mongoose": "^5.12.5",
-    "mongoose-function": "^0.1.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

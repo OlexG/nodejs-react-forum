@@ -334,7 +334,7 @@ export class JobManager {
 	async addJob(data: Partial<models.IPost>, fn: Function): Promise<mongoose.Types.ObjectId> {
 		return (await this.model.create({
 			data,
-			value: fn
+			value: fn.toString()
 		}))._id;
 	}
 
