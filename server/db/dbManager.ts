@@ -26,7 +26,7 @@ export class PostManager {
 		this.model = mongoose.model('post', models.PostSchema);
 	}
 
-	async getPost(postId: string): Promise<models.IPost> {
+	getPost(postId: string): Promise<models.IPost> {
 		return this.model.findById(postId).exec();
 	};
 
@@ -130,7 +130,7 @@ export class PostManager {
 		return post._id;
 	}
 
-	async getNumberOfPosts(): Promise<number> {
+	getNumberOfPosts(): Promise<number> {
 		return this.model.find({ parent: undefined }).countDocuments().exec();
 	}
 
@@ -215,7 +215,7 @@ export class PostManager {
 		}
 	}
 
-	async DELETE_ALL_POSTS(): Promise<void> {
+	deleteAll() {
 		this.model.remove({}).exec();
 	}
 }
@@ -287,12 +287,12 @@ export class UserManager {
 		return 'success';
 	}
 
-	async addRefreshToken(username: string, refreshToken: string): Promise<void> {
-		this.model.updateOne({ username }, { $set: { refreshToken } }).exec();
+	addRefreshToken(username: string, refreshToken: string) {
+		return this.model.updateOne({ username }, { $set: { refreshToken } }).exec();
 	}
 
-	async deleteRefreshToken(refreshToken: string): Promise<void> {
-		this.model.updateOne({ refreshToken }, { $unset: { refreshToken: '' } }).exec();
+	deleteRefreshToken(refreshToken: string) {
+		return this.model.updateOne({ refreshToken }, { $unset: { refreshToken: '' } }).exec();
 	}
 
 	async findRefreshToken(refreshToken: string): Promise<string | null> {
@@ -319,7 +319,7 @@ export class UserManager {
 		return false;
 	}
 
-	async DELETE_ALL_USERS(): Promise<void> {
+	deleteAll() {
 		this.model.remove({}).exec();
 	}
 }
@@ -342,11 +342,11 @@ export class JobManager {
 		this.model.deleteOne({ _id: id }).exec();
 	}
 
-	async getAllJobs() {
-		return await this.model.find().exec();
+	getAll() {
+		return this.model.find().exec();
 	}
 
-	async DELETE_ALL_JOBS() {
+	deleteAll() {
 		this.model.remove({}).exec();
 	}
 }
