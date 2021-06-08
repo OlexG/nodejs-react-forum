@@ -1,4 +1,5 @@
 import { initManagers } from '../db/initDB';
+import { PostManager } from '../db/dbManager';
 import { IPost } from '../db/models';
 import mongoose = require('mongoose');
 
@@ -19,7 +20,7 @@ function dateDiff(dateOne: Date, dateTwo: Date) : number {
 	return dateTwo.getTime() - dateOne.getTime();
 }
 
-export async function scheduleJob(postData: Partial<IPost>, fn:Function, id?: mongoose.Types.ObjectId): Promise<void> {
+export async function scheduleJob(postData: Partial<IPost>, fn:(postManager: PostManager, argsObj: Partial<IPost>) => void, id?: mongoose.Types.ObjectId): Promise<void> {
 	let time = dateDiff(new Date(), postData.date);
 	time = Math.max(time, 0);
 	try {
