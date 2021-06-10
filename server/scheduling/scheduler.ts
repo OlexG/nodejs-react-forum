@@ -20,7 +20,7 @@ function dateDiff(dateOne: Date, dateTwo: Date) : number {
 	return dateTwo.getTime() - dateOne.getTime();
 }
 
-export async function scheduleJob(postData: Partial<IPost>, fn:(postManager: PostManager, argsObj: Partial<IPost>) => void, id?: mongoose.Types.ObjectId): Promise<void> {
+export async function scheduleJob(postData: Partial<IPost>, fn: (postManager: PostManager, argsObj: Partial<IPost>) => Promise<void>, id?: mongoose.Types.ObjectId): Promise<boolean> {
 	let time = dateDiff(new Date(), postData.date);
 	time = Math.max(time, 0);
 	try {
@@ -28,13 +28,21 @@ export async function scheduleJob(postData: Partial<IPost>, fn:(postManager: Pos
 			id = await jobManager.addJob(postData, fn);
 		}
 
-		lt.setTimeout(() => {
+		lt.setTimeout(async() => {
 			// as fn is called with eval we have to add the data to its local scope
-			fn(postManager, postData);
-			jobManager.deleteJob(id);
+			try {
+				await fn(postManager, postData);
+				jobManager.deleteJob(id);
+			} catch (err) {
+				console.error(err.stack);
+				console.log('Error resolving job');
+			}
 		}, time);
+
+		return true;
 	} catch (err) {
 		console.error(err.stack);
 		console.log('Error adding schedule post');
+		return false;
 	}
 }
