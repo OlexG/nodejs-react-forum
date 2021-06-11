@@ -51,10 +51,18 @@ async function logout(req, res, next) {
 	res.sendStatus(200);
 }
 
+async function getUserData(req, res, next) {
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const data = await userManager.getUserData(username);
+	res.send(data);
+}
+
 export default {
 	postUsers,
 	login,
 	getAccessToken,
 	getUserReactions,
-	logout
+	logout,
+	getUserData
 };

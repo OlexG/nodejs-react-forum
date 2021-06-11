@@ -1,0 +1,26 @@
+.imgContainer{
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background-position: center center;
+	background-size: cover;
+}
+
+.background{
+	padding:20px;
+	background:
+		linear-gradient(to top,white,white) repeat-x center,
+		linear-gradient(to top, 
+		transparent 50%, #007BFF 50%),linear-gradient(to bottom,
+		transparent 50%,#ffffff 50%)
+	;
+	background-size:
+		1px 4px, 
+		100% 100%,
+		100% 100%
+	;
+}
+
+.text{
+	text-align: center;
+}

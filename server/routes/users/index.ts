@@ -22,4 +22,7 @@ app.delete('/api/v1/logout', validateRefreshJWT, wrap(userController.logout));
 // get user reactions
 app.get('/api/v1/users/reactions', validateRefreshJWT, wrap(userController.getUserReactions));
 
+// get user data such as reputation and number of posts
+app.get('/api/v1/users', validateRefreshJWT, wrap(userController.getUserData));
+
 module.exports = app;

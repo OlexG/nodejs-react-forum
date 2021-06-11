@@ -17,6 +17,11 @@ export interface FilterObject {
 	search: string;
 }
 
+export interface PublicUserData{
+	reputation: number,
+	numberOfPosts: number
+}
+
 export class PostManager {
 	// class with functions relating to accessing and editing post data
 
@@ -173,13 +178,14 @@ export class PostManager {
 	}
 
 	async upvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
-		if (await userManager.removePostDownvote(postID, username)) {
+		const { author } = await this.model.findOne({ _id: new ObjectId(postID) }).exec();
+		if (await userManager.removePostDownvote(postID, username, author)) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: 1 } }
 			).exec();
 		}
-		if (await userManager.addPostUpvote(postID, username)) {
+		if (await userManager.addPostUpvote(postID, username, author)) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: 1 } }
@@ -190,13 +196,14 @@ export class PostManager {
 	}
 
 	async downvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
-		if (await userManager.removePostUpvote(postID, username)) {
+		const { author } = await this.model.findOne({ _id: new ObjectId(postID) }).exec();
+		if (await userManager.removePostUpvote(postID, username, author)) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: -1 } }
 			).exec();
 		}
-		if (await userManager.addPostDownvote(postID, username)) {
+		if (await userManager.addPostDownvote(postID, username, author)) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: -1 } }
@@ -207,13 +214,14 @@ export class PostManager {
 	}
 
 	async removeReactions(postID: string, username: string, userManager: UserManager) {
-		if (await userManager.removePostUpvote(postID, username)) {
+		const { author } = await this.model.findOne({ _id: new ObjectId(postID) }).exec();
+		if (await userManager.removePostUpvote(postID, username, author)) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: -1 } }
 			).exec();
 		}
-		if (await userManager.removePostDownvote(postID, username)) {
+		if (await userManager.removePostDownvote(postID, username, author)) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: 1 } }
@@ -235,9 +243,14 @@ export class UserManager {
 		this.model = mongoose.model('user', models.UserSchema);
 	}
 
-	async addPostUpvote(postID: string, username: string): Promise<boolean> {
+	async addPostUpvote(postID: string, username: string, author: string): Promise<boolean> {
 		const user: models.IUser = await this.model.findOne({ username }).exec();
 		if (user && !Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
+			// update the reputation of author
+			this.model.updateOne(
+				{ username: author },
+				{ $inc: { reputation: 1 } }
+			).exec();
 			user.upvotes[postID] = 1;
 			user.markModified('upvotes');
 			await user.save();
@@ -246,9 +259,14 @@ export class UserManager {
 		return false;
 	}
 
-	async addPostDownvote(postID: string, username: string): Promise<boolean> {
+	async addPostDownvote(postID: string, username: string, author: string): Promise<boolean> {
 		const user = await this.model.findOne({ username }).exec();
 		if (user && !Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
+			// update the reputation of author
+			this.model.updateOne(
+				{ username: author },
+				{ $inc: { reputation: -1 } }
+			).exec();
 			user.downvotes[postID] = 1;
 			user.markModified('downvotes');
 			await user.save();
@@ -257,9 +275,14 @@ export class UserManager {
 		return false;
 	}
 
-	async removePostDownvote(postID: string, username: string): Promise<boolean> {
+	async removePostDownvote(postID: string, username: string, author: string): Promise<boolean> {
 		const user = await this.model.findOne({ username }).exec();
 		if (user && Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
+			// update the reputation of author
+			this.model.updateOne(
+				{ username: author },
+				{ $inc: { reputation: 1 } }
+			).exec();
 			delete user.downvotes[postID];
 			user.markModified('downvotes');
 			await user.save();
@@ -268,9 +291,14 @@ export class UserManager {
 		return false;
 	}
 
-	async removePostUpvote(postID: string, username: string): Promise<boolean> {
+	async removePostUpvote(postID: string, username: string, author: string): Promise<boolean> {
 		const user = await this.model.findOne({ username }).exec();
 		if (user && Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
+			// update the reputation of author
+			this.model.updateOne(
+				{ username: author },
+				{ $inc: { reputation: -1 } }
+			).exec();
 			delete user.upvotes[postID];
 			user.markModified('upvotes');
 			await user.save();
@@ -288,7 +316,9 @@ export class UserManager {
 			username,
 			password: hashedPassword,
 			upvotes: {},
-			downvotes: {}
+			downvotes: {},
+			reputation: 0,
+			numberOfPosts: 0
 		});
 		return 'success';
 	}
@@ -323,6 +353,14 @@ export class UserManager {
 			return await bcrypt.compare(password, user.password);
 		}
 		return false;
+	}
+
+	async getUserData(username: string): Promise<PublicUserData> {
+		const user = await this.model.findOne({ username }).exec();
+		return {
+			reputation: user.reputation,
+			numberOfPosts: user.numberOfPosts
+		};
 	}
 
 	deleteAll() {

@@ -10,6 +10,8 @@ import PostMenu from '../PostMenu/PostMenu.js';
 import { POSTS_PER_PAGE } from '../../constants.js';
 import './styles.css';
 import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
+import UserDashboard from '../UserDashboard/UserDashboard.js';
+import Cookies from 'js-cookie';
 
 const App = () => {
 	const { reactions, loading } = useReactionsFetch();
@@ -45,6 +47,11 @@ const App = () => {
 				<div className='col-3 d-flex flex-column align-items-center'>
 					<Link className='btn btn-primary align-self-top mt-3 mb-3 pr-5 pl-5' to='/create'>Create a Post</Link>
 					{ totalPosts && <PaginationBar currentPage={currentPage} setPage={setCurrentPage} totalPosts={totalPosts} perPage={POSTS_PER_PAGE}/> }
+					{Cookies.get('username') &&
+						<UserDashboard
+							username={Cookies.get('username')}
+						/>
+					}
 				</div>
 			</div>
 		</div>
