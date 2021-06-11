@@ -63,7 +63,24 @@ const UserSchema = new mongoose.Schema({
 	}
 }, { minimize: false });
 
+interface IJob extends mongoose.Document {
+	value: String;
+	data: Partial<IPost>;
+}
+
+const JobSchema = new mongoose.Schema({
+	value: {
+		type: String,
+		required: true
+	},
+	data: {
+		type: Object
+	}
+});
+
 export { IPost };
 export { PostSchema };
 export { IUser };
 export { UserSchema };
+export { IJob };
+export { JobSchema };

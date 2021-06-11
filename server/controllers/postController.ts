@@ -1,18 +1,26 @@
 import { initManagers } from '../db/initDB';
 import { SortOption, FilterObject } from '../db/dbManager';
+import { scheduleJob } from '../scheduling/scheduler';
+import { IPost } from '../db/models';
 
 const { postManager, userManager } = initManagers();
 
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	let result;
-	const { body: { title, body: postBody, parent } } = req;
-	if (parent) {
-		result = await postManager.addPost(title, postBody, username, parent);
-	} else {
-		result = await postManager.addPost(title, postBody, username);
+	const { body: { title, body: postBody, parent, date } } = req;
+	if (date) {
+		const jobSuccess = await scheduleJob({ date, title, body: postBody, author: username, parent }, function(postManager, argsObj: Partial<IPost>) {
+			return postManager.addPost(argsObj.title, argsObj.body, argsObj.author, argsObj.date, argsObj.parent);
+		});
+		if (jobSuccess) {
+			res.sendStatus(200);
+		} else {
+			res.sendStatus(500);
+		}
+		return;
 	}
+	const result = await postManager.addPost(title, postBody, username, new Date(), parent);
 	res.statusCode = 200;
 	res.send(result);
 };

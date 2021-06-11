@@ -26,7 +26,7 @@ export class PostManager {
 		this.model = mongoose.model('post', models.PostSchema);
 	}
 
-	async getPost(postId: string): Promise<models.IPost> {
+	getPost(postId: string): Promise<models.IPost> {
 		return this.model.findById(postId).exec();
 	};
 
@@ -118,19 +118,25 @@ export class PostManager {
 		}
 	};
 
-	async addPost(title: string, body: string, username: string, parent?: mongoose.Types.ObjectId) {
+	async addPost(title: string, body: string, username: string, date: Date, parent?: mongoose.Types.ObjectId) {
+		// check if the post hasn't been added before, if added just return it's id
+		const existingPostId = await this.model.findOne({ author: username, date }, { _id: 1 }).exec();
+		if (existingPostId) {
+			return existingPostId;
+		}
+
 		const post: models.IPost = await this.model.create({
 			title,
 			body,
 			upvotes: 0,
 			author: username,
-			date: new Date(),
+			date,
 			...parent && { parent }
 		});
 		return post._id;
 	}
 
-	async getNumberOfPosts(): Promise<number> {
+	getNumberOfPosts(): Promise<number> {
 		return this.model.find({ parent: undefined }).countDocuments().exec();
 	}
 
@@ -215,7 +221,7 @@ export class PostManager {
 		}
 	}
 
-	async DELETE_ALL_POSTS(): Promise<void> {
+	deleteAll() {
 		this.model.remove({}).exec();
 	}
 }
@@ -287,12 +293,12 @@ export class UserManager {
 		return 'success';
 	}
 
-	async addRefreshToken(username: string, refreshToken: string): Promise<void> {
-		this.model.updateOne({ username }, { $set: { refreshToken } }).exec();
+	addRefreshToken(username: string, refreshToken: string) {
+		return this.model.updateOne({ username }, { $set: { refreshToken } }).exec();
 	}
 
-	async deleteRefreshToken(refreshToken: string): Promise<void> {
-		this.model.updateOne({ refreshToken }, { $unset: { refreshToken: '' } }).exec();
+	deleteRefreshToken(refreshToken: string) {
+		return this.model.updateOne({ refreshToken }, { $unset: { refreshToken: '' } }).exec();
 	}
 
 	async findRefreshToken(refreshToken: string): Promise<string | null> {
@@ -319,7 +325,34 @@ export class UserManager {
 		return false;
 	}
 
-	async DELETE_ALL_USERS(): Promise<void> {
+	deleteAll() {
+		this.model.remove({}).exec();
+	}
+}
+
+export class JobManager {
+	model: mongoose.Model<models.IJob>;
+
+	constructor() {
+		this.model = mongoose.model('Jobs', models.JobSchema);
+	}
+
+	async addJob(data: Partial<models.IPost>, fn: Function): Promise<mongoose.Types.ObjectId> {
+		return (await this.model.create({
+			data,
+			value: fn.toString()
+		}))._id;
+	}
+
+	deleteJob(id: mongoose.Types.ObjectId): void {
+		this.model.deleteOne({ _id: id }).exec();
+	}
+
+	getAll() {
+		return this.model.find().exec();
+	}
+
+	deleteAll() {
 		this.model.remove({}).exec();
 	}
 }

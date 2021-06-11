@@ -1,4 +1,4 @@
-import { PostManager, UserManager } from './dbManager';
+import { PostManager, UserManager, JobManager } from './dbManager';
 import mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -14,5 +14,6 @@ export async function initDB() {
 export function initManagers() {
 	const postManager = new PostManager();
 	const userManager = new UserManager();
-	return { postManager, userManager };
+	const jobManager = new JobManager();
+	return { postManager, userManager, jobManager };
 }
