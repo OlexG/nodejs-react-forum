@@ -10,8 +10,8 @@ async function postPosts(req, res, next) {
 	const username = await userManager.findRefreshToken(refreshToken);
 	const { body: { title, body: postBody, parent, date } } = req;
 	if (date) {
-		const jobSuccess = await scheduleJob({ date, title, body: postBody, author: username, parent }, async function(postManager, argsObj: Partial<IPost>) {
-			await postManager.addPost(argsObj.title, argsObj.body, argsObj.author, argsObj.parent);
+		const jobSuccess = await scheduleJob({ date, title, body: postBody, author: username, parent }, function(postManager, argsObj: Partial<IPost>) {
+			return postManager.addPost(argsObj.title, argsObj.body, argsObj.author, argsObj.date, argsObj.parent);
 		});
 		if (jobSuccess) {
 			res.sendStatus(200);
@@ -20,7 +20,7 @@ async function postPosts(req, res, next) {
 		}
 		return;
 	}
-	const result = await postManager.addPost(title, postBody, username, parent);
+	const result = await postManager.addPost(title, postBody, username, new Date(), parent);
 	res.statusCode = 200;
 	res.send(result);
 };

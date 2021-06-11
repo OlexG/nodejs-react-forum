@@ -23,21 +23,23 @@ function dateDiff(dateOne: Date, dateTwo: Date) : number {
 export async function scheduleJob(postData: Partial<IPost>, fn: (postManager: PostManager, argsObj: Partial<IPost>) => Promise<void>, id?: mongoose.Types.ObjectId): Promise<boolean> {
 	let time = dateDiff(new Date(), postData.date);
 	time = Math.max(time, 0);
+
+	const resolveJob = async() => {
+		try {
+			await fn(postManager, postData);
+			jobManager.deleteJob(id);
+		} catch (err) {
+			console.error(err.stack);
+			console.log('Error resolving job');
+		}
+	};
+
 	try {
 		if (!id) {
 			id = await jobManager.addJob(postData, fn);
 		}
 
-		lt.setTimeout(async() => {
-			// as fn is called with eval we have to add the data to its local scope
-			try {
-				await fn(postManager, postData);
-				jobManager.deleteJob(id);
-			} catch (err) {
-				console.error(err.stack);
-				console.log('Error resolving job');
-			}
-		}, time);
+		lt.setTimeout(resolveJob, time);
 
 		return true;
 	} catch (err) {

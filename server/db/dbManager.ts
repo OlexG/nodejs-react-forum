@@ -118,13 +118,19 @@ export class PostManager {
 		}
 	};
 
-	async addPost(title: string, body: string, username: string, parent?: mongoose.Types.ObjectId) {
+	async addPost(title: string, body: string, username: string, date: Date, parent?: mongoose.Types.ObjectId) {
+		// check if the post hasn't been added before, if added just return it's id
+		const existingPostId = await this.model.findOne({ author: username, date }, { _id: 1 }).exec();
+		if (existingPostId) {
+			return existingPostId;
+		}
+
 		const post: models.IPost = await this.model.create({
 			title,
 			body,
 			upvotes: 0,
 			author: username,
-			date: new Date(),
+			date,
 			...parent && { parent }
 		});
 		return post._id;
