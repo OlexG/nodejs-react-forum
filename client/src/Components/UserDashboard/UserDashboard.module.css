@@ -4,6 +4,14 @@
 	border-radius: 50%;
 	background-position: center center;
 	background-size: cover;
+	position: relative;
+}
+
+.editIcon{
+	position: absolute; 
+	bottom:90%; 
+	left:0;
+	color: #ffffff;
 }
 
 .background{

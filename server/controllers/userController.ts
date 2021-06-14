@@ -58,11 +58,19 @@ async function getUserData(req, res, next) {
 	res.send(data);
 }
 
+async function changeUserIcon(req, res, next) {
+	console.log(req.file, req.body);
+	if (req.file) {
+		res.json(req.file);
+	}
+}
+
 export default {
 	postUsers,
 	login,
 	getAccessToken,
 	getUserReactions,
 	logout,
-	getUserData
+	getUserData,
+	changeUserIcon
 };
