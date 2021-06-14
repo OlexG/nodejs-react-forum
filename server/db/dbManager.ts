@@ -125,13 +125,12 @@ export class PostManager {
 		}
 	};
 
-	async addPost(title: string, body: string, username: string, date: Date, parent?: mongoose.Types.ObjectId) {
+	async addPost(title: string, body: string, username: string, date: Date, userManager: UserManager, parent?: mongoose.Types.ObjectId) {
 		// check if the post hasn't been added before, if added just return it's id
 		const existingPostId = await this.model.findOne({ author: username, date }, { _id: 1 }).exec();
 		if (existingPostId) {
 			return existingPostId;
 		}
-
 		const post: models.IPost = await this.model.create({
 			title,
 			body,
@@ -140,6 +139,7 @@ export class PostManager {
 			date,
 			...parent && { parent }
 		});
+		await userManager.increasePostCounter(username);
 		return post._id;
 	}
 
@@ -245,6 +245,13 @@ export class UserManager {
 		this.model = mongoose.model('user', models.UserSchema);
 	}
 
+	increasePostCounter(username: string) {
+		this.model.updateOne(
+			{ username },
+			{ $inc: { numberOfPosts: 1 } }
+		).exec();
+	}
+
 	async addPostUpvote(postID: string, username: string, author: string): Promise<boolean> {
 		const user: models.IUser = await this.model.findOne({ username }).exec();
 		if (user && !Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
@@ -327,7 +334,7 @@ export class UserManager {
 
 	async changeIconPath(username: string, path: string): Promise<string> {
 		const { iconPath: oldPath } = await this.model.findOne({ username });
-		if (oldPath !== path) {
+		if (oldPath !== path && oldPath) {
 			// delete old image
 			unlink(oldPath, (e) => {
 				if (e) {
