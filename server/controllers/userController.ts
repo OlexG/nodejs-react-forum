@@ -1,6 +1,7 @@
 import { initManagers } from '../db/initDB';
 import jwt = require('jsonwebtoken');
 const { userManager } = initManagers();
+const { resolve } = require('path');
 
 async function postUsers(req, res, next) {
 	const { username, password } = req.body;
@@ -59,9 +60,22 @@ async function getUserData(req, res, next) {
 }
 
 async function changeUserIcon(req, res, next) {
-	console.log(req.file, req.body);
+	const refreshToken = req.cookies.refreshToken;
+	const username = await userManager.findRefreshToken(refreshToken);
 	if (req.file) {
-		res.json(req.file);
+		await userManager.changeIconPath(username, req.file.path);
+		res.sendStatus(200);
+	}
+}
+
+async function getUserIcon(req, res, next) {
+	if (req.query.username) {
+		const path = await userManager.getIconPath(req.query.username);
+		if (path === 'image not found') {
+			res.sendFile(resolve(__dirname, '../../defaultFiles/default.png'));
+		} else {
+			res.sendFile(path);
+		}
 	}
 }
 
@@ -72,5 +86,6 @@ export default {
 	getUserReactions,
 	logout,
 	getUserData,
-	changeUserIcon
+	changeUserIcon,
+	getUserIcon
 };

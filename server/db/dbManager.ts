@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { ObjectId } from 'mongodb';
 import * as models from './models';
+import { unlink } from 'fs';
 import bcrypt = require('bcrypt');
 import mongoose = require('mongoose');
+
 mongoose.set('useCreateIndex', true);
 
 export enum SortOption {
@@ -321,6 +323,29 @@ export class UserManager {
 			numberOfPosts: 0
 		});
 		return 'success';
+	}
+
+	async changeIconPath(username: string, path: string): Promise<string> {
+		const { iconPath: oldPath } = await this.model.findOne({ username });
+		if (oldPath !== path) {
+			// delete old image
+			unlink(oldPath, (e) => {
+				if (e) {
+					throw e;
+				}
+			});
+		}
+		await this.model.updateOne({ username }, { $set: { iconPath: path } }).exec();
+		return path;
+	}
+
+	async getIconPath(username: string): Promise<string> {
+		const { iconPath } = await this.model.findOne({ username });
+		if (iconPath) {
+			return iconPath;
+		} else {
+			return 'image not found';
+		}
 	}
 
 	addRefreshToken(username: string, refreshToken: string) {

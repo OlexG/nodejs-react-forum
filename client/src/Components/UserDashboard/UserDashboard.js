@@ -4,15 +4,17 @@ import 'bootstrap/dist/css/bootstrap.css';
 import styles from './UserDashboard.module.css';
 import useUserDataFetch from '../../Hooks/useUserDataFetch';
 import api from '../../api';
+import Cookies from 'js-cookie';
 
 const UserDashboard = ({ username }) => {
 	const data = useUserDataFetch();
 	const hiddenInput = React.useRef();
-	function handleChange (e) {
+
+	async function handleChange (e) {
 		const formData = new FormData();
-		console.log(e.target.files[0]);
 		formData.append('image', e.target.files[0]);
-		api.sendChangeIconRequest(formData);
+		await api.sendChangeIconRequest(formData);
+		window.location.reload();
 	}
 
 	function handleClick () {
@@ -26,7 +28,7 @@ const UserDashboard = ({ username }) => {
 					<p className={styles.editIcon} onClick={handleClick}>Edit Image</p>
 					<input ref={hiddenInput} type='file' id='fileField' name='file' accept='image/*' hidden='true' onChange={handleChange}/>
 					<div className={`mx-auto ${styles.imgContainer}`}
-						style={{ 'background-image': 'url("https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg")' }}
+						style={{ 'background-image': `url("/api/v1/users/icon?username=${Cookies.get('username')}")` }}
 					/>
 					<h5 className={styles.text}>{username}</h5>
 				</div>

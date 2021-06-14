@@ -41,6 +41,7 @@ interface IUser extends mongoose.Document {
 	refreshToken: string;
 	reputation: number;
 	numberOfPosts: number;
+	iconPath: string;
 }
 
 const UserSchema = new mongoose.Schema({
@@ -69,6 +70,9 @@ const UserSchema = new mongoose.Schema({
 	},
 	numberOfPosts: {
 		type: Number
+	},
+	iconPath: {
+		type: String
 	}
 }, { minimize: false });
 

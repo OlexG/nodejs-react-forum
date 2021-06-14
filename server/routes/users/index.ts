@@ -7,8 +7,8 @@ import wrap from '../../controllers/wrap';
 import { initManagers } from '../../db/initDB';
 import validateFile from '../../validation/validateFile';
 import express = require('express');
-import multer = require('multer')
-import path = require('path');;
+import multer = require('multer');
+import path = require('path');
 
 const { userManager } = initManagers();
 
@@ -54,5 +54,8 @@ app.get('/api/v1/users', validateRefreshJWT, wrap(userController.getUserData));
 
 // change the user image
 app.post('/api/v1/users/change-icon', validateRefreshJWT, upload.single('image'), wrap(userController.changeUserIcon));
+
+// get the icon of a user
+app.get('/api/v1/users/icon', wrap(userController.getUserIcon));
 
 module.exports = app;

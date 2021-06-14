@@ -6,7 +6,7 @@ import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 import Comment from '../Comment/Comment.js';
 import Reactions from '../Reactions/Reactions.js';
 import { Link } from 'react-router-dom';
-
+import styles from '../UserDashboard/UserDashboard.module.css';
 const PostPage = ({ match }) => {
 	const { reactions, loading: reactionsLoading } = useReactionsFetch();
 	const [upvotes, setUpvotes] = useState(0);
@@ -33,6 +33,10 @@ const PostPage = ({ match }) => {
 				(
 					<div className='post card mb-2' style={{ 'margin': '1em' }}>
 						<div className='card-body'>
+							<div className={styles.imgContainer}
+								style={{ 'background-image': `url("/api/v1/users/icon?username=${data.author}")` }}
+							/>
+							<p>By: {data.author}</p>
 							<h2>{data.title}</h2>
 							<p>{data.body}</p>
 							<div className='align-items-center d-flex flex-row'>
