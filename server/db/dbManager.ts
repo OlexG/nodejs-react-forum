@@ -351,7 +351,7 @@ export class UserManager {
 		if (iconPath) {
 			return iconPath;
 		} else {
-			return 'image not found';
+			return null;
 		}
 	}
 

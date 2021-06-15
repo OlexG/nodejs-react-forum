@@ -71,7 +71,7 @@ async function changeUserIcon(req, res, next) {
 async function getUserIcon(req, res, next) {
 	if (req.query.username) {
 		const path = await userManager.getIconPath(req.query.username);
-		if (path === 'image not found') {
+		if (path === null) {
 			res.sendFile(resolve(__dirname, '../../defaultFiles/default.png'));
 		} else {
 			res.sendFile(path);
