@@ -16,8 +16,10 @@ const UserDashboard = ({ username, setPopup }) => {
 		const res = await api.sendChangeIconRequest(formData);
 		if (res.status === 200) {
 			window.location.reload();
-		} else {
+		} else if (res.status === 401) {
 			setPopup({ 'message': 'Something went wrong. Please re-login again.' });
+		} else {
+			setPopup({ 'message': 'That is not a valid type.' });
 		}
 	}
 

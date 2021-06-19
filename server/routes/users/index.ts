@@ -28,10 +28,9 @@ const store = multer.diskStorage({
 
 const upload = multer({
 	storage: store,
-	fileFilter: function(req, file, cb) {
-		validateFile(file, cb);
-	}
+	fileFilter: validateFile
 });
+
 const app = express();
 
 // sign-up user

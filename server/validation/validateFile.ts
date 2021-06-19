@@ -1,6 +1,6 @@
 import path = require('path');
 /* eslint-disable node/no-callback-literal */
-export default function validateFile(file, cb) {
+export default function validateFile(req, file, cb) {
 	// Allowed ext
 	const filetypes = /jpeg|jpg|png/;
 	// Check ext
