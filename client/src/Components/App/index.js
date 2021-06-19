@@ -12,9 +12,11 @@ import './styles.css';
 import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 import UserDashboard from '../UserDashboard';
 import Cookies from 'js-cookie';
+import Popup from '../Popup';
 
 const App = () => {
 	const { reactions, loading } = useReactionsFetch();
+	const [popup, setPopup] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filterOptions, setFilterOptions] = useState({});
 	const totalPosts = usePostsNumberFetch().result;
@@ -22,6 +24,7 @@ const App = () => {
 	return (
 		<div>
 			<NavbarComponent/>
+			{ popup.message && <Popup error message={popup.message}/> }
 			<div className='row'>
 				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>
 					<PostMenu setFilterOptions={setFilterOptions} filterOptions={filterOptions}/>
@@ -50,6 +53,7 @@ const App = () => {
 					{Cookies.get('username') &&
 						<UserDashboard
 							username={Cookies.get('username')}
+							setPopup={setPopup}
 						/>
 					}
 				</div>
