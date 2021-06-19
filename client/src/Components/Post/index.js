@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import styles from './Post.module.css';
-import Reactions from '../Reactions/Reactions.js';
+import Reactions from '../Reactions';
 import { Link } from 'react-router-dom';
 
 const Post = (props) => {

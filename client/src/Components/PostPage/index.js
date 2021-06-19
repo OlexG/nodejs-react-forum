@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import NavbarComponent from '../Navbar/Navbar.js';
+import NavbarComponent from '../Navbar';
 import useSinglePostFetch from '../../Hooks/useSinglePostFetch.js';
 import useCommentsFetch from '../../Hooks/useCommentsFetch';
 import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
-import Comment from '../Comment/Comment.js';
-import Reactions from '../Reactions/Reactions.js';
+import Comment from '../Comment';
+import Reactions from '../Reactions';
 import { Link } from 'react-router-dom';
 import styles from '../UserDashboard/UserDashboard.module.css';
 const PostPage = ({ match }) => {

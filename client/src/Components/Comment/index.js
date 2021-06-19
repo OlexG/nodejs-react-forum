@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import { MAX_COMMENT_DEPTH } from '../../constants.js';
-import Reactions from '../Reactions/Reactions.js';
+import Reactions from '../Reactions';
 import api from '../../api.js';
 
 const repliesStateOptions = {

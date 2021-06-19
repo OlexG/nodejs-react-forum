@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import Post from '../Post/Post.js';
-import NavbarComponent from '../Navbar/Navbar.js';
+import Post from '../Post';
+import NavbarComponent from '../Navbar';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import usePostsNumberFetch from '../../Hooks/usePostsNumberFetch.js';
 import usePostsPaginationFetch from '../../Hooks/usePostsPaginationFetch.js';
-import PaginationBar from '../Pagination/Pagination.js';
-import PostMenu from '../PostMenu/PostMenu.js';
+import PaginationBar from '../Pagination';
+import PostMenu from '../PostMenu';
 import { POSTS_PER_PAGE } from '../../constants.js';
 import './styles.css';
 import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
-import UserDashboard from '../UserDashboard/UserDashboard.js';
+import UserDashboard from '../UserDashboard';
 import Cookies from 'js-cookie';
 
 const App = () => {

@@ -3,8 +3,8 @@ import validateDate from '../../Validation/validateDate';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
-import NavbarComponent from '../Navbar/Navbar.js';
-import Popup from '../Popup/Popup.js';
+import NavbarComponent from '../Navbar';
+import Popup from '../Popup';
 import api from '../../api.js';
 
 const PostCreator = (props) => {

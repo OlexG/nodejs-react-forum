@@ -1,18 +1,16 @@
-.menu{
-	border-radius: 10px 10px 0px 0px;
-	border: 1px solid #DFDFDF;
+.menu {
+	border-radius: 10px 10px 0 0;
+	border: 1px solid #dfdfdf;
 }
 
-.menuText{
+.menuText {
 	padding-left: 1em;
 	padding-right: 1em;
 	margin-top: 1em;
 }
 
-.menuButton{
+.menuButton {
 	padding-left: 1em;
 	padding-right: 1em;
 	margin-right: 1em;
 }
-
-

@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
-import NavbarComponent from '../Navbar/Navbar.js';
+import NavbarComponent from '../Navbar';
 import api from '../../api.js';
 
 const LoginPage = (props) => {
