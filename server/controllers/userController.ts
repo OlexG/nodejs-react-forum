@@ -36,14 +36,6 @@ async function getAccessToken(req, res, next) {
 	res.sendStatus(200);
 }
 
-async function getUserReactions(req, res, next) {
-	const refreshToken = req.cookies.refreshToken;
-	const username = await userManager.findRefreshToken(refreshToken);
-	const reactions = await userManager.getUserReactions(username);
-	if (reactions) return res.send(reactions);
-	res.sendStatus(400);
-}
-
 async function logout(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	await userManager.deleteRefreshToken(refreshToken);
@@ -52,16 +44,21 @@ async function logout(req, res, next) {
 	res.sendStatus(200);
 }
 
+async function getUserReactions(req, res, next) {
+	const username = req.params.username;
+	const reactions = await userManager.getUserReactions(username);
+	if (reactions) return res.send(reactions);
+	res.sendStatus(400);
+}
+
 async function getUserData(req, res, next) {
-	const refreshToken = req.cookies.refreshToken;
-	const username = await userManager.findRefreshToken(refreshToken);
+	const username = req.params.username;
 	const data = await userManager.getUserData(username);
 	res.send(data);
 }
 
 async function changeUserIcon(req, res, next) {
-	const refreshToken = req.cookies.refreshToken;
-	const username = await userManager.findRefreshToken(refreshToken);
+	const username = req.cookies.username;
 	if (req.file) {
 		await userManager.changeIconPath(username, req.file.path);
 		res.sendStatus(200);
@@ -69,13 +66,11 @@ async function changeUserIcon(req, res, next) {
 }
 
 async function getUserIcon(req, res, next) {
-	if (req.query.username) {
-		const path = await userManager.getIconPath(req.query.username);
-		if (path === null) {
-			res.sendFile(resolve(__dirname, '../../defaultFiles/default.png'));
-		} else {
-			res.sendFile(path);
-		}
+	const path = await userManager.getIconPath(req.params.username);
+	if (path === null) {
+		res.sendFile(resolve(__dirname, '../../defaultFiles/default.png'));
+	} else {
+		res.sendFile(path);
 	}
 }
 

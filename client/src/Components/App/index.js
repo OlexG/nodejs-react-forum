@@ -15,7 +15,7 @@ import Cookies from 'js-cookie';
 import Popup from '../Popup';
 
 const App = () => {
-	const { reactions, loading } = useReactionsFetch();
+	const { reactions, loading } = useReactionsFetch(Cookies.get('username'));
 	const [popup, setPopup] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filterOptions, setFilterOptions] = useState({});

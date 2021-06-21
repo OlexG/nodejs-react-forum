@@ -387,6 +387,14 @@ export class UserManager {
 		return false;
 	}
 
+	async verifyUsername(username: string) : Promise<boolean> {
+		const dbUsername = await this.model.findOne({ username }, { username: 1 }).exec();
+		if (dbUsername) {
+			return true;
+		}
+		return false;
+	}
+
 	async getUserData(username: string): Promise<PublicUserData> {
 		const user = await this.model.findOne({ username }).exec();
 		return {

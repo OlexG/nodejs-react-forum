@@ -7,7 +7,7 @@ import api from '../../api';
 import Cookies from 'js-cookie';
 
 const UserDashboard = ({ username, setPopup }) => {
-	const data = useUserDataFetch();
+	const data = useUserDataFetch(Cookies.get('username'));
 	const hiddenInput = React.useRef();
 
 	async function handleChange (e) {
@@ -33,7 +33,7 @@ const UserDashboard = ({ username, setPopup }) => {
 				<p className={styles.editIcon} onClick={handleClick}>Edit Image</p>
 				<input ref={hiddenInput} type='file' id='fileField' name='file' accept='image/*' hidden='true' onChange={handleChange}/>
 				<div className={`mx-auto ${styles.imgContainer}`}
-					style={{ 'background-image': `url("/api/v1/users/icon?username=${Cookies.get('username')}")` }}
+					style={{ 'background-image': `url("/api/v1/users/${Cookies.get('username')}/icon")` }}
 				/>
 				<h5 className={styles.text}>{username}</h5>
 			</div>

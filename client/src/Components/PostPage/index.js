@@ -7,8 +7,10 @@ import Comment from '../Comment';
 import Reactions from '../Reactions';
 import { Link } from 'react-router-dom';
 import styles from '../UserDashboard/UserDashboard.module.css';
+import Cookies from 'js-cookie';
+
 const PostPage = ({ match }) => {
-	const { reactions, loading: reactionsLoading } = useReactionsFetch();
+	const { reactions, loading: reactionsLoading } = useReactionsFetch(Cookies.get('username'));
 	const [upvotes, setUpvotes] = useState(0);
 	const [status, setStatus] = useState(0);
 	const { data, loading } = useSinglePostFetch(match.params.id);
@@ -34,7 +36,7 @@ const PostPage = ({ match }) => {
 					<div className='post card mb-2' style={{ 'margin': '1em' }}>
 						<div className='card-body'>
 							<div className={styles.imgContainer}
-								style={{ 'background-image': `url("/api/v1/users/icon?username=${data.author}")` }}
+								style={{ 'background-image': `url("/api/v1/users/${data.author}/icon")` }}
 							/>
 							<p>By: {data.author}</p>
 							<h2>{data.title}</h2>
