@@ -10,4 +10,4 @@ export default function validateRefreshJWT(req, res, next) {
 		return res.sendStatus(401);
 	}
 	next();
-};
+}

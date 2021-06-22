@@ -6,7 +6,8 @@
     "extends": [
         "plugin:react/recommended",
         "standard",
-		"plugin:import/typescript"
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended"
     ],
 	"parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -31,7 +32,10 @@
         "react/react-in-jsx-scope": 0,
         "no-undef":"off",
         "node/global-require":"error",
-		"space-before-function-paren": ["error", "never"]
+		"space-before-function-paren": ["error", "never"],
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/ban-types": "off",
+		"@typescript-eslint/no-var-requires": "off"
     }
 }
 

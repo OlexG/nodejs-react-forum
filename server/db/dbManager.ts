@@ -19,7 +19,7 @@ export interface FilterObject {
 	search: string;
 }
 
-export interface PublicUserData{
+export interface PublicUserData {
 	reputation: number,
 	numberOfPosts: number
 }
@@ -35,7 +35,7 @@ export class PostManager {
 
 	getPost(postId: string): Promise<models.IPost> {
 		return this.model.findById(postId).exec();
-	};
+	}
 
 	async getAllPosts(returnWithComments: boolean, parent?: mongoose.Types.ObjectId, parentObject = { children: [] }): Promise<object> {
 		if (parent && returnWithComments) {
@@ -123,7 +123,7 @@ export class PostManager {
 		} else {
 			return this.model.find({}).lean().exec();
 		}
-	};
+	}
 
 	async addPost(title: string, body: string, username: string, date: Date, userManager: UserManager, parent?: mongoose.Types.ObjectId) {
 		// check if the post hasn't been added before, if added just return it's id

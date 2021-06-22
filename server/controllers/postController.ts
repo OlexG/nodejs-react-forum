@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { initManagers } from '../db/initDB';
 import { SortOption, FilterObject } from '../db/dbManager';
 import { scheduleJob } from '../scheduling/scheduler';
-import { IPost } from '../db/models';
 
 const { postManager, userManager } = initManagers();
 
@@ -10,7 +10,7 @@ async function postPosts(req, res, next) {
 	const username = await userManager.findRefreshToken(refreshToken);
 	const { body: { title, body: postBody, parent, date } } = req;
 	if (date) {
-		const jobSuccess = await scheduleJob({ date, title, body: postBody, author: username, parent }, function(postManager, userManager, argsObj: Partial<IPost>) {
+		const jobSuccess = await scheduleJob({ date, title, body: postBody, author: username, parent }, function(postManager, userManager, argsObj) {
 			return postManager.addPost(argsObj.title, argsObj.body, argsObj.author, argsObj.date, userManager);
 		});
 		if (jobSuccess) {
@@ -23,7 +23,7 @@ async function postPosts(req, res, next) {
 	const result = await postManager.addPost(title, postBody, username, new Date(), userManager, parent);
 	res.statusCode = 200;
 	res.send(result);
-};
+}
 
 async function getPosts(req, res, next) {
 	let result;
@@ -50,12 +50,12 @@ async function getPosts(req, res, next) {
 async function getPostsId(req, res, next) {
 	const result = await postManager.getPost(req.params.id);
 	res.send(result);
-};
+}
 
 async function getPostsNumber(req, res, next) {
 	const result = await postManager.getNumberOfPosts();
 	res.send({ result });
-};
+}
 
 async function upvotePost(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;

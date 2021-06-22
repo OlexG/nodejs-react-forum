@@ -17,7 +17,7 @@ export default {
 			upvotePost = sinon.stub().resolves(true);
 
 			removeReactions = sinon.stub();
-		};
+		}
 		class UserManager {
 			addUser = sinon.stub().resolves('success');
 
@@ -38,7 +38,7 @@ export default {
 			removePostUpvote = sinon.stub().resolves(true);
 
 			getUserReactions = sinon.stub().resolves({ downvotes: {}, upvotes: {} });
-		};
+		}
 
 		return { postManager: new PostManager(), userManager: new UserManager() };
 	}

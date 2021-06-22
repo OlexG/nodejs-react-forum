@@ -17,9 +17,9 @@
     }
   },
   "lint-staged": {
-    "**/*.{js, css}": [
+    "**/*.{js,css,ts}": [
       "npx stylelint \"**/*.css\"",
-      "eslint **/*.js --fix-dry-run"
+      "eslint **/*.{js,ts} --fix"
     ]
   },
   "keywords": [],

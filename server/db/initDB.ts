@@ -9,7 +9,7 @@ export async function initDB() {
 		console.log('Cannot connect to database');
 		throw e;
 	}
-};
+}
 
 export function initManagers() {
 	const postManager = new PostManager();

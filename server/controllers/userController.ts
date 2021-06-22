@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { initManagers } from '../db/initDB';
 import jwt = require('jsonwebtoken');
 const { userManager } = initManagers();

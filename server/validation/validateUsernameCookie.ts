@@ -12,4 +12,4 @@ export default async function validateUsernameCookie(req, res, next) {
 	}
 
 	next();
-};
+}

@@ -10,4 +10,4 @@ export default async function validateUsernameParam(req, res, next) {
 	} else {
 		res.sendStatus(400);
 	}
-};
+}
