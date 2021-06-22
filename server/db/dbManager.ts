@@ -181,13 +181,13 @@ export class PostManager {
 
 	async upvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
 		const { author } = await this.model.findOne({ _id: new ObjectId(postID) }).exec();
-		if (await userManager.removePostDownvote(postID, username, author)) {
+		if ((await userManager.removePostDownvote(postID, username, author)).hasBeenChanged) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: 1 } }
 			).exec();
 		}
-		if (await userManager.addPostUpvote(postID, username, author)) {
+		if ((await userManager.addPostUpvote(postID, username, author)).hasBeenChanged) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: 1 } }
@@ -199,13 +199,13 @@ export class PostManager {
 
 	async downvotePost(postID: string, username: string, userManager: UserManager): Promise<boolean> {
 		const { author } = await this.model.findOne({ _id: new ObjectId(postID) }).exec();
-		if (await userManager.removePostUpvote(postID, username, author)) {
+		if ((await userManager.removePostUpvote(postID, username, author)).hasBeenChanged) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: -1 } }
 			).exec();
 		}
-		if (await userManager.addPostDownvote(postID, username, author)) {
+		if ((await userManager.addPostDownvote(postID, username, author)).hasBeenChanged) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: -1 } }
@@ -217,13 +217,13 @@ export class PostManager {
 
 	async removeReactions(postID: string, username: string, userManager: UserManager) {
 		const { author } = await this.model.findOne({ _id: new ObjectId(postID) }).exec();
-		if (await userManager.removePostUpvote(postID, username, author)) {
+		if ((await userManager.removePostUpvote(postID, username, author)).hasBeenChanged) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: -1 } }
 			).exec();
 		}
-		if (await userManager.removePostDownvote(postID, username, author)) {
+		if ((await userManager.removePostDownvote(postID, username, author)).hasBeenChanged) {
 			this.model.updateOne(
 				{ _id: new ObjectId(postID) },
 				{ $inc: { upvotes: 1 } }
@@ -252,7 +252,7 @@ export class UserManager {
 		).exec();
 	}
 
-	async addPostUpvote(postID: string, username: string, author: string): Promise<boolean> {
+	async addPostUpvote(postID: string, username: string, author: string): Promise<{ hasBeenChanged: boolean }> {
 		const user: models.IUser = await this.model.findOne({ username }).exec();
 		if (user && !Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
 			// update the reputation of author
@@ -263,12 +263,12 @@ export class UserManager {
 			user.upvotes[postID] = 1;
 			user.markModified('upvotes');
 			await user.save();
-			return true;
+			return { hasBeenChanged: true };
 		}
-		return false;
+		return { hasBeenChanged: false };
 	}
 
-	async addPostDownvote(postID: string, username: string, author: string): Promise<boolean> {
+	async addPostDownvote(postID: string, username: string, author: string): Promise<{ hasBeenChanged: boolean }> {
 		const user = await this.model.findOne({ username }).exec();
 		if (user && !Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
 			// update the reputation of author
@@ -279,12 +279,12 @@ export class UserManager {
 			user.downvotes[postID] = 1;
 			user.markModified('downvotes');
 			await user.save();
-			return true;
+			return { hasBeenChanged: true };
 		}
-		return false;
+		return { hasBeenChanged: false };
 	}
 
-	async removePostDownvote(postID: string, username: string, author: string): Promise<boolean> {
+	async removePostDownvote(postID: string, username: string, author: string): Promise<{ hasBeenChanged: boolean }> {
 		const user = await this.model.findOne({ username }).exec();
 		if (user && Object.prototype.hasOwnProperty.call(user.downvotes, postID)) {
 			// update the reputation of author
@@ -295,12 +295,12 @@ export class UserManager {
 			delete user.downvotes[postID];
 			user.markModified('downvotes');
 			await user.save();
-			return true;
+			return { hasBeenChanged: true };
 		}
-		return false;
+		return { hasBeenChanged: false };
 	}
 
-	async removePostUpvote(postID: string, username: string, author: string): Promise<boolean> {
+	async removePostUpvote(postID: string, username: string, author: string): Promise<{ hasBeenChanged: boolean }> {
 		const user = await this.model.findOne({ username }).exec();
 		if (user && Object.prototype.hasOwnProperty.call(user.upvotes, postID)) {
 			// update the reputation of author
@@ -311,9 +311,9 @@ export class UserManager {
 			delete user.upvotes[postID];
 			user.markModified('upvotes');
 			await user.save();
-			return true;
+			return { hasBeenChanged: true };
 		}
-		return false;
+		return { hasBeenChanged: false };
 	}
 
 	async addUser(username: string, password: string): Promise<string> {
@@ -332,7 +332,7 @@ export class UserManager {
 		return 'success';
 	}
 
-	async changeIconPath(username: string, path: string): Promise<string> {
+	async updateIconPath(username: string, path: string): Promise<string> {
 		const { iconPath: oldPath } = await this.model.findOne({ username });
 		if (oldPath !== path && oldPath) {
 			// delete old image

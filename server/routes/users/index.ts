@@ -54,7 +54,7 @@ app.get('/api/v1/users/:username/reactions', validateUsernameParam, wrap(userCon
 app.get('/api/v1/users/:username', validateUsernameParam, wrap(userController.getUserData));
 
 // change the user image
-app.post('/api/v1/users/change-icon', validateRefreshJWT, validateUsernameCookie, upload.single('image'), wrap(userController.changeUserIcon));
+app.post('/api/v1/users/:username/icon', validateRefreshJWT, validateUsernameCookie, upload.single('image'), wrap(userController.changeUserIcon));
 
 // get the icon of a user
 app.get('/api/v1/users/:username/icon', validateUsernameParam, wrap(userController.getUserIcon));

@@ -13,7 +13,7 @@ const UserDashboard = ({ username, setPopup }) => {
 	async function handleChange (e) {
 		const formData = new FormData();
 		formData.append('image', e.target.files[0]);
-		const res = await api.sendChangeIconRequest(formData);
+		const res = await api.sendChangeIconRequest(formData, Cookies.get('username'));
 		if (res.status === 200) {
 			window.location.reload();
 		} else if (res.status === 401) {

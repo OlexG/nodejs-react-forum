@@ -4,7 +4,7 @@ const login = async (body) => axios.post('/api/v1/login', body);
 const signup = async (body) => axios.post('/api/v1/users', body);
 const sendReactionsRequest = async (username) => axios.get(`/api/v1/users/${username}/reactions`);
 const sendUserDataRequest = async (username) => axios.get(`/api/v1/users/${username}`);
-const sendChangeIconRequest = async (data) => axios.post('/api/v1/users/change-icon', data, {
+const sendChangeIconRequest = async (data, username) => axios.post(`/api/v1/users/${username}/icon`, data, {
 	headers: {
 		'Content-Type': 'multipart/form-data'
 	}

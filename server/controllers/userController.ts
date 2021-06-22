@@ -61,8 +61,10 @@ async function getUserData(req, res, next) {
 async function changeUserIcon(req, res, next) {
 	const username = req.cookies.username;
 	if (req.file) {
-		await userManager.changeIconPath(username, req.file.path);
+		await userManager.updateIconPath(username, req.file.path);
 		res.sendStatus(200);
+	} else {
+		res.sendStatus(400);
 	}
 }
 

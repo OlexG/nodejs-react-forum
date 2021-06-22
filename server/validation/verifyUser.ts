@@ -9,4 +9,4 @@ export default async function verifyUser(req, res, next) {
 	} else {
 		res.sendStatus(400);
 	}
-};
+}
