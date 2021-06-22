@@ -15,12 +15,12 @@ import Cookies from 'js-cookie';
 import Popup from '../Popup';
 
 const App = () => {
-	const { reactions, loading } = useReactionsFetch(Cookies.get('username'));
 	const [popup, setPopup] = useState({});
+	const { reactions, loading } = useReactionsFetch(Cookies.get('username'), setPopup);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filterOptions, setFilterOptions] = useState({});
-	const totalPosts = usePostsNumberFetch().result;
-	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE, filterOptions);
+	const totalPosts = usePostsNumberFetch(setPopup).result;
+	const posts = usePostsPaginationFetch(currentPage, POSTS_PER_PAGE, filterOptions, setPopup);
 	return (
 		<div>
 			<NavbarComponent/>

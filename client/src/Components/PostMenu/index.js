@@ -9,7 +9,7 @@ const PostMenu = (props) => {
 	function changeSortOption (e) {
 		const formData = new FormData(formElement.current);
 		const sort = formData.get('select');
-		props.setFilterOptions({ ...props.filterOptions, 'sort': sort });
+		props.setFilterOptions({ ...props.filterOptions, sort: sort });
 	}
 
 	function handleSearchChange (e) {
@@ -18,7 +18,7 @@ const PostMenu = (props) => {
 
 	function setFilterOptions (e) {
 		if (searchText !== '') {
-			props.setFilterOptions({ ...props.filterOptions, 'search': searchText });
+			props.setFilterOptions({ ...props.filterOptions, search: searchText });
 		} else {
 			props.setFilterOptions((filterOptions) => {
 				const newFilterOptions = { ...filterOptions };
@@ -29,9 +29,9 @@ const PostMenu = (props) => {
 	}
 
 	return (
-		<Form ref={formElement} className={`${styles.menu} ml-5 d-flex flex-row align-items-center`} style={{ 'width': '90%' }}>
+		<Form ref={formElement} className={`${styles.menu} ml-5 d-flex flex-row align-items-center`} style={{ width: '90%' }}>
 			<p className={`${styles.menuText}`}>Sort by</p>
-			<select className='form-control' name='select' style={{ 'width': '10%' }} onChange={changeSortOption}>
+			<select className='form-control' name='select' style={{ width: '10%' }} onChange={changeSortOption}>
 				<option>default</option>
 				<option>most-upvotes</option>
 				<option>recent</option>

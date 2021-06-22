@@ -27,7 +27,7 @@ const LoginPage = (props) => {
 	return (
 		<>
 			<NavbarComponent/>
-			<div style={{ 'marginLeft': '20%', 'marginRight': '20%', 'marginTop': '2%', 'padding': '2em' }} className='card'>
+			<div style={{ marginLeft: '20%', marginRight: '20%', marginTop: '2%', padding: '2em' }} className='card'>
 				<Form id='loginUserForm' onSubmit={handleClick}>
 					<Form.Group>
 						<Form.Label>Username</Form.Label>

@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
-export default function useSinglePostFetch (id) {
+export default function useSinglePostFetch (id, setPopup) {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState();
 
 	useEffect(() => {
-		api.sendSinglePostRequest(id).then((res) => {
-			if (typeof res.data.title === 'string' && typeof res.data.body === 'string') {
-				setData(res.data);
-				setLoading(false);
+		async function fetchData () {
+			try {
+				const res = await api.sendSinglePostRequest(id);
+				if (res.status === 200) {
+					setData(res.data);
+					setLoading(false);
+				} else {
+					setPopup({ message: 'Something went wrong when fetching post' });
+				}
+			} catch (e) {
+				setPopup({ message: 'Something went wrong when fetching post' });
 			}
-		}).catch((error) =>
-			console.log(error)
-		);
+		}
+		fetchData();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
 	return { loading, data };

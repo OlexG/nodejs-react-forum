@@ -47,8 +47,8 @@ const Reactions = (props) => {
 	}
 	return (
 		<>
-			<button className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${(props.status === 1 && 'active')}`} style={{ 'height': '40px' }} onClick={handleUpvote}>👍</button>
-			<button className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${(props.status === -1 && 'active')}`} style={{ 'height': '40px' }} onClick={handleDownvote}>👎</button>
+			<button className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${(props.status === 1 && 'active')}`} style={{ height: '40px' }} onClick={handleUpvote}>👍</button>
+			<button className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${(props.status === -1 && 'active')}`} style={{ height: '40px' }} onClick={handleDownvote}>👎</button>
 		</>
 	);
 };

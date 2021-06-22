@@ -7,14 +7,16 @@ import Comment from '../Comment';
 import Reactions from '../Reactions';
 import { Link } from 'react-router-dom';
 import styles from '../UserDashboard/UserDashboard.module.css';
+import Popup from '../Popup';
 import Cookies from 'js-cookie';
 
 const PostPage = ({ match }) => {
-	const { reactions, loading: reactionsLoading } = useReactionsFetch(Cookies.get('username'));
+	const [popup, setPopup] = useState({});
+	const { reactions, loading: reactionsLoading } = useReactionsFetch(Cookies.get('username'), setPopup);
 	const [upvotes, setUpvotes] = useState(0);
 	const [status, setStatus] = useState(0);
-	const { data, loading } = useSinglePostFetch(match.params.id);
-	const comments = useCommentsFetch(match.params.id);
+	const { data, loading } = useSinglePostFetch(match.params.id, setPopup);
+	const comments = useCommentsFetch(match.params.id, setPopup);
 	useEffect(() => {
 		if (reactions.downvotes && Object.prototype.hasOwnProperty.call(reactions.downvotes, match.params.id)) {
 			setStatus(-1);
@@ -31,9 +33,10 @@ const PostPage = ({ match }) => {
 	return (
 		<>
 			<NavbarComponent/>
+			{ popup.message && <Popup error message={popup.message}/> }
 			{!loading ?
 				(
-					<div className='post card mb-2' style={{ 'margin': '1em' }}>
+					<div className='post card mb-2' style={{ margin: '1em' }}>
 						<div className='card-body'>
 							<div className={styles.imgContainer}
 								style={{ 'background-image': `url("/api/v1/users/${data.author}/icon")` }}

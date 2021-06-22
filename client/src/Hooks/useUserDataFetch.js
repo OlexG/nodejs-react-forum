@@ -1,13 +1,26 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
-export default function useUserDataFetch (username) {
+export default function useUserDataFetch (username, setPopup) {
 	const [data, setData] = useState({});
 	useEffect(() => {
-		api.sendUserDataRequest(username).then((res) => {
-			setData(res.data);
-		}).catch((error) => {
-			console.log(error);
-		});
+		async function fetchData () {
+			if (!username) {
+				setPopup({ message: 'Please login again' });
+				return;
+			}
+			try {
+				const res = await api.sendUserDataRequest(username);
+				if (res.status === 200) {
+					setData(res.data);
+				} else {
+					setPopup({ message: 'Something went wrong when fetching user data' });
+				}
+			} catch (e) {
+				setPopup({ message: 'Something went wrong when fetching user data' });
+			}
+		}
+		fetchData();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [username]);
 	return data;
 }

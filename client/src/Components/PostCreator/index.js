@@ -20,7 +20,7 @@ const PostCreator = (props) => {
 		const date = formData.get('date');
 
 		if (!validateDate(date)) {
-			setPopup({ 'message': 'Please enter a valid date and time or leave field empty' });
+			setPopup({ message: 'Please enter a valid date and time or leave field empty' });
 			formElement.querySelector('input[name="date"]').value = '';
 			return;
 		}
@@ -36,9 +36,9 @@ const PostCreator = (props) => {
 				history.push('/');
 			}
 		} else if (res.status === 401) {
-			setPopup({ 'message': 'Invalid credentials. Please login again.' });
+			setPopup({ message: 'Invalid credentials. Please login again.' });
 		} else {
-			setPopup({ 'message': 'Sorry something went wrong.' });
+			setPopup({ message: 'Sorry something went wrong.' });
 		}
 	}
 
@@ -48,23 +48,23 @@ const PostCreator = (props) => {
 		const formData = new FormData(formElement);
 		const body = formData.get('body');
 		const res = await api.sendPostSubmitRequest({
-			'title': 'Comment',
+			title: 'Comment',
 			body,
-			'parent': params.get('parentId')
+			parent: params.get('parentId')
 		});
 		if (res.status === 200) {
 			history.push(`/posts/${params.get('originalId')}`);
 		} else if (res.status === 401) {
-			setPopup({ 'message': 'Invalid credentials. Please login again.' });
+			setPopup({ message: 'Invalid credentials. Please login again.' });
 		} else {
-			setPopup({ 'message': 'Sorry something went wrong.' });
+			setPopup({ message: 'Sorry something went wrong.' });
 		}
 	}
 	return (
 		<>
 			<NavbarComponent/>
 			{ popup.message && <Popup error message={popup.message}/> }
-			<div style={{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', 'padding': '2em' }} className='card'>
+			<div style={{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', padding: '2em' }} className='card'>
 				<Form id='addPostForm' onSubmit={(params.get('parentId') ? handleClickComment : handleClickPost)}>
 					{!params.get('parentId') &&
 						<div className='form-group'>

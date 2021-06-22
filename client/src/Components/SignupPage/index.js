@@ -10,7 +10,7 @@ import api from '../../api.js';
 
 const SignupPage = (props) => {
 	const history = useHistory();
-	const [formAttributes, setFormAttributes] = useState({ 'username': '', 'password': '', 'formError': 'username is too short, password is too short' });
+	const [formAttributes, setFormAttributes] = useState({ username: '', password: '', formError: 'username is too short, password is too short' });
 
 	async function handleClick (e) {
 		e.preventDefault();
@@ -29,7 +29,7 @@ const SignupPage = (props) => {
 			history.push('/');
 		} else if (res.status === 400) {
 			const result = res.data;
-			setFormAttributes({ 'formError': result.validation.body.message });
+			setFormAttributes({ formError: result.validation.body.message });
 		}
 	}
 	function handleUserInput (e) {
@@ -49,7 +49,7 @@ const SignupPage = (props) => {
 		if (formError.length === 0) {
 			setFormAttributes({ username, password });
 		} else {
-			setFormAttributes({ username, password, 'formError': formError.join(', ') });
+			setFormAttributes({ username, password, formError: formError.join(', ') });
 		}
 	}
 	return (
@@ -62,7 +62,7 @@ const SignupPage = (props) => {
 				(
 					<Popup message='username and password look good!'/>
 				)}
-			<div style={{ 'marginLeft': '20%', 'marginRight': '20%', 'marginTop': '2%', 'padding': '2em' }} className='card'>
+			<div style={{ marginLeft: '20%', marginRight: '20%', marginTop: '2%', padding: '2em' }} className='card'>
 				<Form id='addUserForm' onSubmit={handleClick} onChange={handleUserInput}>
 					<Form.Group>
 						<Form.Label>Username</Form.Label>

@@ -7,7 +7,7 @@ import api from '../../api';
 import Cookies from 'js-cookie';
 
 const UserDashboard = ({ username, setPopup }) => {
-	const data = useUserDataFetch(Cookies.get('username'));
+	const data = useUserDataFetch(Cookies.get('username'), setPopup);
 	const hiddenInput = React.useRef();
 
 	async function handleChange (e) {
@@ -17,9 +17,9 @@ const UserDashboard = ({ username, setPopup }) => {
 		if (res.status === 200) {
 			window.location.reload();
 		} else if (res.status === 401) {
-			setPopup({ 'message': 'Something went wrong. Please re-login again.' });
+			setPopup({ message: 'Something went wrong. Please re-login again.' });
 		} else {
-			setPopup({ 'message': 'That is not a valid type.' });
+			setPopup({ message: 'That is not a valid type.' });
 		}
 	}
 

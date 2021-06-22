@@ -1,20 +1,27 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
-export default function useReactionsFetch (username) {
+export default function useReactionsFetch (username, setPopup) {
 	const [reactions, setReactions] = useState({});
-	const [error, setError] = useState();
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
-		api.sendReactionsRequest(username).then((res) => {
-			setReactions(res.data);
-			setLoading(false);
-		}).catch((error) => {
-			setError(error);
-		});
+		async function fetchData () {
+			if (!username) {
+				setLoading(false);
+				return;
+			}
+			try {
+				const res = await api.sendReactionsRequest(username);
+				if (res.status === 200) {
+					setReactions(res.data);
+				}
+				setLoading(false);
+			} catch (e) {
+				setPopup('Something went wrong when fetching reactions');
+			}
+		}
+		fetchData();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [username]);
 
-	if (error) {
-		return error;
-	}
 	return { reactions, loading };
 }
