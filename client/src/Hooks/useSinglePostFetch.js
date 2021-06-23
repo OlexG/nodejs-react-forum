@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
-export default function useSinglePostFetch (id, setPopup) {
+export default function useSinglePostFetch(id, setPopup) {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState();
 
 	useEffect(() => {
-		async function fetchData () {
+		async function fetchData() {
 			try {
 				const res = await api.sendSinglePostRequest(id);
 				if (res.status === 200) {
@@ -19,7 +19,7 @@ export default function useSinglePostFetch (id, setPopup) {
 			}
 		}
 		fetchData();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
 	return { loading, data };

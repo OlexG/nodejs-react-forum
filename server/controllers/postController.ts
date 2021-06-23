@@ -8,11 +8,22 @@ const { postManager, userManager } = initManagers();
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const { body: { title, body: postBody, parent, date } } = req;
+	const {
+		body: { title, body: postBody, parent, date }
+	} = req;
 	if (date) {
-		const jobSuccess = await scheduleJob({ date, title, body: postBody, author: username, parent }, function(postManager, userManager, argsObj) {
-			return postManager.addPost(argsObj.title, argsObj.body, argsObj.author, argsObj.date, userManager);
-		});
+		const jobSuccess = await scheduleJob(
+			{ date, title, body: postBody, author: username, parent },
+			function (postManager, userManager, argsObj) {
+				return postManager.addPost(
+					argsObj.title,
+					argsObj.body,
+					argsObj.author,
+					argsObj.date,
+					userManager
+				);
+			}
+		);
 		if (jobSuccess) {
 			res.sendStatus(200);
 		} else {
@@ -20,7 +31,14 @@ async function postPosts(req, res, next) {
 		}
 		return;
 	}
-	const result = await postManager.addPost(title, postBody, username, new Date(), userManager, parent);
+	const result = await postManager.addPost(
+		title,
+		postBody,
+		username,
+		new Date(),
+		userManager,
+		parent
+	);
 	res.statusCode = 200;
 	res.send(result);
 }
@@ -28,7 +46,9 @@ async function postPosts(req, res, next) {
 async function getPosts(req, res, next) {
 	let result;
 	if ('number' in req.query && 'page' in req.query) {
-		const { query: { number, page, sort, search } } = req;
+		const {
+			query: { number, page, sort, search }
+		} = req;
 		const filterObject: FilterObject = {
 			sort: SortOption.DEFAULT,
 			search: ''
@@ -39,7 +59,10 @@ async function getPosts(req, res, next) {
 		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
 		if (req.query.parent) {
-			result = await postManager.getAllPosts(req.query.returnWithComments, req.query.parent);
+			result = await postManager.getAllPosts(
+				req.query.returnWithComments,
+				req.query.parent
+			);
 		} else {
 			result = await postManager.getAllPosts(false);
 		}
@@ -60,14 +83,22 @@ async function getPostsNumber(req, res, next) {
 async function upvotePost(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const result = await postManager.upvotePost(req.params.id, username, userManager);
+	const result = await postManager.upvotePost(
+		req.params.id,
+		username,
+		userManager
+	);
 	res.send(result);
 }
 
 async function downvotePost(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
-	const result = await postManager.downvotePost(req.params.id, username, userManager);
+	const result = await postManager.downvotePost(
+		req.params.id,
+		username,
+		userManager
+	);
 	res.send(result);
 }
 

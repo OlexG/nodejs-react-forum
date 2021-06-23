@@ -8,7 +8,7 @@ const { jobManager, postManager, userManager } = initManagers();
 const lt = require('long-timeout');
 
 // run all the tasks which are in the database
-jobManager.getAll().then(res => {
+jobManager.getAll().then((res) => {
 	res.forEach((elem) => {
 		// eslint-disable-next-line no-new-func
 		const fn = new Function('return ' + elem.value)();
@@ -16,15 +16,23 @@ jobManager.getAll().then(res => {
 	});
 });
 
-function dateDiff(dateOne: Date, dateTwo: Date) : number {
+function dateDiff(dateOne: Date, dateTwo: Date): number {
 	return dateTwo.getTime() - dateOne.getTime();
 }
 
-export async function scheduleJob(postData: Partial<IPost>, fn: (postManager: PostManager, userManager: UserManager, argsObj: Partial<IPost>) => Promise<void>, id?: mongoose.Types.ObjectId): Promise<boolean> {
+export async function scheduleJob(
+	postData: Partial<IPost>,
+	fn: (
+		postManager: PostManager,
+		userManager: UserManager,
+		argsObj: Partial<IPost>
+	) => Promise<void>,
+	id?: mongoose.Types.ObjectId
+): Promise<boolean> {
 	let time = dateDiff(new Date(), postData.date);
 	time = Math.max(time, 0);
 
-	const resolveJob = async() => {
+	const resolveJob = async () => {
 		try {
 			await fn(postManager, userManager, postData);
 			jobManager.deleteJob(id);

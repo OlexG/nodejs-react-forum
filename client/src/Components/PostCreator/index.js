@@ -11,7 +11,7 @@ const PostCreator = (props) => {
 	const history = useHistory();
 	const [popup, setPopup] = useState({});
 	const params = new URLSearchParams(props.location.search);
-	async function handleClickPost (e) {
+	async function handleClickPost(e) {
 		e.preventDefault();
 		const formElement = e.currentTarget;
 		const formData = new FormData(formElement);
@@ -20,7 +20,9 @@ const PostCreator = (props) => {
 		const date = formData.get('date');
 
 		if (!validateDate(date)) {
-			setPopup({ message: 'Please enter a valid date and time or leave field empty' });
+			setPopup({
+				message: 'Please enter a valid date and time or leave field empty'
+			});
 			formElement.querySelector('input[name="date"]').value = '';
 			return;
 		}
@@ -42,7 +44,7 @@ const PostCreator = (props) => {
 		}
 	}
 
-	async function handleClickComment (e) {
+	async function handleClickComment(e) {
 		e.preventDefault();
 		const formElement = e.currentTarget;
 		const formData = new FormData(formElement);
@@ -62,28 +64,58 @@ const PostCreator = (props) => {
 	}
 	return (
 		<>
-			<NavbarComponent/>
-			{ popup.message && <Popup error message={popup.message}/> }
-			<div style={{ 'margin-left': '20%', 'margin-right': '20%', 'margin-top': '2%', padding: '2em' }} className='card'>
-				<Form id='addPostForm' onSubmit={(params.get('parentId') ? handleClickComment : handleClickPost)}>
-					{!params.get('parentId') &&
+			<NavbarComponent />
+			{popup.message && <Popup error message={popup.message} />}
+			<div
+				style={{
+					'margin-left': '20%',
+					'margin-right': '20%',
+					'margin-top': '2%',
+					padding: '2em'
+				}}
+				className='card'
+			>
+				<Form
+					id='addPostForm'
+					onSubmit={
+						params.get('parentId') ? handleClickComment : handleClickPost
+					}
+				>
+					{!params.get('parentId') && (
 						<div className='form-group'>
 							<label>Title</label>
-							<Form.Control name='title' className='form-control' id='title' placeholder='Enter title'/>
+							<Form.Control
+								name='title'
+								className='form-control'
+								id='title'
+								placeholder='Enter title'
+							/>
 						</div>
-					}
+					)}
 					<div className='form-group'>
 						<label>Body</label>
-						<Form.Control name='body' className='form-control' id='body' placeholder='Enter text'/>
+						<Form.Control
+							name='body'
+							className='form-control'
+							id='body'
+							placeholder='Enter text'
+						/>
 					</div>
-					{!params.get('parentId') &&
-					<div className='form-group'>
-						<label>Optional: shedule a post</label>
+					{!params.get('parentId') && (
+						<div className='form-group'>
+							<label>Optional: shedule a post</label>
 
-						<Form.Control name='date' className='form-control' id='date' type='datetime-local'/>
-					</div>
-					}
-					<button type='submit' className='btn btn-primary'>Submit</button>
+							<Form.Control
+								name='date'
+								className='form-control'
+								id='date'
+								type='datetime-local'
+							/>
+						</div>
+					)}
+					<button type='submit' className='btn btn-primary'>
+						Submit
+					</button>
 				</Form>
 			</div>
 		</>

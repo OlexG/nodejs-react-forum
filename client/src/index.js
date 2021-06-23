@@ -20,4 +20,4 @@ const AppRouter = () => {
 		</>
 	);
 };
-ReactDOM.render(<AppRouter/>, document.getElementById('root'));
+ReactDOM.render(<AppRouter />, document.getElementById('root'));

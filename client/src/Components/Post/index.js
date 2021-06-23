@@ -9,8 +9,11 @@ const Post = (props) => {
 	const [status, setStatus] = useState(props.status);
 
 	const dropDownText = React.useRef();
-	function swapDropdown () {
-		if (dropDownText.current.style.height === '0px' || dropDownText.current.style.height === '') {
+	function swapDropdown() {
+		if (
+			dropDownText.current.style.height === '0px' ||
+			dropDownText.current.style.height === ''
+		) {
 			dropDownText.current.classList.add(styles.dropdown_hover);
 			dropDownText.current.style.height = `${dropDownText.current.scrollHeight}px`;
 		} else {
@@ -25,13 +28,35 @@ const Post = (props) => {
 					<div>
 						<p className={styles.post_title}>{props.title}</p>
 						<h6>By: {props.author}</h6>
-						<Link to={`comment/?parentId=${props.id}&originalId=${props.id}`}>Reply</Link>
+						<Link to={`comment/?parentId=${props.id}&originalId=${props.id}`}>
+							Reply
+						</Link>
 					</div>
 					<div className='ml-auto d-flex flex-row'>
 						<p className='upvotes ml-3 pl-3 pr-3'>{upvotes}</p>
-						<Reactions postID={props.id} setUpvotes={setUpvotes} upvotes={upvotes} status={status} setStatus={setStatus} className=''/>
-						<Link className='btn btn-outline-secondary ml-3 pl-3 pr-3' style={{ height: '40px' }} to={`/posts/${props.id}`}>Visit</Link>
-						<button type='button' className='btn btn-outline-secondary ml-3 pl-3 pr-3' style={{ height: '40px' }} onClick={swapDropdown}>Preview</button>
+						<Reactions
+							postID={props.id}
+							setUpvotes={setUpvotes}
+							upvotes={upvotes}
+							status={status}
+							setStatus={setStatus}
+							className=''
+						/>
+						<Link
+							className='btn btn-outline-secondary ml-3 pl-3 pr-3'
+							style={{ height: '40px' }}
+							to={`/posts/${props.id}`}
+						>
+							Visit
+						</Link>
+						<button
+							type='button'
+							className='btn btn-outline-secondary ml-3 pl-3 pr-3'
+							style={{ height: '40px' }}
+							onClick={swapDropdown}
+						>
+							Preview
+						</button>
 					</div>
 				</div>
 				<div ref={dropDownText} className={styles.dropdown}>

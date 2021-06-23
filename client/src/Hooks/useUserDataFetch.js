@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
-export default function useUserDataFetch (username, setPopup) {
+export default function useUserDataFetch(username, setPopup) {
 	const [data, setData] = useState({});
 	useEffect(() => {
-		async function fetchData () {
+		async function fetchData() {
 			if (!username) {
 				setPopup({ message: 'Please login again' });
 				return;
@@ -20,7 +20,7 @@ export default function useUserDataFetch (username, setPopup) {
 			}
 		}
 		fetchData();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [username]);
 	return data;
 }

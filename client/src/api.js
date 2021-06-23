@@ -1,8 +1,25 @@
 /* eslint-disable no-unused-vars */
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { sendPostSubmitRequest, sendPostsRequest, sendPostCommentsRequest, sendPostsPageRequest, sendSinglePostRequest, sendPostNumberRequest, sendUpvotePostRequest, sendDownvotePostRequest, sendRemovePostReactionsRequest } from './Requests/posts.js';
-import { logout, signup, login, sendReactionsRequest, sendUserDataRequest, sendChangeIconRequest } from './Requests/users.js';
+import {
+	sendPostSubmitRequest,
+	sendPostsRequest,
+	sendPostCommentsRequest,
+	sendPostsPageRequest,
+	sendSinglePostRequest,
+	sendPostNumberRequest,
+	sendUpvotePostRequest,
+	sendDownvotePostRequest,
+	sendRemovePostReactionsRequest
+} from './Requests/posts.js';
+import {
+	logout,
+	signup,
+	login,
+	sendReactionsRequest,
+	sendUserDataRequest,
+	sendChangeIconRequest
+} from './Requests/users.js';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Worker from 'worker-loader!./Worker.js';
 

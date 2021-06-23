@@ -15,11 +15,17 @@ async function postUsers(req, res, next) {
 
 async function login(req, res, next) {
 	const { username } = req.body;
-	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
+	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, {
+		expiresIn: process.env.TOKEN_EXPIRATION_TIME
+	});
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
 
 	res.cookie('accessToken', accessToken, { overwrite: true });
-	res.cookie('refreshToken', refreshToken, { overwrite: true, httpOnly: true, sameSite: 'strict' });
+	res.cookie('refreshToken', refreshToken, {
+		overwrite: true,
+		httpOnly: true,
+		sameSite: 'strict'
+	});
 	res.cookie('username', username, { overwrite: true });
 
 	await userManager.addRefreshToken(username, refreshToken);
@@ -32,7 +38,9 @@ async function getAccessToken(req, res, next) {
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken, { complete: true });
 	if (decoded.payload.username !== username) return res.sendStatus(401);
-	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
+	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, {
+		expiresIn: process.env.TOKEN_EXPIRATION_TIME
+	});
 	res.cookie('accessToken', accessToken, { overwrite: true });
 	res.sendStatus(200);
 }

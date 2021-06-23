@@ -1,41 +1,37 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "plugin:react/recommended",
-        "standard",
+	"env": {
+		"browser": true,
+		"es2021": true
+	},
+	"extends": [
+		"plugin:react/recommended",
+		"standard",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended"
-    ],
+	],
 	"parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react",
-        "node",
-		"@typescript-eslint"
-    ],
-    "rules": {
-        "semi": [2, "always"],
-        "indent": ["error", "tab"],
-        "no-tabs": 0,
-        "camelcase": 2,
-        "react/prop-types": "off",
-        "operator-linebreak": 0,
-        "react/react-in-jsx-scope": 0,
-        "no-undef":"off",
-        "node/global-require":"error",
-		"space-before-function-paren": ["error", "never"],
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 12,
+		"sourceType": "module"
+	},
+	"plugins": ["react", "node", "@typescript-eslint"],
+	"rules": {
+		"semi": [2, "always"],
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"no-tabs": 0,
+		"camelcase": 2,
+		"react/prop-types": "off",
+		"operator-linebreak": 0,
+		"react/react-in-jsx-scope": 0,
+		"no-undef": "off",
+		"node/global-require": "error",
+		"space-before-function-paren": ["off", "never"],
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/ban-types": "off",
-		"@typescript-eslint/no-var-requires": "off"
-    }
+		"@typescript-eslint/no-var-requires": "off",
+		"@typescript-eslint/keyword-spacing": ["error"]
+	}
 }
-

@@ -10,9 +10,13 @@ import api from '../../api.js';
 
 const SignupPage = (props) => {
 	const history = useHistory();
-	const [formAttributes, setFormAttributes] = useState({ username: '', password: '', formError: 'username is too short, password is too short' });
+	const [formAttributes, setFormAttributes] = useState({
+		username: '',
+		password: '',
+		formError: 'username is too short, password is too short'
+	});
 
-	async function handleClick (e) {
+	async function handleClick(e) {
 		e.preventDefault();
 		const formElement = document.querySelector('form');
 		const formData = new FormData(formElement);
@@ -32,7 +36,7 @@ const SignupPage = (props) => {
 			setFormAttributes({ formError: result.validation.body.message });
 		}
 	}
-	function handleUserInput (e) {
+	function handleUserInput(e) {
 		const formElement = e.currentTarget;
 		const formData = new FormData(formElement);
 		const username = formData.get('username');
@@ -49,30 +53,59 @@ const SignupPage = (props) => {
 		if (formError.length === 0) {
 			setFormAttributes({ username, password });
 		} else {
-			setFormAttributes({ username, password, formError: formError.join(', ') });
+			setFormAttributes({
+				username,
+				password,
+				formError: formError.join(', ')
+			});
 		}
 	}
 	return (
 		<>
-			<NavbarComponent/>
-			{formAttributes.formError ?
-				(
-					<Popup message={formAttributes.formError} error/>
-				) :
-				(
-					<Popup message='username and password look good!'/>
-				)}
-			<div style={{ marginLeft: '20%', marginRight: '20%', marginTop: '2%', padding: '2em' }} className='card'>
-				<Form id='addUserForm' onSubmit={handleClick} onChange={handleUserInput}>
+			<NavbarComponent />
+			{formAttributes.formError ? (
+				<Popup message={formAttributes.formError} error />
+			) : (
+				<Popup message='username and password look good!' />
+			)}
+			<div
+				style={{
+					marginLeft: '20%',
+					marginRight: '20%',
+					marginTop: '2%',
+					padding: '2em'
+				}}
+				className='card'
+			>
+				<Form
+					id='addUserForm'
+					onSubmit={handleClick}
+					onChange={handleUserInput}
+				>
 					<Form.Group>
 						<Form.Label>Username</Form.Label>
-						<Form.Control name='username' className='form-control' id='username' placeholder='Enter username' value={formAttributes.email}/>
+						<Form.Control
+							name='username'
+							className='form-control'
+							id='username'
+							placeholder='Enter username'
+							value={formAttributes.email}
+						/>
 					</Form.Group>
 					<Form.Group className='form-group'>
 						<Form.Label>Password</Form.Label>
-						<Form.Control type='password' name='password' className='form-control' id='password' placeholder='Enter password' value={formAttributes.password}/>
+						<Form.Control
+							type='password'
+							name='password'
+							className='form-control'
+							id='password'
+							placeholder='Enter password'
+							value={formAttributes.password}
+						/>
 					</Form.Group>
-					<button type='submit' className='btn btn-primary'>Submit</button>
+					<button type='submit' className='btn btn-primary'>
+						Submit
+					</button>
 				</Form>
 			</div>
 		</>
