@@ -22,8 +22,7 @@ export default function useReactionsFetch(username, setPopup) {
 			setLoading(false);
 		}
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [username]);
+	}, [username, setPopup]);
 
 	return { reactions, loading };
 }

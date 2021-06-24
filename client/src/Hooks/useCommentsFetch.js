@@ -29,8 +29,7 @@ export default function useCommentsFetch(
 			}
 		}
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [parent, returnWithComments]);
+	}, [parent, returnWithComments, setPopup]);
 
 	return comments;
 }

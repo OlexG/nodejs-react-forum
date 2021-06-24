@@ -22,8 +22,7 @@ export default function usePostsNumberFetch(setPopup) {
 			}
 		}
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [setPopup]);
 
 	return totalPosts;
 }

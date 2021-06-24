@@ -19,8 +19,7 @@ export default function useSinglePostFetch(id, setPopup) {
 			}
 		}
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
+	}, [id, setPopup]);
 
 	return { loading, data };
 }

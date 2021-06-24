@@ -20,7 +20,6 @@ export default function useUserDataFetch(username, setPopup) {
 			}
 		}
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [username]);
+	}, [username, setPopup]);
 	return data;
 }
