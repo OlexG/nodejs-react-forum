@@ -1,4 +1,7 @@
-import { PostManager, UserManager, JobManager } from './dbManager';
+import { PostManager } from './PostManager';
+import { UserManager } from './UserManager';
+import { JobManager } from './JobManager';
+
 import mongoose = require('mongoose');
 require('dotenv').config();
 
