@@ -1,6 +1,6 @@
 import api from '../../api.js';
 const Reactions = (props) => {
-	async function handleUpvote () {
+	async function handleUpvote() {
 		let res;
 		if (props.status === 1) {
 			// already liked the post
@@ -23,7 +23,7 @@ const Reactions = (props) => {
 		}
 	}
 
-	async function handleDownvote () {
+	async function handleDownvote() {
 		let res;
 		if (props.status === -1) {
 			// already disliked the post
@@ -47,8 +47,24 @@ const Reactions = (props) => {
 	}
 	return (
 		<>
-			<button className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${(props.status === 1 && 'active')}`} style={{ 'height': '40px' }} onClick={handleUpvote}>👍</button>
-			<button className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${(props.status === -1 && 'active')}`} style={{ 'height': '40px' }} onClick={handleDownvote}>👎</button>
+			<button
+				className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${
+					props.status === 1 && 'active'
+				}`}
+				style={{ height: '40px' }}
+				onClick={handleUpvote}
+			>
+				👍
+			</button>
+			<button
+				className={`btn btn-outline-secondary ml-3 pl-3 pr-3 ${
+					props.status === -1 && 'active'
+				}`}
+				style={{ height: '40px' }}
+				onClick={handleDownvote}
+			>
+				👎
+			</button>
 		</>
 	);
 };

@@ -38,6 +38,10 @@ interface IUser extends mongoose.Document {
 	password: string;
 	upvotes: object;
 	downvotes: object;
+	refreshToken: string;
+	reputation: number;
+	numberOfPosts: number;
+	iconPath: string;
 }
 
 const UserSchema = new mongoose.Schema({
@@ -60,8 +64,20 @@ const UserSchema = new mongoose.Schema({
 	},
 	refreshToken: {
 		type: String
+	},
+	reputation: {
+		type: Number
+	},
+	numberOfPosts: {
+		type: Number
+	},
+	iconPath: {
+		type: String
 	}
 }, { minimize: false });
+
+// Index the title of the post and parent of the post for searching
+UserSchema.index({ username: 1 });
 
 interface IJob extends mongoose.Document {
 	value: String;

@@ -1,20 +1,28 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
-export default function useReactionsFetch () {
+export default function useReactionsFetch(username, setPopup) {
 	const [reactions, setReactions] = useState({});
-	const [error, setError] = useState();
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
-		api.sendReactionsRequest().then((res) => {
-			setReactions(res.data);
+		async function fetchData() {
+			if (!username) {
+				setLoading(false);
+				return;
+			}
+			try {
+				const res = await api.sendReactionsRequest(username);
+				if (res.status === 200) {
+					setReactions(res.data);
+				} else {
+					setPopup({ message: 'Something went wrong when fetching reactions' });
+				}
+			} catch (e) {
+				setPopup({ message: 'Something went wrong when fetching reactions' });
+			}
 			setLoading(false);
-		}).catch((error) => {
-			setError(error);
-		});
-	}, []);
+		}
+		fetchData();
+	}, [username, setPopup]);
 
-	if (error) {
-		return error;
-	}
 	return { reactions, loading };
 }

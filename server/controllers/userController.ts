@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { initManagers } from '../db/initDB';
 import jwt = require('jsonwebtoken');
 const { userManager } = initManagers();
+const { resolve } = require('path');
 
 async function postUsers(req, res, next) {
 	const { username, password } = req.body;
@@ -13,11 +15,17 @@ async function postUsers(req, res, next) {
 
 async function login(req, res, next) {
 	const { username } = req.body;
-	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
+	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, {
+		expiresIn: process.env.TOKEN_EXPIRATION_TIME
+	});
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
 
 	res.cookie('accessToken', accessToken, { overwrite: true });
-	res.cookie('refreshToken', refreshToken, { overwrite: true, httpOnly: true, sameSite: 'strict' });
+	res.cookie('refreshToken', refreshToken, {
+		overwrite: true,
+		httpOnly: true,
+		sameSite: 'strict'
+	});
 	res.cookie('username', username, { overwrite: true });
 
 	await userManager.addRefreshToken(username, refreshToken);
@@ -30,17 +38,11 @@ async function getAccessToken(req, res, next) {
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken, { complete: true });
 	if (decoded.payload.username !== username) return res.sendStatus(401);
-	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION_TIME });
+	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, {
+		expiresIn: process.env.TOKEN_EXPIRATION_TIME
+	});
 	res.cookie('accessToken', accessToken, { overwrite: true });
 	res.sendStatus(200);
-}
-
-async function getUserReactions(req, res, next) {
-	const refreshToken = req.cookies.refreshToken;
-	const username = await userManager.findRefreshToken(refreshToken);
-	const reactions = await userManager.getUserReactions(username);
-	if (reactions) return res.send(reactions);
-	res.sendStatus(400);
 }
 
 async function logout(req, res, next) {
@@ -51,10 +53,45 @@ async function logout(req, res, next) {
 	res.sendStatus(200);
 }
 
+async function getUserReactions(req, res, next) {
+	const username = req.params.username;
+	const reactions = await userManager.getUserReactions(username);
+	if (reactions) return res.send(reactions);
+	res.sendStatus(400);
+}
+
+async function getUserData(req, res, next) {
+	const username = req.params.username;
+	const data = await userManager.getUserData(username);
+	res.send(data);
+}
+
+async function changeUserIcon(req, res, next) {
+	const username = req.cookies.username;
+	if (req.file) {
+		await userManager.updateIconPath(username, req.file.path);
+		res.sendStatus(200);
+	} else {
+		res.sendStatus(400);
+	}
+}
+
+async function getUserIcon(req, res, next) {
+	const path = await userManager.getIconPath(req.params.username);
+	if (path === null) {
+		res.sendFile(resolve(__dirname, '../../defaultFiles/default.png'));
+	} else {
+		res.sendFile(path);
+	}
+}
+
 export default {
 	postUsers,
 	login,
 	getAccessToken,
 	getUserReactions,
-	logout
+	logout,
+	getUserData,
+	changeUserIcon,
+	getUserIcon
 };

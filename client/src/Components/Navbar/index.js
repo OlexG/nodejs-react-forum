@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import api from '../../api.js';
 
 const NavbarComponent = () => {
-	async function logoutUser () {
+	async function logoutUser() {
 		Cookies.remove('accessToken');
 		Cookies.remove('username');
 		await api.logout();
@@ -18,17 +18,21 @@ const NavbarComponent = () => {
 				<Nav className='mr-auto'>
 					<Nav.Link href='/'>Home</Nav.Link>
 				</Nav>
-				{Cookies.get('username') ?
+				{Cookies.get('username') ? (
 					<React.Fragment>
 						<Navbar.Text>{Cookies.get('username')}</Navbar.Text>
-						<Nav.Link onClick={logoutUser} href='/'>Log Out</Nav.Link>
+						<Nav.Link onClick={logoutUser} href='/'>
+							Log Out
+						</Nav.Link>
 					</React.Fragment>
-					:
+				) : (
 					<React.Fragment>
-						<Nav.Link className='mr-sm-2' href='/signup'>Sign Up</Nav.Link>
+						<Nav.Link className='mr-sm-2' href='/signup'>
+							Sign Up
+						</Nav.Link>
 						<Nav.Link href='/login'>Log In</Nav.Link>
 					</React.Fragment>
-				}
+				)}
 			</Navbar.Collapse>
 		</Navbar>
 	);

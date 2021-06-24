@@ -1,110 +1,118 @@
 {
-  "name": "client",
-  "version": "0.1.0",
-  "private": true,
-  "proxy": "http://localhost:3001",
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.21.1",
-    "bootstrap": "^4.6.0",
-    "js-cookie": "^2.2.1",
-    "react": "^17.0.1",
-    "react-bootstrap": "^1.5.2",
-    "react-dom": "^17.0.1",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "web-vitals": "^1.0.1",
-    "worker-loader": "^3.0.8"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest",
-      "standard"
-    ],
-    "rules": {
-      "semi": [
-        2,
-        "always"
-      ],
-      "indent": [
-        "error",
-        "tab"
-      ],
-      "no-tabs": 0,
-      "camelcase": 2,
-      "react/prop-types": "off",
-      "operator-linebreak": 0,
-      "react/react-in-jsx-scope": 0,
-      "no-undef": "off",
-      "quote-props": [
-        "warn",
-        "consistent"
-      ],
-      "quotes": [
-        1,
-        "single"
-      ],
-      "jsx-quotes": [
-        1,
-        "prefer-single"
-      ],
-      "react/display-name": 0,
-      "react/forbid-prop-types": 0,
-      "react/jsx-boolean-value": 1,
-      "react/jsx-closing-bracket-location": 1,
-      "react/jsx-curly-spacing": 1,
-      "react/jsx-handler-names": 1,
-      "react/jsx-key": 1,
-      "react/jsx-max-props-per-line": 0,
-      "react/jsx-no-bind": 0,
-      "react/jsx-no-duplicate-props": 1,
-      "react/jsx-no-literals": 0,
-      "react/jsx-no-undef": 1,
-      "react/jsx-pascal-case": 1,
-      "react/jsx-sort-prop-types": 0,
-      "react/jsx-sort-props": 0,
-      "react/jsx-uses-react": 1,
-      "react/jsx-uses-vars": 1,
-      "react/no-danger": 1,
-      "react/no-deprecated": 1,
-      "react/no-did-mount-set-state": 1,
-      "react/no-did-update-set-state": 1,
-      "react/no-direct-mutation-state": 1,
-      "react/no-is-mounted": 1,
-      "react/no-multi-comp": 0,
-      "react/no-set-state": 1,
-      "react/no-string-refs": 0,
-      "react/no-unknown-property": 1,
-      "react/prefer-es6-class": 1,
-      "react/self-closing-comp": 1,
-      "react/sort-comp": 1,
-      "no-restricted-globals": 0,
-      "react/jsx-props-no-multi-spaces": 1,
-      "react/jsx-equals-spacing": [
-        1,
-        "never"
-      ]
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "client",
+	"version": "0.1.0",
+	"private": true,
+	"proxy": "http://localhost:3001",
+	"dependencies": {
+		"@testing-library/jest-dom": "^5.11.4",
+		"@testing-library/react": "^11.1.0",
+		"@testing-library/user-event": "^12.1.10",
+		"axios": "^0.21.1",
+		"bootstrap": "^4.6.0",
+		"js-cookie": "^2.2.1",
+		"react": "^17.0.1",
+		"react-bootstrap": "^1.5.2",
+		"react-dom": "^17.0.1",
+		"react-router-dom": "^5.2.0",
+		"react-scripts": "4.0.3",
+		"web-vitals": "^1.0.1",
+		"worker-loader": "^3.0.8"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest",
+			"standard"
+		],
+		"rules": {
+			"semi": [
+				2,
+				"always"
+			],
+			"indent": [
+				"error",
+				"tab"
+			],
+			"space-before-function-paren": [
+				"off",
+				"never"
+			],
+			"multiline-ternary": [
+				"off",
+				"never"
+			],
+			"no-tabs": 0,
+			"camelcase": 2,
+			"react/prop-types": "off",
+			"operator-linebreak": 0,
+			"react/react-in-jsx-scope": 0,
+			"no-undef": "off",
+			"quote-props": [
+				"warn",
+				"as-needed"
+			],
+			"quotes": [
+				1,
+				"single"
+			],
+			"jsx-quotes": [
+				1,
+				"prefer-single"
+			],
+			"react/display-name": 0,
+			"react/forbid-prop-types": 0,
+			"react/jsx-boolean-value": 1,
+			"react/jsx-closing-bracket-location": 1,
+			"react/jsx-curly-spacing": 1,
+			"react/jsx-handler-names": 1,
+			"react/jsx-key": 1,
+			"react/jsx-max-props-per-line": 0,
+			"react/jsx-no-bind": 0,
+			"react/jsx-no-duplicate-props": 1,
+			"react/jsx-no-literals": 0,
+			"react/jsx-no-undef": 1,
+			"react/jsx-pascal-case": 1,
+			"react/jsx-sort-prop-types": 0,
+			"react/jsx-sort-props": 0,
+			"react/jsx-uses-react": 1,
+			"react/jsx-uses-vars": 1,
+			"react/no-danger": 1,
+			"react/no-deprecated": 1,
+			"react/no-did-mount-set-state": 1,
+			"react/no-did-update-set-state": 1,
+			"react/no-direct-mutation-state": 1,
+			"react/no-is-mounted": 1,
+			"react/no-multi-comp": 0,
+			"react/no-set-state": 1,
+			"react/no-string-refs": 0,
+			"react/no-unknown-property": 1,
+			"react/prefer-es6-class": 1,
+			"react/self-closing-comp": 1,
+			"react/sort-comp": 1,
+			"no-restricted-globals": 0,
+			"react/jsx-props-no-multi-spaces": 1,
+			"react/jsx-equals-spacing": [
+				1,
+				"never"
+			]
+		}
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }

@@ -1,8 +1,8 @@
-import App from './Components/App/App.js';
-import PostCreator from './Components/PostCreator/PostCreator.js';
-import PostPage from './Components/PostPage/PostPage.js';
-import LoginPage from './Components/LoginPage/LoginPage.js';
-import SignupPage from './Components/SignupPage/SignupPage.js';
+import App from './Components/App';
+import PostCreator from './Components/PostCreator';
+import PostPage from './Components/PostPage';
+import LoginPage from './Components/LoginPage';
+import SignupPage from './Components/SignupPage';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -20,4 +20,4 @@ const AppRouter = () => {
 		</>
 	);
 };
-ReactDOM.render(<AppRouter/>, document.getElementById('root'));
+ReactDOM.render(<AppRouter />, document.getElementById('root'));

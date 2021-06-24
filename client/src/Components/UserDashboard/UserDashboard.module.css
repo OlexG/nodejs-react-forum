@@ -1,0 +1,31 @@
+.imgContainer {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background-position: center center;
+	background-size: cover;
+	position: relative;
+}
+
+.editIcon {
+	position: absolute;
+	bottom: 90%;
+	left: 0;
+	color: #fff;
+}
+
+.background {
+	padding: 20px;
+	background:
+		linear-gradient(to top, white, white) repeat-x center,
+		linear-gradient(to top, transparent 50%, #007bff 50%),
+		linear-gradient(to bottom, transparent 50%, #fff 50%);
+	background-size:
+		1px 4px,
+		100% 100%,
+		100% 100%;
+}
+
+.text {
+	text-align: center;
+}
