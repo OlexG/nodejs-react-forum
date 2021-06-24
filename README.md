@@ -37,7 +37,7 @@ MAX_COMMENT_DEPTH = 3
 ACCESS_JWT_SECRET = '9hmvkQYqwPyM5AwqirC8'
 REFRESH_JWT_SECRET = 'UeQ31thCgXWBqMvoBocC'
 ```
-Replace the ```URI``` with the URI if your own MongoDB connection. Changing the ``PORT`` will change the port on which the backend server runs however you will need to edit the ```proxy``` field of the client package.json to be on that port as well. ```TOKEN_EXPIRATION_TIME``` is how long it takes for a JWT access token to expire. ```MAX_COMMENT_DEPTH``` is the depth to which comments fetched. For example, when setting it to 1, only the direct replies of a post will be sent to the client when a client fetches comments. The last to fields are any random values used to encode the tokens. Please make sure to change these in production. 
+Replace the ```URI``` with the URI if your own MongoDB connection. Changing the ``PORT`` will change the port on which the backend server runs however you will need to edit the ```proxy``` field of the client package.json to be on that port as well. ```TOKEN_EXPIRATION_TIME``` is how long it takes for a JWT access token to expire. ```MAX_COMMENT_DEPTH``` is the depth to which comments are fetched. For example, when setting it to 1, only the direct replies of a post will be sent to the client when a client fetches comments. The last two fields are any random values used to encode the tokens. Please make sure to change these in production. 
 
 There is also a ```constants.js``` file in the client directory and it should look something like this
 ```
@@ -46,7 +46,7 @@ const  REFRESH_TOKEN_TIME = 600000;
 const  MAX_COMMENT_DEPTH = 3;
 export { POSTS_PER_PAGE, REFRESH_TOKEN_TIME, MAX_COMMENT_DEPTH };
 ```
-```REFRESH_TOKEN_TIME``` is how often a request gets sent to the server to create a new access token. Make sure this number is less the the token expiration time in .env. ```POSTS_PER_PAGE``` is how many posts are displayed per one page. ```MAX_COMMENT_DEPTH``` is the depth to which comments are displayed (different from fetched). Setting it to 1 will only display the direct replies to a post and to view deeper comments a "show replies" button would need to be clicked. This number should be the same as the ```MAX_COMMENT_DEPTH``` in the env file. 
+```REFRESH_TOKEN_TIME``` is how often a request gets sent to the server to create a new access token. Make sure this number is less the the token expiration time in .env. ```POSTS_PER_PAGE``` is how many posts are displayed per one page. ```MAX_COMMENT_DEPTH``` is the depth to which comments are displayed (different from fetched). Setting it to 1 will only display the direct replies to a post, and to view deeper comments a "show replies" button would need to be clicked. This number should be the same as the ```MAX_COMMENT_DEPTH``` in the .env file. 
 
 To start the backend server and the client development server run ```npm start``` from the client and root directories. 
 To run tests use this command from the root directory
