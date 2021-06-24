@@ -1,10 +1,12 @@
 import sinon = require('sinon');
 export default {
-	initManagers: function() {
+	initManagers: function () {
 		class PostManager {
 			getPost = sinon.stub().resolves('test');
 
-			getAllPosts = sinon.stub().resolves(['test', 'test', 'test', 'test', 'test']);
+			getAllPosts = sinon
+				.stub()
+				.resolves(['test', 'test', 'test', 'test', 'test']);
 
 			addPost = sinon.stub().resolves('testid');
 
@@ -38,6 +40,22 @@ export default {
 			removePostUpvote = sinon.stub().resolves(true);
 
 			getUserReactions = sinon.stub().resolves({ downvotes: {}, upvotes: {} });
+
+			getUserData = sinon
+				.stub()
+				.resolves({ username: 'testUsername', upvotes: 0, downvotes: 0 });
+
+			updateIconPath = sinon.stub().resolves('testPath');
+
+			getIconPathRes = { all: ['testPath', null], cur: 0 };
+
+			getIconPath = sinon.stub().callsFake(() => {
+				const curInd = this.getIconPathRes.cur;
+				// Cycle to the next possible output for testing
+				this.getIconPathRes.cur += 1;
+				this.getIconPathRes.cur %= 2;
+				return Promise.resolve(this.getIconPathRes.all[curInd]);
+			});
 		}
 
 		return { postManager: new PostManager(), userManager: new UserManager() };
