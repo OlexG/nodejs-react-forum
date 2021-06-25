@@ -3,7 +3,6 @@ import chai = require('chai');
 import proxyquire = require('proxyquire');
 import sinon = require('sinon');
 import jwt = require('jsonwebtoken');
-const { resolve } = require('path');
 const expect = chai.expect;
 
 const userController = proxyquire('../server/controllers/userController.ts', {

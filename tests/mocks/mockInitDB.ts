@@ -29,7 +29,11 @@ export default {
 
 			findRefreshToken = sinon.stub().resolves('testUsername');
 
-			verifyUser = sinon.stub().resolves(true);
+			verifyUser = sinon.stub().callsFake((username, password) => {
+				return Promise.resolve(
+					username === 'testUsername' && password === 'testPassword'
+				);
+			});
 
 			addPostUpvote = sinon.stub().resolves(true);
 
@@ -55,6 +59,10 @@ export default {
 				this.getIconPathRes.cur += 1;
 				this.getIconPathRes.cur %= 2;
 				return Promise.resolve(this.getIconPathRes.all[curInd]);
+			});
+
+			verifyUsername = sinon.stub().callsFake((username) => {
+				return Promise.resolve(username === 'testUsername');
 			});
 		}
 
