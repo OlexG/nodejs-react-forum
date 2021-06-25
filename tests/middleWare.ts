@@ -22,9 +22,9 @@ const verifyUser = proxyquire('../server/validation/verifyUser', {
 }).default;
 
 describe('Unit testing of express middleware', function () {
-	let res;
-	let resSpy;
-	let nextSpy;
+	let res: { sendStatus: sinon.SinonSpy<any[], any> };
+	let resSpy: sinon.SinonSpy<any[], any>;
+	let nextSpy: sinon.SinonSpy<any[], any>;
 	beforeEach(function () {
 		resSpy = sinon.spy();
 		nextSpy = sinon.spy();
@@ -33,7 +33,7 @@ describe('Unit testing of express middleware', function () {
 		};
 	});
 	describe('should validate access token', function () {
-		let req;
+		let req: { headers: any };
 		beforeEach(function () {
 			req = {
 				headers: {
@@ -60,14 +60,17 @@ describe('Unit testing of express middleware', function () {
 		it('should validate with an valid token', function () {
 			req.headers.authorization =
 				'token ' +
-				jwt.sign({ username: 'testUsername' }, process.env.ACCESS_JWT_SECRET);
+				jwt.sign(
+					{ username: 'testUsername' },
+					process.env.ACCESS_JWT_SECRET as string
+				);
 			validateAccessJWT(req, res, nextSpy);
 			expect(nextSpy.calledOnce).to.equal(true);
 		});
 	});
 	describe('should validate file', function () {
-		let cbSpy;
-		let file;
+		let cbSpy: sinon.SinonSpy<any[], any>;
+		let file: { mimetype: any; originalname: any };
 		beforeEach(function () {
 			cbSpy = sinon.spy();
 			file = {
@@ -89,7 +92,7 @@ describe('Unit testing of express middleware', function () {
 		});
 	});
 	describe('should validate refresh token', function () {
-		let req;
+		let req: { cookies: any };
 		beforeEach(function () {
 			req = {
 				cookies: {
@@ -114,14 +117,14 @@ describe('Unit testing of express middleware', function () {
 		it('should validate with a valid token', function () {
 			req.cookies.refreshToken = jwt.sign(
 				{ username: 'testUsername' },
-				process.env.REFRESH_JWT_SECRET
+				process.env.REFRESH_JWT_SECRET as string
 			);
 			validateRefreshJWT(req, res, nextSpy);
 			expect(nextSpy.calledOnce).to.equal(true);
 		});
 	});
 	describe('should validate username cookie', function () {
-		let req;
+		let req: { cookies: any };
 		beforeEach(function () {
 			req = {
 				cookies: {
@@ -142,7 +145,7 @@ describe('Unit testing of express middleware', function () {
 		});
 	});
 	describe('should validate username parameter', function () {
-		let req;
+		let req: { params: any };
 		beforeEach(function () {
 			req = {
 				params: {
@@ -162,7 +165,7 @@ describe('Unit testing of express middleware', function () {
 		});
 	});
 	describe('should verify user', function () {
-		let req;
+		let req: { body: any };
 		beforeEach(function () {
 			req = {
 				body: {

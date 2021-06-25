@@ -10,7 +10,11 @@ const userController = proxyquire('../server/controllers/userController.ts', {
 }).default;
 
 describe('Unit testing of user controllers', function () {
-	let req;
+	let req: {
+		body: { username: string; password: string };
+		cookies: { refreshToken: string; username: string };
+		params: { username: string };
+	};
 	beforeEach(function () {
 		req = {
 			body: {
