@@ -36,7 +36,7 @@ cd client
 npm install --dev
 ```
 
-Edit the .env file in the root directory. You should see something like this
+The local.env file should look something like this. 
 
 ```
 URI=mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false
@@ -48,9 +48,9 @@ ACCESS_JWT_SECRET = '9hmvkQYqwPyM5AwqirC8'
 REFRESH_JWT_SECRET = 'UeQ31thCgXWBqMvoBocC'
 ```
 
-Replace the `URI` with the URI if your own MongoDB connection. Changing the `PORT` will change the port on which the backend server runs however you will need to edit the `proxy` field of the client package.json to be on that port as well.
+You will need to copy the contents of local.env into the .env file and edit the environment variables as needed. Replace the `URI` with the URI if your own MongoDB connection. Changing the `PORT` will change the port on which the backend server runs however you will need to edit the `proxy` field of the client package.json to be on that port as well.
 
-There is also a `constants.js` file in the client directory with configuration variables
+There is also a `constants.js` file in the client directory with configuration variables for the client
 
 To start the backend server and the client development server run `npm start` from the client and root directories.
 To run tests use this command from the root directory
