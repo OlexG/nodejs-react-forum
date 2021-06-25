@@ -141,9 +141,11 @@ describe('Unit testing of user controllers', function () {
 			const res = {
 				sendFile: resSpy
 			};
+			// getUserIcon will return testPath
 			await userController.getUserIcon({ params: 'testUsername' }, res);
 			expect(resSpy.calledOnce).to.equal(true);
 			expect(resSpy.args[0][0]).to.equal('testPath');
+			// getUserIcon will now return null so the default image should be served
 			await userController.getUserIcon({ params: 'testUsername' }, res);
 			expect(resSpy.args[1][0]).to.contain('default.png');
 		});

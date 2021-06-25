@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "mocha -r ts-node/register tests/*.ts",
+		"test": "mocha -r ts-node/register tests/middleWare.ts",
 		"start": "nodemon --watch '**' --ext 'ts,json' --exec 'npx ts-node index.ts'",
 		"server": "node index.js",
 		"client": "npm start --prefix client",
