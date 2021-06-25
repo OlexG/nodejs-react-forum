@@ -1,3 +1,4 @@
+
 # Forum
 
 A forum application built with NodeJS, Express, ReactJS and MongoDB.
@@ -11,6 +12,10 @@ A forum application built with NodeJS, Express, ReactJS and MongoDB.
 5. Nested comments system
 6. JWT's
 7. On-disc storage of user icons
+
+### Demo Video
+
+https://user-images.githubusercontent.com/36348190/123466294-062e9100-d5a4-11eb-9747-3e7070a72a4d.mp4
 
 ### Installation as a developer
 
@@ -48,9 +53,9 @@ ACCESS_JWT_SECRET = '9hmvkQYqwPyM5AwqirC8'
 REFRESH_JWT_SECRET = 'UeQ31thCgXWBqMvoBocC'
 ```
 
-You will need to copy the contents of local.env into the .env file and edit the environment variables as needed. Replace the `URI` with the URI if your own MongoDB connection. Changing the `PORT` will change the port on which the backend server runs however you will need to edit the `proxy` field of the client package.json to be on that port as well.
+You will need to copy the contents of local.env into the .env file and edit the environment variables as needed. Replace the `URI` with the URI of your own MongoDB connection. Changing the `PORT` will change the port on which the backend server runs however you will need to edit the `proxy` field of the client package.json to be on that port as well.
 
-There is also a `constants.js` file in the client directory with configuration variables for the client
+There is also a `constants.js` file in the client directory with configuration variables for the client.
 
 To start the backend server and the client development server run `npm start` from the client and root directories.
 To run tests use this command from the root directory
