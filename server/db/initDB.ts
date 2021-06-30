@@ -1,10 +1,16 @@
-import { PostManager, UserManager, JobManager } from './dbManager';
+import { PostManager } from './PostManager';
+import { UserManager } from './UserManager';
+import { JobManager } from './JobManager';
+
 import mongoose = require('mongoose');
 require('dotenv').config();
 
 export async function initDB() {
 	try {
-		await mongoose.connect(process.env.URI);
+		if (typeof process.env.URI !== 'string') {
+			throw new Error('URI not set in .env');
+		}
+		await mongoose.connect(process.env.URI as string);
 	} catch (e) {
 		console.log('Cannot connect to database');
 		throw e;

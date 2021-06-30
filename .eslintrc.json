@@ -32,6 +32,7 @@
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/ban-types": "off",
 		"@typescript-eslint/no-var-requires": "off",
-		"@typescript-eslint/keyword-spacing": ["error"]
+		"@typescript-eslint/keyword-spacing": ["error"],
+		"@typescript-eslint/no-explicit-any": ["off"]
 	}
 }

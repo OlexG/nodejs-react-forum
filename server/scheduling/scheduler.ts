@@ -1,5 +1,6 @@
 import { initManagers } from '../db/initDB';
-import { PostManager, UserManager } from '../db/dbManager';
+import { PostManager } from '../db/PostManager';
+import { UserManager } from '../db/UserManager';
 import { IPost } from '../db/models';
 import mongoose = require('mongoose');
 

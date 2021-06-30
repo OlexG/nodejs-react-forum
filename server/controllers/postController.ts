@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { initManagers } from '../db/initDB';
-import { SortOption, FilterObject } from '../db/dbManager';
+import { SortOption, FilterObject } from '../db/PostManager';
 import { scheduleJob } from '../scheduling/scheduler';
 
 const { postManager, userManager } = initManagers();
