@@ -28,7 +28,7 @@ export function subscribeUser(username, postId) {
 export async function unregisterUser(username) {
 	if (users[username]) {
 		const postIds = await postManager.getUserPosts(username);
-		// save the user on the users object and subscribe them to all the posts they made
+		// delete the user from the users object and unsubscribe them from all the posts they made
 		postIds.forEach((el) => publisher.unsubscribe(el._id));
 		delete users[username];
 		console.log(publisher.subscriptions, users);
