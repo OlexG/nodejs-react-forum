@@ -32,8 +32,7 @@ export class PostManager {
 
 	async getAllPosts(
 		returnWithComments: boolean,
-		parent?: mongoose.Types.ObjectId,
-		parentObject = { children: [] }
+		parent?: mongoose.Types.ObjectId
 	): Promise<object> {
 		if (parent && returnWithComments) {
 			const count = await this.model.find({ parent }).countDocuments();
@@ -278,6 +277,10 @@ export class PostManager {
 				.updateOne({ _id: new ObjectId(postID) }, { $inc: { upvotes: 1 } })
 				.exec();
 		}
+	}
+
+	getUserPosts(username: string) {
+		return this.model.find({ author: username }, '_id').lean().exec();
 	}
 
 	deleteAll() {

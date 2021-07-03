@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from '../Post';
 import NavbarComponent from '../Navbar';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -16,10 +16,20 @@ import Popup from '../Popup';
 
 const App = () => {
 	const [popup, setPopup] = useState({});
-	const { reactions, loading } = useReactionsFetch(
-		Cookies.get('username'),
-		setPopup
-	);
+	const username = Cookies.get('username');
+	const { reactions, loading } = useReactionsFetch(username, setPopup);
+	useEffect(() => {
+		if (username) {
+			const eventSource = new EventSource(
+				`http://localhost:3001/api/v1/users/${username}/notifications`,
+				{ withCredentials: true }
+			);
+			eventSource.onmessage = (e) => {
+				console.log(e.data);
+			};
+		}
+	}, [username]);
+
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filterOptions, setFilterOptions] = useState({});
 	const totalPosts = usePostsNumberFetch(setPopup).result;
@@ -93,11 +103,8 @@ const App = () => {
 							perPage={POSTS_PER_PAGE}
 						/>
 					)}
-					{Cookies.get('username') && (
-						<UserDashboard
-							username={Cookies.get('username')}
-							setPopup={setPopup}
-						/>
+					{username && (
+						<UserDashboard username={username} setPopup={setPopup} />
 					)}
 				</div>
 			</div>
