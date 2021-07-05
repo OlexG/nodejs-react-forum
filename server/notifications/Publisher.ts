@@ -19,7 +19,6 @@ export default class Publisher {
 	async notify(postIds: string[]) {
 		for (const curId of postIds) {
 			if (this.subscriptions[curId]) {
-				console.log(curId);
 				this.subscriptions[curId]();
 			}
 		}
