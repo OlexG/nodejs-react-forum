@@ -9,11 +9,13 @@ import { Link } from 'react-router-dom';
 import styles from '../UserDashboard/UserDashboard.module.css';
 import Popup from '../Popup';
 import Cookies from 'js-cookie';
+import Notifications from '../Notifications';
 
 const PostPage = ({ match }) => {
 	const [popup, setPopup] = useState({});
+	const username = Cookies.get('username');
 	const { reactions, loading: reactionsLoading } = useReactionsFetch(
-		Cookies.get('username'),
+		username,
 		setPopup
 	);
 	const [upvotes, setUpvotes] = useState(0);
@@ -42,6 +44,7 @@ const PostPage = ({ match }) => {
 	return (
 		<>
 			<NavbarComponent />
+			<Notifications username={username} />
 			{popup.message && <Popup error message={popup.message} />}
 			{!loading ? (
 				<div className='post card mb-2' style={{ margin: '1em' }}>

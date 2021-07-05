@@ -2,6 +2,8 @@
 import { ObjectId } from 'mongodb';
 import * as models from './models';
 import { UserManager } from './UserManager';
+import { publisher, subscribeUser } from '../notifications';
+
 import mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true);
 
@@ -151,8 +153,39 @@ export class PostManager {
 			date,
 			...(parent && { parent })
 		});
+
+		// send a notification to all posts above, that are not made by this user
+		this.notifyPostChain(post._id, username);
+		subscribeUser(username, post._id);
 		await userManager.increasePostCounter(username);
 		return post._id;
+	}
+
+	async notifyPostChain(startId: mongoose.Types.ObjectId, username: string) {
+		const matchStartId = new ObjectId(startId);
+		const posts = await this.model
+			.aggregate()
+			.match({
+				_id: matchStartId
+			})
+			.graphLookup({
+				from: 'posts',
+				startWith: '$parent',
+				connectFromField: 'parent',
+				connectToField: '_id',
+				as: 'chain'
+			})
+			.project({ chain: 1 })
+			.unwind('chain')
+			.sort({ 'chain.date': -1 })
+			.match({ 'chain.author': { $ne: username } })
+			.group({ _id: '$chain.author', link: { $first: '$chain._id' } })
+			.exec();
+
+		if (posts) {
+			const ids = posts.map((post) => post.link);
+			publisher.notify(ids);
+		}
 	}
 
 	getNumberOfPosts(): Promise<number> {

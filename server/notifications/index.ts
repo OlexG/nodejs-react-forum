@@ -1,13 +1,13 @@
 import User from './User';
 import Publisher from './Publisher';
-import { initManagers } from '../db/initDB';
-const { postManager } = initManagers();
+import { PostManager } from '../db/PostManager';
 const users = {};
 export const publisher = new Publisher({});
 
 export async function registerUser(
 	username,
-	notifyFn: (message: string) => void
+	notifyFn: (message: string) => void,
+	postManager: PostManager
 ) {
 	if (!users[username]) {
 		users[username] = new User(notifyFn);
@@ -25,12 +25,11 @@ export function subscribeUser(username, postId) {
 	}
 }
 
-export async function unregisterUser(username) {
+export async function unregisterUser(username, postManager: PostManager) {
 	if (users[username]) {
 		const postIds = await postManager.getUserPosts(username);
 		// delete the user from the users object and unsubscribe them from all the posts they made
 		postIds.forEach((el) => publisher.unsubscribe(el._id));
 		delete users[username];
-		console.log(publisher.subscriptions, users);
 	}
 }

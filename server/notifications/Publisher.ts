@@ -1,7 +1,3 @@
-import { initManagers } from '../db/initDB';
-console.log(initManagers);
-const { postManager } = initManagers();
-
 interface ISubscription {
 	[key: string]: () => void;
 }
@@ -20,17 +16,11 @@ export default class Publisher {
 		delete this.subscriptions[postId];
 	}
 
-	async notify(postId) {
-		let curId = postId;
-		while (curId) {
+	async notify(postIds: string[]) {
+		for (const curId of postIds) {
 			if (this.subscriptions[curId]) {
+				console.log(curId);
 				this.subscriptions[curId]();
-			}
-			const parentId = (await postManager.getPost(curId)).parent;
-			if (parentId) {
-				curId = (await postManager.getPost(parentId.toString()))._id;
-			} else {
-				break;
 			}
 		}
 	}

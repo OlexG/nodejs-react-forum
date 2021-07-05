@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Post from '../Post';
 import NavbarComponent from '../Navbar';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -13,23 +13,12 @@ import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 import UserDashboard from '../UserDashboard';
 import Cookies from 'js-cookie';
 import Popup from '../Popup';
+import Notifications from '../Notifications';
 
 const App = () => {
 	const [popup, setPopup] = useState({});
 	const username = Cookies.get('username');
 	const { reactions, loading } = useReactionsFetch(username, setPopup);
-	useEffect(() => {
-		if (username) {
-			const eventSource = new EventSource(
-				`http://localhost:3001/api/v1/users/${username}/notifications`,
-				{ withCredentials: true }
-			);
-			eventSource.onmessage = (e) => {
-				console.log(e.data);
-			};
-		}
-	}, [username]);
-
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filterOptions, setFilterOptions] = useState({});
 	const totalPosts = usePostsNumberFetch(setPopup).result;
@@ -42,6 +31,7 @@ const App = () => {
 	return (
 		<div>
 			<NavbarComponent />
+			<Notifications username={username} />
 			{popup.message && <Popup error message={popup.message} />}
 			<div className='row'>
 				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Pagination } from 'react-bootstrap';
-
 // helper function for generating a range (1,3,1) -> [1,2,3]
 const range = (start, end) =>
 	new Array(end - start + 1).fill().map((el, ind) => ind + start);

@@ -2,7 +2,7 @@
 import { initManagers } from '../db/initDB';
 import { registerUser, publisher, unregisterUser } from '../notifications';
 import jwt = require('jsonwebtoken');
-const { userManager } = initManagers();
+const { userManager, postManager } = initManagers();
 const { resolve } = require('path');
 
 async function postUsers(req, res, next) {
@@ -92,9 +92,9 @@ async function setUpNotifications(req, res, next) {
 		'Cache-Control': 'no-cache',
 		Connection: 'keep-alive'
 	});
-	await registerUser(req.cookies.username, res.write.bind(res));
+	await registerUser(req.cookies.username, res.write.bind(res), postManager);
 	req.on('close', () => {
-		unregisterUser(req.cookies.username);
+		unregisterUser(req.cookies.username, postManager);
 		res.end();
 	});
 }
