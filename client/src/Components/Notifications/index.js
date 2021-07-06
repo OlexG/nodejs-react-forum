@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Notifications = ({ username }) => {
-	const [notifications, setNotificaions] = useState(
+	const [notifications, setNotifications] = useState(
 		localStorage.getItem('notifications')
 			? JSON.parse(localStorage.getItem('notifications'))
 			: []
@@ -30,7 +30,7 @@ const Notifications = ({ username }) => {
 	}, [notifications]);
 
 	function addNotification(message, link) {
-		setNotificaions((oldArray) => {
+		setNotifications((oldArray) => {
 			if (!oldArray.some((e) => e.link === link)) {
 				return [...oldArray, { message, link }];
 			} else {
@@ -41,7 +41,7 @@ const Notifications = ({ username }) => {
 
 	function deleteNotification(link) {
 		const newNotifications = notifications.filter((e) => e.link !== link);
-		setNotificaions(newNotifications);
+		setNotifications(newNotifications);
 	}
 
 	return (
