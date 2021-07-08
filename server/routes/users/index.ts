@@ -90,7 +90,7 @@ app.get(
 // if the server runs on a different address and create-react-app is proxying SSE won't work so have to send request directly to server
 app.get(
 	'/api/v1/users/:username/notifications',
-	cors({ credentials: true, origin: 'http://localhost:3000' }),
+	cors({ credentials: true, origin: process.env.CLIENT_ADDR }),
 	validateRefreshJWT,
 	validateUsernameCookie,
 	wrap(userController.setUpNotifications)

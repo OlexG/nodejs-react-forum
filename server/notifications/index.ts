@@ -9,7 +9,7 @@ export async function registerUser(
 	notifyFn: (message: string) => void,
 	postManager: PostManager
 ) {
-	if (!users[username]) {
+	if (users && !users[username]) {
 		users[username] = new User(notifyFn);
 		const postIds = await postManager.getUserPosts(username);
 		// save the user on the users object and subscribe them to all the posts they made
@@ -18,15 +18,17 @@ export async function registerUser(
 }
 
 export function subscribeUser(username, postId) {
-	if (users[username]) {
+	if (users && publisher && users[username]) {
 		// subscribe the user with a function that will send the user the postID
 		const fn = () => users[username].notify(`data: ${postId}\n\n`);
-		publisher.subscribe(postId, fn);
+		if (publisher) {
+			publisher.subscribe(postId, fn);
+		}
 	}
 }
 
-export async function unregisterUser(username, postManager: PostManager) {
-	if (users[username]) {
+export async function unsubscribeUser(username, postManager: PostManager) {
+	if (users && publisher && users[username]) {
 		const postIds = await postManager.getUserPosts(username);
 		// delete the user from the users object and unsubscribe them from all the posts they made
 		postIds.forEach((el) => publisher.unsubscribe(el._id));

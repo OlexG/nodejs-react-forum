@@ -6,4 +6,5 @@ const REFRESH_TOKEN_TIME = 500 * 1000;
 // MAX_COMMENT_DEPTH: the depth to which comments are displayed.
 // Should be same as MAX_COMMENT_DEPTH in .env
 const MAX_COMMENT_DEPTH = 3;
-export { POSTS_PER_PAGE, REFRESH_TOKEN_TIME, MAX_COMMENT_DEPTH };
+const SERVER_ADDR = 'http://localhost:3001';
+export { POSTS_PER_PAGE, REFRESH_TOKEN_TIME, MAX_COMMENT_DEPTH, SERVER_ADDR };

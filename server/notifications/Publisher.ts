@@ -8,16 +8,16 @@ export default class Publisher {
 		this.subscriptions = subscriptions;
 	}
 
-	subscribe(postId: string, fn: () => void) {
-		this.subscriptions[postId] = fn;
+	subscribe(id: string, fn: () => void) {
+		this.subscriptions[id] = fn;
 	}
 
-	unsubscribe(postId: string) {
-		delete this.subscriptions[postId];
+	unsubscribe(id: string) {
+		delete this.subscriptions[id];
 	}
 
-	async notify(postIds: string[]) {
-		for (const curId of postIds) {
+	async notify(id: string[]) {
+		for (const curId of id) {
 			if (this.subscriptions[curId]) {
 				this.subscriptions[curId]();
 			}

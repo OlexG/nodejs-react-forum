@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { initManagers } from '../db/initDB';
-import { registerUser, publisher, unregisterUser } from '../notifications';
+import { registerUser, publisher, unsubscribeUser } from '../notifications';
 import jwt = require('jsonwebtoken');
 const { userManager, postManager } = initManagers();
 const { resolve } = require('path');
@@ -94,7 +94,7 @@ async function setUpNotifications(req, res, next) {
 	});
 	await registerUser(req.cookies.username, res.write.bind(res), postManager);
 	req.on('close', () => {
-		unregisterUser(req.cookies.username, postManager);
+		unsubscribeUser(req.cookies.username, postManager);
 		res.end();
 	});
 }
