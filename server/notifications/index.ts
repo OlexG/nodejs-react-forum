@@ -18,7 +18,7 @@ export async function registerUser(
 }
 
 export function subscribeUser(username, postId) {
-	if (users && publisher && users[username]) {
+	if (users?.[username] && publisher) {
 		// subscribe the user with a function that will send the user the postID
 		const fn = () => users[username].notify(`data: ${postId}\n\n`);
 		if (publisher) {
@@ -28,7 +28,7 @@ export function subscribeUser(username, postId) {
 }
 
 export async function unsubscribeUser(username, postManager: PostManager) {
-	if (users && publisher && users[username]) {
+	if (users?.[username] && publisher) {
 		const postIds = await postManager.getUserPosts(username);
 		// delete the user from the users object and unsubscribe them from all the posts they made
 		postIds.forEach((el) => publisher.unsubscribe(el._id));
