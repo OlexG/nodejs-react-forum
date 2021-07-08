@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 const AppRouter = () => {
 	return (
 		<>
-			<Router forceRefresh>
+			<Router>
 				<Route exact path='/' component={App} />
 				<Route path='/create' component={PostCreator} />
 				<Route path='/comment' component={PostCreator} />

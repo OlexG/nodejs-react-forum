@@ -11,8 +11,18 @@ const Notifications = ({ username }) => {
 
 	// for opening and EventSource with the server
 	useEffect(() => {
+		function addNotification(message, link) {
+			setNotifications((oldArray) => {
+				if (!oldArray.some((e) => e.link === link)) {
+					return [...oldArray, { message, link }];
+				} else {
+					return oldArray;
+				}
+			});
+		}
+		let eventSource;
 		if (username) {
-			const eventSource = new EventSource(
+			eventSource = new EventSource(
 				`http://localhost:3001/api/v1/users/${username}/notifications`,
 				{ withCredentials: true }
 			);
@@ -20,8 +30,11 @@ const Notifications = ({ username }) => {
 				addNotification('A comment was added to your post', e.data);
 			};
 		}
-		// removed addNotification as this function reference every rerender
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		return function cleanup() {
+			if (eventSource) {
+				eventSource.close();
+			}
+		};
 	}, [username]);
 
 	// for updating localStorage
@@ -29,25 +42,19 @@ const Notifications = ({ username }) => {
 		localStorage.setItem('notifications', JSON.stringify(notifications));
 	}, [notifications]);
 
-	function addNotification(message, link) {
-		setNotifications((oldArray) => {
-			if (!oldArray.some((e) => e.link === link)) {
-				return [...oldArray, { message, link }];
-			} else {
-				return oldArray;
-			}
-		});
-	}
-
-	function deleteNotification(link) {
+	function deleteNotification(link, sync) {
 		const newNotifications = notifications.filter((e) => e.link !== link);
+		if (sync) {
+			// have to syncronously set local storage if we are visiting a new page
+			// as setting state may happen too late
+			localStorage.setItem('notifications', JSON.stringify(newNotifications));
+		}
 		setNotifications(newNotifications);
 	}
 
 	return (
 		<div>
 			{notifications.map((el, i) => (
-				// order will not change so using index as key
 				<div className='alert alert-success' role='alert' key={el.link}>
 					<div className='d-flex justify-content-between'>
 						<p>{el.message}</p>
@@ -55,12 +62,12 @@ const Notifications = ({ username }) => {
 							onClick={() => deleteNotification(el.link)}
 							style={{ cursor: 'default' }}
 						>
-							x
+							&#10005;
 						</p>
 					</div>
 					<Link
 						to={`/posts/${el.link}`}
-						onClick={() => deleteNotification(el.link)}
+						onClick={() => deleteNotification(el.link, true)}
 					>
 						Visit Post
 					</Link>
