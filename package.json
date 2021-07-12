@@ -7,7 +7,7 @@
 		"test": "mocha -r ts-node/register tests/middleWare.ts",
 		"start": "node dist/index.js",
 		"start-dev": "nodemon --watch '**' --ext 'ts,json' --exec 'npx ts-node server/index.ts'",
-		"build": "cd client && npm run build && cd .. && npx tsc",
+		"build": "cd client && npm install && npm run build && cd .. && npx tsc",
 		"client": "npm start --prefix client",
 		"dev": "run-p server client",
 		"prepare": "husky install"
