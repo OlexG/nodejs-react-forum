@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SERVER_ADDR } from '../../constants';
+import { API_URL } from '../../constants';
 const Notifications = ({ username }) => {
 	const [notifications, setNotifications] = useState(
 		localStorage.getItem('notifications')
@@ -23,7 +23,7 @@ const Notifications = ({ username }) => {
 		let eventSource;
 		if (username) {
 			eventSource = new EventSource(
-				`${SERVER_ADDR}/api/v1/users/${username}/notifications`,
+				`${API_URL}/api/v1/users/${username}/notifications`,
 				{ withCredentials: true }
 			);
 			eventSource.onmessage = (e) => {

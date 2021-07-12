@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import NavbarComponent from '../Navbar';
 import api from '../../api.js';
+import Popup from '../Popup';
 
 const LoginPage = (props) => {
 	const history = useHistory();
+	const [popup, setPopup] = useState({});
 
 	async function handleClick(e) {
 		e.preventDefault();
@@ -21,12 +23,13 @@ const LoginPage = (props) => {
 		if (res.status === 200) {
 			history.push('/');
 		} else {
-			// display error here
+			setPopup({ message: 'Incorrect username or password' });
 		}
 	}
 	return (
 		<>
 			<NavbarComponent />
+			{popup.message && <Popup error message={popup.message} />}
 			<div
 				style={{
 					marginLeft: '20%',
