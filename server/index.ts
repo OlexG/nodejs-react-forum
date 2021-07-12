@@ -23,7 +23,7 @@ initDB()
 		app.use(users);
 		if (process.env.MODE === 'PRODUCTION') {
 			// serve the index.html file for any request, if it is not an api request
-			app.get('/*', function (req, res) {
+			app.get('*', function (req, res) {
 				res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 			});
 		}
