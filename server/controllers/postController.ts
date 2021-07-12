@@ -2,9 +2,7 @@
 import { initManagers } from '../db/initDB';
 import { SortOption, FilterObject } from '../db/PostManager';
 import { scheduleJob } from '../scheduling/scheduler';
-
 const { postManager, userManager } = initManagers();
-
 async function postPosts(req, res, next) {
 	const refreshToken = req.cookies.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);

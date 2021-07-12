@@ -13,13 +13,12 @@ import useReactionsFetch from '../../Hooks/useReactionsFetch.js';
 import UserDashboard from '../UserDashboard';
 import Cookies from 'js-cookie';
 import Popup from '../Popup';
+import Notifications from '../Notifications';
 
 const App = () => {
 	const [popup, setPopup] = useState({});
-	const { reactions, loading } = useReactionsFetch(
-		Cookies.get('username'),
-		setPopup
-	);
+	const username = Cookies.get('username');
+	const { reactions, loading } = useReactionsFetch(username, setPopup);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filterOptions, setFilterOptions] = useState({});
 	const totalPosts = usePostsNumberFetch(setPopup).result;
@@ -32,6 +31,7 @@ const App = () => {
 	return (
 		<div>
 			<NavbarComponent />
+			<Notifications username={username} />
 			{popup.message && <Popup error message={popup.message} />}
 			<div className='row'>
 				<div className='list-group-flush align-items-center col-8 align-self-start mt-3'>
@@ -93,11 +93,8 @@ const App = () => {
 							perPage={POSTS_PER_PAGE}
 						/>
 					)}
-					{Cookies.get('username') && (
-						<UserDashboard
-							username={Cookies.get('username')}
-							setPopup={setPopup}
-						/>
+					{username && (
+						<UserDashboard username={username} setPopup={setPopup} />
 					)}
 				</div>
 			</div>

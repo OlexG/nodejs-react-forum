@@ -9,29 +9,32 @@ interface IPost extends mongoose.Document {
 	parent?: mongoose.Types.ObjectId;
 }
 
-const PostSchema = new mongoose.Schema({
-	title: {
-		type: String
+const PostSchema = new mongoose.Schema(
+	{
+		title: {
+			type: String
+		},
+		body: {
+			type: String
+		},
+		upvotes: {
+			type: Number
+		},
+		author: {
+			type: String
+		},
+		date: {
+			type: Date
+		},
+		parent: {
+			type: mongoose.Types.ObjectId
+		}
 	},
-	body: {
-		type: String
-	},
-	upvotes: {
-		type: Number
-	},
-	author: {
-		type: String
-	},
-	date: {
-		type: Date
-	},
-	parent: {
-		type: mongoose.Types.ObjectId
-	}
-}, { minimize: false });
+	{ minimize: false }
+);
 
 // Index the title of the post and parent of the post for searching
-PostSchema.index({ title: 'text', parent: 1 });
+PostSchema.index({ title: 'text', parent: 1, author: 1 });
 
 interface IUser extends mongoose.Document {
 	username: string;
@@ -44,37 +47,40 @@ interface IUser extends mongoose.Document {
 	iconPath: string;
 }
 
-const UserSchema = new mongoose.Schema({
-	username: {
-		type: String,
-		required: true,
-		unique: true
+const UserSchema = new mongoose.Schema(
+	{
+		username: {
+			type: String,
+			required: true,
+			unique: true
+		},
+		password: {
+			type: String,
+			required: true
+		},
+		upvotes: {
+			type: mongoose.Schema.Types.Mixed,
+			required: true
+		},
+		downvotes: {
+			type: mongoose.Schema.Types.Mixed,
+			required: true
+		},
+		refreshToken: {
+			type: String
+		},
+		reputation: {
+			type: Number
+		},
+		numberOfPosts: {
+			type: Number
+		},
+		iconPath: {
+			type: String
+		}
 	},
-	password: {
-		type: String,
-		required: true
-	},
-	upvotes: {
-		type: mongoose.Schema.Types.Mixed,
-		required: true
-	},
-	downvotes: {
-		type: mongoose.Schema.Types.Mixed,
-		required: true
-	},
-	refreshToken: {
-		type: String
-	},
-	reputation: {
-		type: Number
-	},
-	numberOfPosts: {
-		type: Number
-	},
-	iconPath: {
-		type: String
-	}
-}, { minimize: false });
+	{ minimize: false }
+);
 
 // Index the title of the post and parent of the post for searching
 UserSchema.index({ username: 1 });

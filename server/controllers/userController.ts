@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { initManagers } from '../db/initDB';
+import { registerUser, publisher, unsubscribeUser } from '../notifications';
 import jwt = require('jsonwebtoken');
-const { userManager } = initManagers();
+const { userManager, postManager } = initManagers();
 const { resolve } = require('path');
 
 async function postUsers(req, res, next) {
@@ -85,6 +86,19 @@ async function getUserIcon(req, res, next) {
 	}
 }
 
+async function setUpNotifications(req, res, next) {
+	res.set({
+		'Content-Type': 'text/event-stream',
+		'Cache-Control': 'no-cache',
+		Connection: 'keep-alive'
+	});
+	await registerUser(req.cookies.username, res.write.bind(res), postManager);
+	req.on('close', () => {
+		unsubscribeUser(req.cookies.username, postManager);
+		res.end();
+	});
+}
+
 export default {
 	postUsers,
 	login,
@@ -93,5 +107,6 @@ export default {
 	logout,
 	getUserData,
 	changeUserIcon,
-	getUserIcon
+	getUserIcon,
+	setUpNotifications
 };
