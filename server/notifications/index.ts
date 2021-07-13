@@ -9,14 +9,15 @@ export async function registerUser(
 	notifyFn: (message: string) => void,
 	postManager: PostManager
 ) {
-	if (users && !users[username]) {
-		users[username] = { obj: new User(notifyFn), onlineInstances: 1 };
+	if (users) {
+		if (!users[username]) {
+			users[username] = { obj: new User(notifyFn), onlineInstances: 1 };
+		} else {
+			users[username].onlineInstances += 1;
+		}
 		const postIds = await postManager.getUserPosts(username);
 		// save the user on the users object and subscribe them to all the posts they made
 		postIds.forEach((el) => subscribeUser(username, el._id));
-	} else if (users[username]) {
-		users[username].onlineInstances += 1;
-		console.log(users[username].onlineInstances);
 	}
 }
 
