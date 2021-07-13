@@ -17,10 +17,13 @@ export default class Publisher {
 	}
 
 	async notify(id: string[]) {
+		console.log('In Publisher, attempting to notify', id);
 		for (const curId of id) {
 			if (this.subscriptions[curId]) {
 				console.log('Sending notification to client');
 				this.subscriptions[curId]();
+			} else {
+				console.log(this.subscriptions[curId]);
 			}
 		}
 	}
