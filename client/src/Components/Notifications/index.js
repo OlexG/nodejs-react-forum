@@ -26,6 +26,7 @@ const Notifications = ({ username }) => {
 				`${API_URL}/api/v1/users/${username}/notifications`,
 				{ withCredentials: true }
 			);
+			console.log('Initilizing connection');
 			eventSource.onmessage = (e) => {
 				addNotification('A comment was added to your post', e.data);
 			};
