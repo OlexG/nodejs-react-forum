@@ -22,27 +22,15 @@ const Notifications = ({ username }) => {
 		}
 		let eventSource;
 		if (username) {
-			function initES() {
-				if (eventSource == null || eventSource.readyState === 2) {
-					eventSource = new EventSource(
-						`${API_URL}/api/v1/users/${username}/notifications`,
-						{ withCredentials: true }
-					);
-					console.log('Initilizing connection');
-					eventSource.onmessage = (e) => {
-						if (e.data === 'heartbeat') {
-							console.log('Got heartbeat');
-						} else {
-							addNotification('A comment was added to your post', e.data);
-						}
-					};
-					eventSource.onerror = function (e) {
-						eventSource.close();
-						setTimeout(initES(), 1000);
-					};
+			eventSource = new EventSource(
+				`${API_URL}/api/v1/users/${username}/notifications`,
+				{ withCredentials: true }
+			);
+			eventSource.onmessage = (e) => {
+				if (e.data !== 'heartbeat') {
+					addNotification('A comment was added to your post', e.data);
 				}
-			}
-			initES();
+			};
 		}
 		return function cleanup() {
 			if (eventSource) {

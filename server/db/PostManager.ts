@@ -184,11 +184,6 @@ export class PostManager {
 
 		if (posts) {
 			const ids = posts.map((post) => post.link);
-			console.log('Attempting to notify', ids);
-			console.log(
-				'Publisher subscriptions from PostManager',
-				publisher.subscriptions
-			);
 			publisher.notify(ids);
 		}
 	}
