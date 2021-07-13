@@ -9,6 +9,7 @@ export default class Publisher {
 	}
 
 	subscribe(id: string, fn: () => void) {
+		console.log('Subscribing with function', fn);
 		this.subscriptions[id] = fn;
 	}
 
@@ -18,6 +19,7 @@ export default class Publisher {
 
 	async notify(id: string[]) {
 		console.log('In Publisher, attempting to notify', id);
+		console.log('Current subscriptions', this.subscriptions);
 		for (const curId of id) {
 			if (this.subscriptions[curId]) {
 				console.log('Sending notification to client');
