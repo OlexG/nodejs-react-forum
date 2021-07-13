@@ -94,13 +94,15 @@ async function setUpNotifications(req, res, next) {
 	});
 	await registerUser(req.cookies.username, res.write.bind(res), postManager);
 	console.log('From user controller', publisher.subscriptions);
+
 	const intervalId = setInterval(function () {
 		console.log('Sent heartbeat to client');
 		res.write('data: heartbeat\n\n');
 	}, 10000);
-
+	console.log('interval ', intervalId);
 	req.on('close', () => {
 		console.log('closing request');
+		console.log('interval ', intervalId);
 		clearInterval(intervalId);
 		unsubscribeUser(req.cookies.username, postManager);
 		console.log('closed - Publisher subscriptions', publisher.subscriptions);
