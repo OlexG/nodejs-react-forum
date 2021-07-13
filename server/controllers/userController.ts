@@ -96,7 +96,7 @@ async function setUpNotifications(req, res, next) {
 	const intervalId = setInterval(function () {
 		console.log('Sent hearbeat to client');
 		res.write(':\n\n');
-	}, 3000);
+	}, 10000);
 
 	req.on('close', () => {
 		clearInterval(intervalId);
