@@ -106,7 +106,6 @@ async function setUpNotifications(req, res, next) {
 		intervalId = null;
 		unsubscribeUser(req.cookies.username, postManager);
 		console.log('closed - Publisher subscriptions', publisher.subscriptions);
-		res.end();
 	});
 }
 
