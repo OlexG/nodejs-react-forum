@@ -95,7 +95,7 @@ async function setUpNotifications(req, res, next) {
 	await registerUser(req.cookies.username, res.write.bind(res), postManager);
 	const intervalId = setInterval(function () {
 		console.log('Sent hearbeat to client');
-		res.write(':\n\n');
+		res.write('data: hello' + Date.now() + '\n\n');
 	}, 10000);
 
 	req.on('close', () => {
