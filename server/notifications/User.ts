@@ -3,4 +3,8 @@ export default class User {
 	constructor(notify) {
 		this.notify = notify;
 	}
+
+	setNotifyFn(fn) {
+		this.notify = fn;
+	}
 }

@@ -14,6 +14,7 @@ export async function registerUser(
 			users[username] = { obj: new User(notifyFn), onlineInstances: 1 };
 		} else {
 			users[username].onlineInstances += 1;
+			users[username].obj.setNotifyFn(notifyFn);
 		}
 		const postIds = await postManager.getUserPosts(username);
 		// save the user on the users object and subscribe them to all the posts they made
