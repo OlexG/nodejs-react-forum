@@ -100,8 +100,10 @@ async function setUpNotifications(req, res, next) {
 	}, 10000);
 
 	req.on('close', () => {
+		console.log('closing request');
 		clearInterval(intervalId);
 		unsubscribeUser(req.cookies.username, postManager);
+		console.log('closed - Publisher subscriptions', publisher.subscriptions);
 		res.end();
 	});
 }

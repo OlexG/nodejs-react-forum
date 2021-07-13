@@ -36,6 +36,7 @@ export function subscribeUser(username, postId) {
 export async function unsubscribeUser(username, postManager: PostManager) {
 	if (users?.[username] && publisher) {
 		const postIds = await postManager.getUserPosts(username);
+		console.log('Removing postIds ', postIds);
 		// delete the user from the users object and unsubscribe them from all the posts they made
 		postIds.forEach((el) => publisher.unsubscribe(el._id));
 		delete users[username];
