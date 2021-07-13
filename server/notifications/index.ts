@@ -22,13 +22,13 @@ export function subscribeUser(username, postId) {
 		// subscribe the user with a function that will send the user the postID
 		const fn = () => users[username].notify(`data: ${postId}\n\n`);
 		if (publisher) {
+			publisher.subscribe(postId, fn);
 			console.log(
 				'Subscribing user',
 				username,
 				postId,
 				publisher.subscriptions
 			);
-			publisher.subscribe(postId, fn);
 		}
 	}
 }

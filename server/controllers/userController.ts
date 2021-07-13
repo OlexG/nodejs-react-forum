@@ -93,6 +93,7 @@ async function setUpNotifications(req, res, next) {
 		Connection: 'keep-alive'
 	});
 	await registerUser(req.cookies.username, res.write.bind(res), postManager);
+	console.log('From user controller', publisher.subscriptions);
 	const intervalId = setInterval(function () {
 		console.log('Sent heartbeat to client');
 		res.write('data: heartbeat\n\n');
