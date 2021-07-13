@@ -19,6 +19,7 @@ export default class Publisher {
 	async notify(id: string[]) {
 		for (const curId of id) {
 			if (this.subscriptions[curId]) {
+				console.log('Sending notification to client');
 				this.subscriptions[curId]();
 			}
 		}
