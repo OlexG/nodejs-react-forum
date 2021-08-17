@@ -17,6 +17,21 @@ A forum application built with NodeJS, Express, ReactJS and MongoDB.
 
 https://user-images.githubusercontent.com/36348190/123466294-062e9100-d5a4-11eb-9747-3e7070a72a4d.mp4
 
+### Questions
+
+Why JWTs?
+With the refresh/access token system, the app achieves a good balance between security and speed.
+Access tokens expire after a specific time, and you need to get refresh tokens from the database to get a new access token. If the access token is not expired, the app authenticates a request
+without reading from a database. 
+
+Why MongoDB?
+Posts and comments are stored as one type of "document," and they have different attributes. As a result, you have some unstructured data, and MongoDB is better for this. 
+There were also other instances of unstructured data that are easily implemented with MongoDB.
+
+Why On-Disc storage of user icons?
+Database storage is out of the question - it is too slow. The other two options were on disc storage or Cloud storage.
+Disc just makes more sense for a smaller project like this one. 
+
 ### Installation as a developer
 
 Make sure you have these installed
@@ -63,3 +78,12 @@ To run tests use this command from the root directory
 ```
 npm test
 ```
+
+### Deployment
+
+Compile the server code and client code by running ```npm run build```.
+This will generate a dist folder with the javascript server code and a build folder inside the client code with the built
+client code. If you want to serve the static client files with Express, change the ```MODE``` env variable to 'PRODUCTION'.
+Otherwise, you can simply serve them with a different service like NGINX. 
+
+
