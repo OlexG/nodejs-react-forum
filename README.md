@@ -28,9 +28,9 @@ Why MongoDB?
 Posts and comments are stored as one type of "document," and they have different attributes. As a result, you have some unstructured data, and MongoDB is better for this. 
 There were also other instances of unstructured data that are easily implemented with MongoDB.
 
-Why On-Disc storage of user icons?
-Database storage is out of the question - it is too slow. The other two options were on disc storage or Cloud storage.
-Disc just makes more sense for a smaller project like this one. 
+Why On-Disk storage of user icons?
+Database storage is out of the question - it is too slow. The other two options were on disk storage or cloud storage.
+Disk just makes more sense for a smaller project like this one. 
 
 ### Installation as a developer
 
