@@ -7,7 +7,10 @@ import bodyParser = require('body-parser');
 import cookieParser = require('cookie-parser');
 import path = require('path');
 import swaggerUi = require('swagger-ui-express');
-import swaggerDocument = require('../swagger.json');
+import fs = require('fs');
+const swaggerDocument = JSON.parse(
+	fs.readFileSync(path.resolve(__dirname, '../swagger.json')).toString('utf-8')
+);
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 
