@@ -28,6 +28,11 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/CreatePostReqest"
+							},
+							"example": {
+								"title": "Comment",
+								"body": "Hello everyone, I am making this comment under a post",
+								"parent": "60e360f314ba142e9db66eb2"
 							}
 						}
 					}
@@ -48,7 +53,296 @@
 						"description": "Invalid request body"
 					},
 					"401": {
-						"description": "Invalid access token"
+						"description": "Invalid access or refresh token. Relogin"
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			},
+			"get": {
+				"tags": ["Posts"],
+				"summary": "Get posts from a server",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "(Optional) The page number of the posts returned, this is useful for pagination",
+						"example": 2
+					},
+					{
+						"in": "query",
+						"name": "number",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "(Optional) The numbers of items per page if the page query parameter is included",
+						"example": 10
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"schema": {
+							"type": "string",
+							"enum": ["default", "recent", "most-upvotes", "oldest"]
+						},
+						"description": "(Optional) Specify how the posts are sorted",
+						"example": "default"
+					},
+					{
+						"in": "query",
+						"name": "parent",
+						"schema": {
+							"type": "string"
+						},
+						"description": "(Optional) If attempting to return comments under a post, specify this post as a parent",
+						"example": "60e360f314ba142e9db66eb2"
+					},
+					{
+						"in": "query",
+						"name": "returnWithComments",
+						"schema": {
+							"type": "boolean"
+						},
+						"description": "(Optional) If you want to return the posts nested with their comments, set this to true",
+						"example": false
+					},
+					{
+						"in": "query",
+						"name": "search",
+						"schema": {
+							"type": "string"
+						},
+						"description": "(Optional) If you want posts filtered by a string in the title",
+						"example": "Hello"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The posts as an array of javascript objects, where the children field contains nested comments and the other fields describe the post itself",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object"
+									}
+								},
+								"example": [
+									{
+										"author": "oleks2",
+										"body": "test3",
+										"children": [
+											{
+												"author": "oleks2",
+												"body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+												"children": [],
+												"date": "2021-09-02T17:37:49.569Z",
+												"level": 1,
+												"parent": "61310be94d23d059e8de33f5",
+												"title": "Comment",
+												"upvotes": 0,
+												"_id": "61310bed4d23d059e8de33f6"
+											}
+										],
+										"date": "2021-09-02T17:37:45.744Z",
+										"level": 0,
+										"parent": "61310be34d23d059e8de33f4",
+										"title": "Comment",
+										"upvotes": 0,
+										"__v": 0,
+										"_id": "61310be94d23d059e8de33f5"
+									}
+								]
+							}
+						}
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			}
+		},
+		"/posts/{id}": {
+			"get": {
+				"tags": ["Posts"],
+				"summary": "Get a single post based on id",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The post _id field"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The post itself",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SinglePostResult"
+								},
+								"example": {
+									"author": "oleks2",
+									"body": "test3",
+									"date": "2021-09-02T17:37:39.443Z",
+									"title": "test4",
+									"upvotes": 0,
+									"__v": 0,
+									"_id": "61310be34d23d059e8de33f4"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			}
+		},
+		"/posts-number": {
+			"get": {
+				"tags": ["Posts"],
+				"summary": "Get the number of total posts (useful for pagination)",
+				"responses": {
+					"200": {
+						"description": "The post itself",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"result": {
+											"type": "integer",
+											"description": "The number of posts"
+										}
+									}
+								},
+								"example": {
+									"result": 20
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			}
+		},
+		"/posts/{id}/upvote": {
+			"post": {
+				"security": [
+					{
+						"AccessTokenAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The _id field of the post to be upvoted"
+					}
+				],
+				"tags": ["Posts"],
+				"summary": "Submit a request to upvote a post",
+				"responses": {
+					"200": {
+						"description": "True if the upvote was successful and false otherwise",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid access or refresh token. Relogin"
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			}
+		},
+		"/posts/{id}/downvote": {
+			"post": {
+				"security": [
+					{
+						"AccessTokenAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The _id field of the post to be downvoted"
+					}
+				],
+				"tags": ["Posts"],
+				"summary": "Submit a request to downvote a post",
+				"responses": {
+					"200": {
+						"description": "True if the downvote was successful and false otherwise",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid access or refresh token. Relogin"
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			}
+		},
+		"/posts/{id}/remove-reactions": {
+			"post": {
+				"security": [
+					{
+						"AccessTokenAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The _id field of the post to be changed"
+					}
+				],
+				"tags": ["Posts"],
+				"summary": "Submit a request to remove a user reaction from a post, either upvote or downvote",
+				"responses": {
+					"200": {
+						"description": "The reaction was either removed successfully, or there was no reaction present"
+					},
+					"401": {
+						"description": "Invalid access or refresh token. Relogin"
 					},
 					"500": {
 						"description": "The server malfunctioned"
@@ -88,6 +382,53 @@
 					}
 				}
 			},
+			"SinglePostResult": {
+				"type": "object",
+				"required": [
+					"title",
+					"body",
+					"date",
+					"author",
+					"upvotes",
+					"__v",
+					"_id"
+				],
+				"properties": {
+					"title": {
+						"type": "string",
+						"description": "The title of the post"
+					},
+					"body": {
+						"type": "string",
+						"description": "The body of the post"
+					},
+					"date": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Date created"
+					},
+					"author": {
+						"type": "string",
+						"description": "the username of the author"
+					},
+					"upvotes": {
+						"type": "integer",
+						"description": "the number of upvotes the post has"
+					},
+					"__v": {
+						"type": "integer",
+						"description": "Version of the post document, used internally by mongoose"
+					},
+					"_id": {
+						"type": "integer",
+						"description": "The id of the post"
+					},
+					"parent": {
+						"type": "string",
+						"description": "The id of the parent"
+					}
+				}
+			},
 			"User": {
 				"type": "object",
 				"properties": {
@@ -118,7 +459,7 @@
 							"type": "integer",
 							"format": "int32"
 						},
-						"description": "Object marking downvotes posts with a 1",
+						"description": "Object marking downvoted posts with a 1",
 						"example": {
 							"60e360f314ba142e9db66eb2": 1,
 							"70e360g314ba142e9db66eb2": 1
@@ -141,6 +482,10 @@
 					"iconPath": {
 						"type": "string",
 						"description": "Where the user icon is stored"
+					},
+					"__v": {
+						"type": "integer",
+						"description": "Version of the user document, used internally by mongoose"
 					}
 				}
 			}
