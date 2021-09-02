@@ -6,6 +6,8 @@ import express = require('express');
 import bodyParser = require('body-parser');
 import cookieParser = require('cookie-parser');
 import path = require('path');
+import swaggerUi = require('swagger-ui-express');
+import swaggerDocument = require('../swagger.json');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 
@@ -19,6 +21,7 @@ initDB()
 		}
 		app.use(cookieParser());
 		app.use(bodyParser.json());
+		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 		app.use(posts);
 		app.use(users);
 		if (process.env.MODE === 'PRODUCTION') {

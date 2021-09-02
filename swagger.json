@@ -1,0 +1,149 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"description": "A demo Forum application",
+		"version": "1.0.0",
+		"title": "Forum"
+	},
+	"servers": [
+		{
+			"url": "nodejs-react-forum.herokuapp.com/api/v1",
+			"description": "Main production server"
+		}
+	],
+	"paths": {
+		"/posts": {
+			"post": {
+				"security": [
+					{
+						"AccessTokenAuth": []
+					}
+				],
+				"tags": ["Posts"],
+				"summary": "Submit a post to the server",
+				"requestBody": {
+					"description": "The post information",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePostReqest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "The _id field of the added post",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "integer",
+									"format": "int32"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid request body"
+					},
+					"401": {
+						"description": "Invalid access token"
+					},
+					"500": {
+						"description": "The server malfunctioned"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"AccessTokenAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"description": "Access token in the auth header"
+			}
+		},
+		"schemas": {
+			"CreatePostReqest": {
+				"type": "object",
+				"required": ["title", "body"],
+				"properties": {
+					"title": {
+						"type": "string",
+						"description": "The title of the post"
+					},
+					"body": {
+						"type": "string",
+						"description": "The body of the post"
+					},
+					"date": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"parent": {
+						"type": "string",
+						"description": "id of the parent post"
+					}
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"upvotes": {
+						"type": "object",
+						"additionalProperties": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"description": "Object marking upvoted posts with a 1",
+						"example": {
+							"60e360f314ba142e9db66eb2": 1,
+							"70e360g314ba142e9db66eb2": 1
+						}
+					},
+					"downvotes": {
+						"type": "object",
+						"additionalProperties": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"description": "Object marking downvotes posts with a 1",
+						"example": {
+							"60e360f314ba142e9db66eb2": 1,
+							"70e360g314ba142e9db66eb2": 1
+						}
+					},
+					"refreshToken": {
+						"type": "string",
+						"description": "The refresh token used for authentication and refreshing the access token"
+					},
+					"reputation": {
+						"type": "integer",
+						"format": "int32",
+						"description": "The difference between the number of upvotes and downvotes this user's posts have"
+					},
+					"numberOfPosts": {
+						"type": "integer",
+						"format": "int32",
+						"description": "How many posts this user made"
+					},
+					"iconPath": {
+						"type": "string",
+						"description": "Where the user icon is stored"
+					}
+				}
+			}
+		}
+	}
+}
