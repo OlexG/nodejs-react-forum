@@ -7,7 +7,7 @@
 		"node": "14.15.5"
 	},
 	"scripts": {
-		"test": "mocha -r ts-node/register tests/middleWare.ts",
+		"test": "mocha -r ts-node/register tests/middleWare.ts && mocha -r ts-node/register tests/postController.ts && mocha -r ts-node/register tests/userController.ts",
 		"start": "node dist/index.js",
 		"start-dev": "nodemon --watch '**' --ext 'ts,json' --exec 'npx ts-node server/index.ts'",
 		"build": "cd client && npm install && npm run build && cd .. && npx tsc",

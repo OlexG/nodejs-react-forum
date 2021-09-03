@@ -27,7 +27,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CreatePostReqest"
+								"$ref": "#/components/schemas/CreatePostRequest"
 							},
 							"example": {
 								"title": "Comment",
@@ -54,9 +54,6 @@
 					},
 					"401": {
 						"description": "Invalid access or refresh token. Relogin"
-					},
-					"500": {
-						"description": "The server malfunctioned"
 					}
 				}
 			},
@@ -159,9 +156,6 @@
 								]
 							}
 						}
-					},
-					"500": {
-						"description": "The server malfunctioned"
 					}
 				}
 			}
@@ -200,9 +194,6 @@
 								}
 							}
 						}
-					},
-					"500": {
-						"description": "The server malfunctioned"
 					}
 				}
 			}
@@ -230,9 +221,6 @@
 								}
 							}
 						}
-					},
-					"500": {
-						"description": "The server malfunctioned"
 					}
 				}
 			}
@@ -242,6 +230,9 @@
 				"security": [
 					{
 						"AccessTokenAuth": []
+					},
+					{
+						"RefreshTokenAuth": []
 					}
 				],
 				"parameters": [
@@ -270,9 +261,6 @@
 					},
 					"401": {
 						"description": "Invalid access or refresh token. Relogin"
-					},
-					"500": {
-						"description": "The server malfunctioned"
 					}
 				}
 			}
@@ -282,6 +270,9 @@
 				"security": [
 					{
 						"AccessTokenAuth": []
+					},
+					{
+						"RefreshTokenAuth": []
 					}
 				],
 				"parameters": [
@@ -310,9 +301,6 @@
 					},
 					"401": {
 						"description": "Invalid access or refresh token. Relogin"
-					},
-					"500": {
-						"description": "The server malfunctioned"
 					}
 				}
 			}
@@ -322,6 +310,9 @@
 				"security": [
 					{
 						"AccessTokenAuth": []
+					},
+					{
+						"RefreshTokenAuth": []
 					}
 				],
 				"parameters": [
@@ -343,9 +334,363 @@
 					},
 					"401": {
 						"description": "Invalid access or refresh token. Relogin"
+					}
+				}
+			}
+		},
+		"/users": {
+			"post": {
+				"tags": ["Users"],
+				"summary": "Add a user",
+				"requestBody": {
+					"description": "The user information",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserRequest"
+							},
+							"example": {
+								"username": "user123",
+								"password": "password12345"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "The _id field of the added post",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"validation": {
+											"type": "object",
+											"properties": {
+												"body": {
+													"type": "object",
+													"properties": {
+														"message": {
+															"type": "string",
+															"enum": ["success"]
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					},
-					"500": {
-						"description": "The server malfunctioned"
+					"400": {
+						"description": "Password is less then 8 characters long or username already exists",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"validation": {
+											"type": "object",
+											"properties": {
+												"body": {
+													"type": "object",
+													"properties": {
+														"message": {
+															"type": "string",
+															"enum": [
+																"username already exists",
+																"your password is less then 8 characters long"
+															]
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/login": {
+			"post": {
+				"tags": ["Users"],
+				"summary": "Log in a user",
+				"requestBody": {
+					"description": "The user information",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserRequest"
+							},
+							"example": {
+								"username": "user123",
+								"password": "password12345"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successfully authenticated, a username and access token cookie is set. Also a refresh token cookie is set however it cannot be accessed through client scripts.",
+						"headers": {
+							"Set-Cookie": {
+								"description": "Access token",
+								"schema": {
+									"type": "string",
+									"example": "accessToken=abcde12345;"
+								}
+							},
+							"\nSet-Cookie": {
+								"description": "Refresh token",
+								"schema": {
+									"type": "string",
+									"example": "refreshToken=fghijk678910; HttpOnly; SameSite=Strict"
+								}
+							},
+							"\n\nSet-Cookie": {
+								"description": "The username",
+								"schema": {
+									"type": "string",
+									"example": "username=user123"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "No such such user exists"
+					}
+				}
+			}
+		},
+		"/token": {
+			"get": {
+				"summary": "Get a new access token as it expires every 10 minutes",
+				"tags": ["Users"],
+				"security": [
+					{
+						"RefreshTokenAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"headers": {
+							"Set-Cookie": {
+								"description": "Access token",
+								"schema": {
+									"type": "string",
+									"example": "accessToken=abcde12345;"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid refresh token cookie. Relogin"
+					}
+				}
+			}
+		},
+		"/logout": {
+			"delete": {
+				"tags": ["Users"],
+				"security": [
+					{
+						"RefreshTokenAuth": []
+					}
+				],
+				"summary": "Log out a user",
+				"responses": {
+					"200": {
+						"description": "Successfuly deleted the refresh token cookie"
+					},
+					"401": {
+						"description": "Invalid refresh token cookie"
+					}
+				}
+			}
+		},
+		"/users/{username}/reactions": {
+			"get": {
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The username of the user"
+					}
+				],
+				"tags": ["Users"],
+				"summary": "Get the reactions of a user",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"downvotes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": "integer",
+												"format": "int32"
+											},
+											"description": "Object marking downvoted posts with a 1",
+											"example": {
+												"60e360f314ba142e9db66eb2": 1,
+												"70e360g314ba142e9db66eb2": 1
+											}
+										},
+										"upvotes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": "integer",
+												"format": "int32"
+											},
+											"description": "Object marking upvoted posts with a 1",
+											"example": {
+												"60e360f314ba142e9db66eb2": 1,
+												"70e360g314ba142e9db66eb2": 1
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid username parameter"
+					}
+				}
+			}
+		},
+		"/users/{username}": {
+			"get": {
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The username of the user"
+					}
+				],
+				"tags": ["Users"],
+				"summary": "Get public data of a user",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"reputation": {
+											"type": "integer",
+											"format": "int32"
+										},
+										"numberOfPosts": {
+											"type": "integer",
+											"format": "int32"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid username parameter"
+					}
+				}
+			}
+		},
+		"/users/{username}/icon": {
+			"post": {
+				"summary": "Set a user icon",
+				"tags": ["Users"],
+				"security": [
+					{
+						"AccessTokenAuth": []
+					},
+					{
+						"RefreshTokenAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The username of the user"
+					}
+				],
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"image": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Invalid username parameter"
+					}
+				}
+			},
+			"get": {
+				"tags": ["Users"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The username of the user"
+					}
+				],
+				"summary": "Get a user icon",
+				"responses": {
+					"200": {
+						"description": "The user icon",
+						"content": {
+							"image": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								},
+								"example": "imagebinary..."
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid username parameter"
 					}
 				}
 			}
@@ -357,10 +702,29 @@
 				"type": "http",
 				"scheme": "bearer",
 				"description": "Access token in the auth header"
+			},
+			"RefreshTokenAuth": {
+				"type": "apiKey",
+				"in": "cookie",
+				"name": "refreshToken"
 			}
 		},
 		"schemas": {
-			"CreatePostReqest": {
+			"CreateUserRequest": {
+				"type": "object",
+				"required": ["username", "password"],
+				"properties": {
+					"username": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string",
+						"minimum": 8,
+						"description": "Password has to be at least 8 characters long"
+					}
+				}
+			},
+			"CreatePostRequest": {
 				"type": "object",
 				"required": ["title", "body"],
 				"properties": {
