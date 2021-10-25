@@ -7,7 +7,7 @@
 	},
 	"servers": [
 	  {
-		"url": "starforum.herokuapp.com/api/v1",
+		"url": "https://starforum.herokuapp.com/api/v1",
 		"description": "Main production server"
 	  }
 	],
