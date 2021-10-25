@@ -8,6 +8,7 @@ import cookieParser = require('cookie-parser');
 import path = require('path');
 import swaggerUi = require('swagger-ui-express');
 import fs = require('fs');
+import cors = require('cors');
 const swaggerDocument = JSON.parse(
 	fs.readFileSync(path.resolve(__dirname, '../swagger.json')).toString('utf-8')
 );
@@ -22,6 +23,7 @@ initDB()
 			// serve the built app statically
 			app.use(express.static(path.join(__dirname, '../client/build')));
 		}
+		app.use(cors());
 		app.use(cookieParser());
 		app.use(bodyParser.json());
 		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
