@@ -3,6 +3,7 @@ import { Navbar, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'js-cookie';
 import api from '../../api.js';
+import { Link } from 'react-router-dom';
 
 const NavbarComponent = () => {
 	async function logoutUser() {
@@ -27,10 +28,12 @@ const NavbarComponent = () => {
 					</React.Fragment>
 				) : (
 					<React.Fragment>
-						<Nav.Link className='mr-sm-2' href='/signup'>
-							Sign Up
+						<Nav.Link className='mr-sm-2'>
+							<Link to='/signup'>Sign Up</Link>
 						</Nav.Link>
-						<Nav.Link href='/login'>Log In</Nav.Link>
+						<Nav.Link href='/login'>
+							<Link to='/login'>Log In</Link>
+						</Nav.Link>
 					</React.Fragment>
 				)}
 			</Navbar.Collapse>
