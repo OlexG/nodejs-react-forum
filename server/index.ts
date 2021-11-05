@@ -20,6 +20,15 @@ initDB()
 		const posts = require('./routes/posts/index');
 		const users = require('./routes/users/index');
 		// set up cors for all routes
+		if (process.env.MODE === 'PRODUCTION') {
+			// serve the built app statically
+			app.use(express.static(path.join(__dirname, '../client/build')));
+		}
+
+		app.use(cookieParser());
+		app.use(bodyParser.json());
+		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 		app.use(
 			cors({
 				optionsSuccessStatus: 200,
@@ -37,14 +46,7 @@ initDB()
 			);
 			next();
 		});
-		if (process.env.MODE === 'PRODUCTION') {
-			// serve the built app statically
-			app.use(express.static(path.join(__dirname, '../client/build')));
-		}
 
-		app.use(cookieParser());
-		app.use(bodyParser.json());
-		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 		app.use(posts);
 		app.use(users);
 		if (process.env.MODE === 'PRODUCTION') {
