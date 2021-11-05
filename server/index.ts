@@ -33,7 +33,11 @@ initDB()
 			cors({
 				optionsSuccessStatus: 200,
 				credentials: true,
-				origin: 'http://localhost:3000'
+				origin: [
+					'http://localhost:3000',
+					'https://igorleshchenko.github.io/star-university-q3-2021-group-1',
+					'https://igorleshchenko.github.io/star-university-q3-2021-group-2'
+				]
 			})
 		);
 
