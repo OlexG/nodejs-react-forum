@@ -26,7 +26,7 @@ initDB()
     // set up course from all routes
 		app.use(cors({
       optionsSuccessStatus: 200,
-      origin: '*'
+      origin: 'http://localhost:3000'
     }));
 
     app.use(function(req, res, next) {
