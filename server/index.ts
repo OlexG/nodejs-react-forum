@@ -19,15 +19,11 @@ initDB()
 	.then(() => {
 		const posts = require('./routes/posts/index');
 		const users = require('./routes/users/index');
-		if (process.env.MODE === 'PRODUCTION') {
-			// serve the built app statically
-			app.use(express.static(path.join(__dirname, '../client/build')));
-		}
-		// set up course from all routes
+		// set up cors for all routes
 		app.use(
 			cors({
 				optionsSuccessStatus: 200,
-        credentials: true,
+				credentials: true,
 				origin: 'http://localhost:3000'
 			})
 		);
@@ -41,6 +37,10 @@ initDB()
 			);
 			next();
 		});
+		if (process.env.MODE === 'PRODUCTION') {
+			// serve the built app statically
+			app.use(express.static(path.join(__dirname, '../client/build')));
+		}
 
 		app.use(cookieParser());
 		app.use(bodyParser.json());

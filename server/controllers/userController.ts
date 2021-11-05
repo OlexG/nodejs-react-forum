@@ -21,13 +21,22 @@ async function login(req, res, next) {
 	});
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
 
-	res.cookie('accessToken', accessToken, { overwrite: true });
+	res.cookie('accessToken', accessToken, {
+		overwrite: true,
+		sameSite: 'none',
+		secure: true
+	});
 	res.cookie('refreshToken', refreshToken, {
 		overwrite: true,
 		httpOnly: true,
-		sameSite: 'strict'
+		sameSite: 'none',
+		secure: true
 	});
-	res.cookie('username', username, { overwrite: true });
+	res.cookie('username', username, {
+		overwrite: true,
+		sameSite: 'none',
+		secure: true
+	});
 
 	await userManager.addRefreshToken(username, refreshToken);
 
@@ -42,7 +51,11 @@ async function getAccessToken(req, res, next) {
 	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, {
 		expiresIn: process.env.TOKEN_EXPIRATION_TIME
 	});
-	res.cookie('accessToken', accessToken, { overwrite: true });
+	res.cookie('accessToken', accessToken, {
+		overwrite: true,
+		sameSite: 'none',
+		secure: true
+	});
 	res.sendStatus(200);
 }
 
