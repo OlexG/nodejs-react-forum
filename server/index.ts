@@ -23,7 +23,22 @@ initDB()
 			// serve the built app statically
 			app.use(express.static(path.join(__dirname, '../client/build')));
 		}
-		app.use(cors());
+    // set up course from all routes
+		app.use(cors({
+      optionsSuccessStatus: 200,
+      origin: '*'
+    }));
+
+    app.use(function(req, res, next) {
+      res.header('Content-Type', 'application/json;charset=UTF-8');
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+      );
+      next();
+    })
+  
 		app.use(cookieParser());
 		app.use(bodyParser.json());
 		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
