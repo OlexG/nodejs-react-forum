@@ -5,6 +5,11 @@ import jwt = require('jsonwebtoken');
 const { userManager, postManager } = initManagers();
 const { resolve } = require('path');
 
+// parse domain from url
+function parseDomain(url) {
+	return new URL(url).hostname;
+}
+
 async function postUsers(req, res, next) {
 	const { username, password } = req.body;
 	const result = await userManager.addUser(username, password);
@@ -20,25 +25,24 @@ async function login(req, res, next) {
 		expiresIn: process.env.TOKEN_EXPIRATION_TIME
 	});
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
-
 	res.cookie('accessToken', accessToken, {
 		overwrite: true,
 		sameSite: 'none',
 		secure: true,
-		domain: req.get('origin')
+		domain: parseDomain(req.get('origin'))
 	});
 	res.cookie('refreshToken', refreshToken, {
 		overwrite: true,
 		httpOnly: true,
 		sameSite: 'none',
 		secure: true,
-		domain: req.get('origin')
+		domain: parseDomain(req.get('origin'))
 	});
 	res.cookie('username', username, {
 		overwrite: true,
 		sameSite: 'none',
 		secure: true,
-		domain: req.get('origin')
+		domain: parseDomain(req.get('origin'))
 	});
 
 	await userManager.addRefreshToken(username, refreshToken);
@@ -58,7 +62,7 @@ async function getAccessToken(req, res, next) {
 		overwrite: true,
 		sameSite: 'none',
 		secure: true,
-		domain: req.get('origin')
+		domain: parseDomain(req.get('origin'))
 	});
 	res.sendStatus(200);
 }
