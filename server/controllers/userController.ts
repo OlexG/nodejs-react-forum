@@ -24,18 +24,21 @@ async function login(req, res, next) {
 	res.cookie('accessToken', accessToken, {
 		overwrite: true,
 		sameSite: 'none',
-		secure: true
+		secure: true,
+		domain: req.get('origin')
 	});
 	res.cookie('refreshToken', refreshToken, {
 		overwrite: true,
 		httpOnly: true,
 		sameSite: 'none',
-		secure: true
+		secure: true,
+		domain: req.get('origin')
 	});
 	res.cookie('username', username, {
 		overwrite: true,
 		sameSite: 'none',
-		secure: true
+		secure: true,
+		domain: req.get('origin')
 	});
 
 	await userManager.addRefreshToken(username, refreshToken);
@@ -54,7 +57,8 @@ async function getAccessToken(req, res, next) {
 	res.cookie('accessToken', accessToken, {
 		overwrite: true,
 		sameSite: 'none',
-		secure: true
+		secure: true,
+		domain: req.get('origin')
 	});
 	res.sendStatus(200);
 }
