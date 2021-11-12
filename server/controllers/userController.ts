@@ -29,7 +29,7 @@ async function login(req, res, next) {
 		overwrite: true,
 		sameSite: 'none',
 		secure: true,
-		domain: parseDomain(req.get('origin'))
+		domain: 'localhost'
 	});
 	res.cookie('refreshToken', refreshToken, {
 		overwrite: true,
