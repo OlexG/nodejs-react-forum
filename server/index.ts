@@ -37,7 +37,8 @@ initDB()
 					'http://localhost:3000',
 					'https://igorleshchenko.github.io/star-university-q3-2021-group-1',
 					'https://igorleshchenko.github.io/star-university-q3-2021-group-2'
-				]
+				],
+				exposedHeaders: ['accesstoken', 'refreshtoken', 'username']
 			})
 		);
 

@@ -25,25 +25,9 @@ async function login(req, res, next) {
 		expiresIn: process.env.TOKEN_EXPIRATION_TIME
 	});
 	const refreshToken = jwt.sign({ username }, process.env.REFRESH_JWT_SECRET);
-	res.cookie('accessToken', accessToken, {
-		overwrite: true,
-		sameSite: 'none',
-		secure: true,
-		path: '/'
-	});
-	res.cookie('refreshToken', refreshToken, {
-		overwrite: true,
-		httpOnly: true,
-		sameSite: 'none',
-		secure: true,
-		path: '/'
-	});
-	res.cookie('username', username, {
-		overwrite: true,
-		sameSite: 'none',
-		secure: true,
-		path: '/'
-	});
+	res.setHeader('accesstoken', accessToken);
+	res.setHeader('refreshtoken', refreshToken);
+	res.setHeader('username', username);
 
 	await userManager.addRefreshToken(username, refreshToken);
 
@@ -51,27 +35,20 @@ async function login(req, res, next) {
 }
 
 async function getAccessToken(req, res, next) {
-	const refreshToken = req.cookies.refreshToken;
+	const refreshToken = req.headers.refreshToken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken, { complete: true });
 	if (decoded.payload.username !== username) return res.sendStatus(401);
 	const accessToken = jwt.sign({ username }, process.env.ACCESS_JWT_SECRET, {
 		expiresIn: process.env.TOKEN_EXPIRATION_TIME
 	});
-	res.cookie('accessToken', accessToken, {
-		overwrite: true,
-		sameSite: 'none',
-		secure: true,
-		path: '/'
-	});
+	res.setHeader('accesstoken', accessToken);
 	res.sendStatus(200);
 }
 
 async function logout(req, res, next) {
-	const refreshToken = req.cookies.refreshToken;
+	const refreshToken = req.headers.refreshToken;
 	await userManager.deleteRefreshToken(refreshToken);
-	// delete the http ONLY refreshToken
-	res.clearCookie('refreshToken');
 	res.sendStatus(200);
 }
 
@@ -89,7 +66,7 @@ async function getUserData(req, res, next) {
 }
 
 async function changeUserIcon(req, res, next) {
-	const username = req.cookies.username;
+	const username = req.headers.username;
 	if (req.file) {
 		await userManager.updateIconPath(username, req.file.path);
 		res.sendStatus(200);
@@ -113,7 +90,7 @@ async function setUpNotifications(req, res, next) {
 		'Cache-Control': 'no-cache',
 		Connection: 'keep-alive'
 	});
-	await registerUser(req.cookies.username, res.write.bind(res), postManager);
+	await registerUser(req.headers.username, res.write.bind(res), postManager);
 
 	const intervalId = setInterval(function () {
 		res.write('data: heartbeat\n\n');
@@ -121,7 +98,7 @@ async function setUpNotifications(req, res, next) {
 
 	req.on('close', () => {
 		clearInterval(intervalId);
-		unsubscribeUser(req.cookies.username, postManager);
+		unsubscribeUser(req.headers.username, postManager);
 	});
 }
 

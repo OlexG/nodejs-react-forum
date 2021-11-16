@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 const NavbarComponent = () => {
 	async function logoutUser() {
 		Cookies.remove('accessToken');
+		Cookies.remove('refreshToken');
 		Cookies.remove('username');
 		await api.logout();
 	}

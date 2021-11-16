@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import NavbarComponent from '../Navbar';
 import api from '../../api.js';
 import Popup from '../Popup';
+import Cookies from 'js-cookie';
 
 const LoginPage = (props) => {
 	const history = useHistory();
@@ -21,6 +22,10 @@ const LoginPage = (props) => {
 			password
 		});
 		if (res.status === 200) {
+			console.log(res.headers);
+			Cookies.set('refreshToken', res.headers.refreshtoken);
+			Cookies.set('accessToken', res.headers.accesstoken);
+			Cookies.set('username', username);
 			history.push('/');
 		} else {
 			setPopup({ message: 'Incorrect username or password' });

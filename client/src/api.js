@@ -29,7 +29,10 @@ const workerInstance = Worker();
 axios.interceptors.request.use(
 	(config) => {
 		if (Cookies.get('accessToken')) {
-			config.headers.Authorization = `Bearer ${Cookies.get('accessToken')}`;
+			config.headers.accesstoken = Cookies.get('accessToken');
+		}
+		if (Cookies.get('refreshToken')) {
+			config.headers.refreshtoken = Cookies.get('refreshToken');
 		}
 		return config;
 	},
