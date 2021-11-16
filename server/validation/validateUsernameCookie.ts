@@ -3,7 +3,7 @@ const { userManager } = initManagers();
 
 export default async function validateUsernameCookie(req, res, next) {
 	const username = req.headers.username;
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	const validUsername = await userManager.findRefreshToken(refreshToken);
 
 	if (!username || validUsername !== username) {

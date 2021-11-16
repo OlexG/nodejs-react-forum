@@ -22,7 +22,6 @@ const LoginPage = (props) => {
 			password
 		});
 		if (res.status === 200) {
-			console.log(res.headers);
 			Cookies.set('refreshToken', res.headers.refreshtoken);
 			Cookies.set('accessToken', res.headers.accesstoken);
 			Cookies.set('username', username);

@@ -4,7 +4,7 @@ import { SortOption, FilterObject } from '../db/PostManager';
 import { scheduleJob } from '../scheduling/scheduler';
 const { postManager, userManager } = initManagers();
 async function postPosts(req, res, next) {
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const {
 		body: { title, body: postBody, parent, date }
@@ -79,7 +79,7 @@ async function getPostsNumber(req, res, next) {
 }
 
 async function upvotePost(req, res, next) {
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const result = await postManager.upvotePost(
 		req.params.id,
@@ -90,7 +90,7 @@ async function upvotePost(req, res, next) {
 }
 
 async function downvotePost(req, res, next) {
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const result = await postManager.downvotePost(
 		req.params.id,
@@ -101,7 +101,7 @@ async function downvotePost(req, res, next) {
 }
 
 async function removePostReactions(req, res, next) {
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	await postManager.removeReactions(req.params.id, username, userManager);
 	res.sendStatus(200);

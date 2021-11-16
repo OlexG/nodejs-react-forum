@@ -35,7 +35,7 @@ async function login(req, res, next) {
 }
 
 async function getAccessToken(req, res, next) {
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
 	const decoded = jwt.decode(refreshToken, { complete: true });
 	if (decoded.payload.username !== username) return res.sendStatus(401);
@@ -47,7 +47,7 @@ async function getAccessToken(req, res, next) {
 }
 
 async function logout(req, res, next) {
-	const refreshToken = req.headers.refreshToken;
+	const refreshToken = req.headers.refreshtoken;
 	await userManager.deleteRefreshToken(refreshToken);
 	res.sendStatus(200);
 }

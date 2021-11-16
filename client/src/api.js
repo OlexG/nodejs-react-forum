@@ -34,6 +34,9 @@ axios.interceptors.request.use(
 		if (Cookies.get('refreshToken')) {
 			config.headers.refreshtoken = Cookies.get('refreshToken');
 		}
+		if (Cookies.get('username')) {
+			config.headers.username = Cookies.get('username');
+		}
 		return config;
 	},
 	(error) => {

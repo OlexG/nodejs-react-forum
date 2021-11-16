@@ -23,8 +23,8 @@ const store = multer.diskStorage({
 			'image/jpeg': '.jpeg',
 			'image/jpg': '.jpg'
 		};
-		const refreshToken = req.cookies.refreshToken;
-		const username = await userManager.findRefreshToken(refreshToken);
+		const refreshToken = req.headers.refreshtoken;
+		const username = await userManager.findRefreshToken(refreshToken as string);
 		cb(null, username + fileObj[file.mimetype]);
 	}
 });
