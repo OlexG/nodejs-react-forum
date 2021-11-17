@@ -34,6 +34,7 @@ export class PostManager {
 
 	async getAllPosts(
 		returnWithComments: boolean,
+		{ sort = SortOption.DEFAULT, search = '' }: FilterObject,
 		parent?: mongoose.Types.ObjectId
 	): Promise<object> {
 		if (parent && returnWithComments) {
@@ -124,9 +125,47 @@ export class PostManager {
 			const [{ children: posts }] = post;
 			return posts;
 		} else if (!returnWithComments && parent) {
-			return this.model.find({ parent }).lean().exec();
+			let sorted = this.model.find({ parent });
+			if (search) {
+				sorted = sorted.find({ $text: { $search: search } });
+			}
+			switch (sort) {
+				case SortOption.DEFAULT:
+					break;
+				case SortOption.RECENT:
+					sorted = sorted.sort({ date: -1 });
+					break;
+				case SortOption.OLDEST:
+					sorted = sorted.sort({ date: 1 });
+					break;
+				case SortOption.MOST_UPVOTES:
+					sorted = sorted.sort({ upvotes: -1 });
+					break;
+				default:
+					break;
+			}
+			return sorted.lean().exec();
 		} else {
-			return this.model.find({}).lean().exec();
+			let sorted = this.model.find({});
+			if (search) {
+				sorted = sorted.find({ $text: { $search: search } });
+			}
+			switch (sort) {
+				case SortOption.DEFAULT:
+					break;
+				case SortOption.RECENT:
+					sorted = sorted.sort({ date: -1 });
+					break;
+				case SortOption.OLDEST:
+					sorted = sorted.sort({ date: 1 });
+					break;
+				case SortOption.MOST_UPVOTES:
+					sorted = sorted.sort({ upvotes: -1 });
+					break;
+				default:
+					break;
+			}
+			return sorted.lean().exec();
 		}
 	}
 

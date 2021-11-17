@@ -56,13 +56,23 @@ async function getPosts(req, res, next) {
 
 		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
+		const {
+			query: { sort, search }
+		} = req;
+		const filterObject: FilterObject = {
+			sort: SortOption.DEFAULT,
+			search: ''
+		};
+		if (sort) filterObject.sort = sort;
+		if (search) filterObject.search = search;
 		if (req.query.parent) {
 			result = await postManager.getAllPosts(
 				req.query.returnWithComments,
+				filterObject,
 				req.query.parent
 			);
 		} else {
-			result = await postManager.getAllPosts(false);
+			result = await postManager.getAllPosts(false, filterObject);
 		}
 	}
 	res.send(result);
