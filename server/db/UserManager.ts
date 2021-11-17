@@ -1,7 +1,8 @@
-import { unlink } from 'fs';
+import { fstat, unlink } from 'fs';
 import * as models from './models';
 import bcrypt = require('bcrypt');
 import mongoose = require('mongoose');
+import fs = require('fs');
 
 export interface PublicUserData {
 	reputation: number;
@@ -115,7 +116,7 @@ export class UserManager {
 
 	async updateIconPath(username: string, path: string): Promise<string> {
 		const { iconPath: oldPath } = await this.model.findOne({ username });
-		if (oldPath !== path && oldPath) {
+		if (oldPath !== path && oldPath && fs.existsSync(oldPath)) {
 			// delete old image
 			unlink(oldPath, (e) => {
 				if (e) {
@@ -131,7 +132,7 @@ export class UserManager {
 
 	async getIconPath(username: string): Promise<string> {
 		const { iconPath } = await this.model.findOne({ username });
-		if (iconPath) {
+		if (iconPath && fs.existsSync(iconPath)) {
 			return iconPath;
 		} else {
 			return null;
