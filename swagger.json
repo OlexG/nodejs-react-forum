@@ -340,7 +340,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "The _id field of the post to be downvoted"
+            "description": "The _id field of the post to be edited"
           }
         ],
         "requestBody": {
