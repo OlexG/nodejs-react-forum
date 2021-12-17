@@ -1,861 +1,972 @@
 {
-	"openapi": "3.0.0",
-	"info": {
-		"description": "A demo Forum application",
-		"version": "1.0.0",
-		"title": "Forum"
-	},
-	"servers": [
-		{
-			"url": "starforum.herokuapp.com/api/v1",
-			"description": "Main production server"
-		}
-	],
-	"paths": {
-		"/posts": {
-			"post": {
-				"security": [
-					{
-						"AccessTokenAuth": []
-					}
-				],
-				"tags": ["Posts"],
-				"summary": "Submit a post to the server",
-				"requestBody": {
-					"description": "The post information",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CreatePostRequest"
-							},
-							"example": {
-								"title": "Comment",
-								"body": "Hello everyone, I am making this comment under a post",
-								"parent": "60e360f314ba142e9db66eb2"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "The _id field of the added post",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "integer",
-									"format": "int32"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid request body"
-					},
-					"401": {
-						"description": "Invalid access or refresh token. Relogin"
-					}
-				}
-			},
-			"get": {
-				"tags": ["Posts"],
-				"summary": "Get posts from a server",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "page",
-						"schema": {
-							"type": "integer"
-						},
-						"description": "(Optional) The page number of the posts returned, this is useful for pagination",
-						"example": 2
-					},
-					{
-						"in": "query",
-						"name": "number",
-						"schema": {
-							"type": "integer"
-						},
-						"description": "(Optional) The numbers of items per page if the page query parameter is included",
-						"example": 10
-					},
-					{
-						"in": "query",
-						"name": "sort",
-						"schema": {
-							"type": "string",
-							"enum": ["default", "recent", "most-upvotes", "oldest"]
-						},
-						"description": "(Optional) Specify how the posts are sorted",
-						"example": "default"
-					},
-					{
-						"in": "query",
-						"name": "parent",
-						"schema": {
-							"type": "string"
-						},
-						"description": "(Optional) If attempting to return comments under a post, specify this post as a parent",
-						"example": "60e360f314ba142e9db66eb2"
-					},
-					{
-						"in": "query",
-						"name": "returnWithComments",
-						"schema": {
-							"type": "boolean"
-						},
-						"description": "(Optional) If you want to return the posts nested with their comments, set this to true",
-						"example": false
-					},
-					{
-						"in": "query",
-						"name": "search",
-						"schema": {
-							"type": "string"
-						},
-						"description": "(Optional) If you want posts filtered by a string in the title",
-						"example": "Hello"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "The posts as an array of javascript objects, where the children field contains nested comments and the other fields describe the post itself",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"type": "object"
-									}
-								},
-								"example": [
-									{
-										"author": "oleks2",
-										"body": "test3",
-										"children": [
-											{
-												"author": "oleks2",
-												"body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-												"children": [],
-												"date": "2021-09-02T17:37:49.569Z",
-												"level": 1,
-												"parent": "61310be94d23d059e8de33f5",
-												"title": "Comment",
-												"upvotes": 0,
-												"_id": "61310bed4d23d059e8de33f6"
-											}
-										],
-										"date": "2021-09-02T17:37:45.744Z",
-										"level": 0,
-										"parent": "61310be34d23d059e8de33f4",
-										"title": "Comment",
-										"upvotes": 0,
-										"__v": 0,
-										"_id": "61310be94d23d059e8de33f5"
-									}
-								]
-							}
-						}
-					}
-				}
-			}
-		},
-		"/posts/{id}": {
-			"get": {
-				"tags": ["Posts"],
-				"summary": "Get a single post based on id",
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The post _id field"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "The post itself",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/SinglePostResult"
-								},
-								"example": {
-									"author": "oleks2",
-									"body": "test3",
-									"date": "2021-09-02T17:37:39.443Z",
-									"title": "test4",
-									"upvotes": 0,
-									"__v": 0,
-									"_id": "61310be34d23d059e8de33f4"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/posts-number": {
-			"get": {
-				"tags": ["Posts"],
-				"summary": "Get the number of total posts (useful for pagination)",
-				"responses": {
-					"200": {
-						"description": "The post itself",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"result": {
-											"type": "integer",
-											"description": "The number of posts"
-										}
-									}
-								},
-								"example": {
-									"result": 20
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/posts/{id}/upvote": {
-			"post": {
-				"security": [
-					{
-						"AccessTokenAuth": []
-					},
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The _id field of the post to be upvoted"
-					}
-				],
-				"tags": ["Posts"],
-				"summary": "Submit a request to upvote a post",
-				"responses": {
-					"200": {
-						"description": "True if the upvote was successful and false otherwise",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "boolean"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Invalid access or refresh token. Relogin"
-					}
-				}
-			}
-		},
-		"/posts/{id}/downvote": {
-			"post": {
-				"security": [
-					{
-						"AccessTokenAuth": []
-					},
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The _id field of the post to be downvoted"
-					}
-				],
-				"tags": ["Posts"],
-				"summary": "Submit a request to downvote a post",
-				"responses": {
-					"200": {
-						"description": "True if the downvote was successful and false otherwise",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "boolean"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Invalid access or refresh token. Relogin"
-					}
-				}
-			}
-		},
-		"/posts/{id}/remove-reactions": {
-			"post": {
-				"security": [
-					{
-						"AccessTokenAuth": []
-					},
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The _id field of the post to be changed"
-					}
-				],
-				"tags": ["Posts"],
-				"summary": "Submit a request to remove a user reaction from a post, either upvote or downvote",
-				"responses": {
-					"200": {
-						"description": "The reaction was either removed successfully, or there was no reaction present"
-					},
-					"401": {
-						"description": "Invalid access or refresh token. Relogin"
-					}
-				}
-			}
-		},
-		"/users": {
-			"post": {
-				"tags": ["Users"],
-				"summary": "Add a user",
-				"requestBody": {
-					"description": "The user information",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CreateUserRequest"
-							},
-							"example": {
-								"username": "user123",
-								"password": "password12345"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "The _id field of the added post",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"validation": {
-											"type": "object",
-											"properties": {
-												"body": {
-													"type": "object",
-													"properties": {
-														"message": {
-															"type": "string",
-															"enum": ["success"]
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Password is less then 8 characters long or username already exists",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"validation": {
-											"type": "object",
-											"properties": {
-												"body": {
-													"type": "object",
-													"properties": {
-														"message": {
-															"type": "string",
-															"enum": [
-																"username already exists",
-																"your password is less then 8 characters long"
-															]
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/login": {
-			"post": {
-				"tags": ["Users"],
-				"summary": "Log in a user",
-				"requestBody": {
-					"description": "The user information",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CreateUserRequest"
-							},
-							"example": {
-								"username": "user123",
-								"password": "password12345"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successfully authenticated, a username and access token cookie is set. Also a refresh token cookie is set however it cannot be accessed through client scripts.",
-						"headers": {
-							"refreshtoken": {
-								"description": "Access token",
-								"schema": {
-									"type": "string",
-									"example": "abcde12345;"
-								}
-							},
-							"accesstoken": {
-								"description": "Refresh token",
-								"schema": {
-									"type": "string",
-									"example": "fghijk678910"
-								}
-							},
-							"\n\nSet-Cookie": {
-								"description": "The username",
-								"schema": {
-									"type": "string",
-									"example": "user123"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "No such such user exists"
-					}
-				}
-			}
-		},
-		"/token": {
-			"get": {
-				"summary": "Get a new access token as it expires every 10 minutes",
-				"tags": ["Users"],
-				"security": [
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success",
-						"headers": {
-							"Set-Cookie": {
-								"description": "Access token",
-								"schema": {
-									"type": "string",
-									"example": "accessToken=abcde12345;"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Invalid refresh token cookie. Relogin"
-					}
-				}
-			}
-		},
-		"/logout": {
-			"delete": {
-				"tags": ["Users"],
-				"security": [
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"summary": "Log out a user",
-				"responses": {
-					"200": {
-						"description": "Successfuly deleted the refresh token cookie"
-					},
-					"401": {
-						"description": "Invalid refresh token cookie"
-					}
-				}
-			}
-		},
-		"/users/{username}/reactions": {
-			"get": {
-				"parameters": [
-					{
-						"in": "path",
-						"name": "username",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The username of the user"
-					}
-				],
-				"tags": ["Users"],
-				"summary": "Get the reactions of a user",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"downvotes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": "integer",
-												"format": "int32"
-											},
-											"description": "Object marking downvoted posts with a 1",
-											"example": {
-												"60e360f314ba142e9db66eb2": 1,
-												"70e360g314ba142e9db66eb2": 1
-											}
-										},
-										"upvotes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": "integer",
-												"format": "int32"
-											},
-											"description": "Object marking upvoted posts with a 1",
-											"example": {
-												"60e360f314ba142e9db66eb2": 1,
-												"70e360g314ba142e9db66eb2": 1
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid username parameter"
-					}
-				}
-			}
-		},
-		"/users/{username}": {
-			"get": {
-				"parameters": [
-					{
-						"in": "path",
-						"name": "username",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The username of the user"
-					}
-				],
-				"tags": ["Users"],
-				"summary": "Get public data of a user",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"reputation": {
-											"type": "integer",
-											"format": "int32"
-										},
-										"numberOfPosts": {
-											"type": "integer",
-											"format": "int32"
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid username parameter"
-					}
-				}
-			}
-		},
-		"/users/{username}/icon": {
-			"post": {
-				"summary": "Set a user icon",
-				"tags": ["Users"],
-				"security": [
-					{
-						"AccessTokenAuth": []
-					},
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "username",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The username of the user"
-					}
-				],
-				"requestBody": {
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"image": {
-										"type": "string",
-										"format": "binary"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					},
-					"400": {
-						"description": "Invalid username parameter"
-					},
-					"401": {
-						"description": "The refresh token or the access token is invalid. Relogin"
-					}
-				}
-			},
-			"get": {
-				"tags": ["Users"],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "username",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The username of the user"
-					}
-				],
-				"summary": "Get a user icon",
-				"responses": {
-					"200": {
-						"description": "The user icon",
-						"content": {
-							"image": {
-								"schema": {
-									"type": "string",
-									"format": "binary"
-								},
-								"example": "imagebinary..."
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid username parameter"
-					}
-				}
-			}
-		}
-	},
-	"components": {
-		"securitySchemes": {
-			"AccessTokenAuth": {
-				"type": "http",
-				"scheme": "bearer",
-				"description": "Access token in the 'accesstoken' header"
-			},
-			"RefreshTokenAuth": {
-				"type": "http",
-				"scheme": "bearer",
-				"description": "Refresh token in the 'refreshtoken' header"
-			}
-		},
-		"schemas": {
-			"CreateUserRequest": {
-				"type": "object",
-				"required": ["username", "password"],
-				"properties": {
-					"username": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string",
-						"minimum": 8,
-						"description": "Password has to be at least 8 characters long"
-					}
-				}
-			},
-			"CreatePostRequest": {
-				"type": "object",
-				"required": ["title", "body"],
-				"properties": {
-					"title": {
-						"type": "string",
-						"description": "The title of the post"
-					},
-					"body": {
-						"type": "string",
-						"description": "The body of the post"
-					},
-					"date": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"parent": {
-						"type": "string",
-						"description": "id of the parent post"
-					}
-				}
-			},
-			"SinglePostResult": {
-				"type": "object",
-				"required": [
-					"title",
-					"body",
-					"date",
-					"author",
-					"upvotes",
-					"__v",
-					"_id"
-				],
-				"properties": {
-					"title": {
-						"type": "string",
-						"description": "The title of the post"
-					},
-					"body": {
-						"type": "string",
-						"description": "The body of the post"
-					},
-					"date": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Date created"
-					},
-					"author": {
-						"type": "string",
-						"description": "the username of the author"
-					},
-					"upvotes": {
-						"type": "integer",
-						"description": "the number of upvotes the post has"
-					},
-					"__v": {
-						"type": "integer",
-						"description": "Version of the post document, used internally by mongoose"
-					},
-					"_id": {
-						"type": "integer",
-						"description": "The id of the post"
-					},
-					"parent": {
-						"type": "string",
-						"description": "The id of the parent"
-					}
-				}
-			},
-			"User": {
-				"type": "object",
-				"properties": {
-					"_id": {
-						"type": "string"
-					},
-					"username": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					},
-					"upvotes": {
-						"type": "object",
-						"additionalProperties": {
-							"type": "integer",
-							"format": "int32"
-						},
-						"description": "Object marking upvoted posts with a 1",
-						"example": {
-							"60e360f314ba142e9db66eb2": 1,
-							"70e360g314ba142e9db66eb2": 1
-						}
-					},
-					"downvotes": {
-						"type": "object",
-						"additionalProperties": {
-							"type": "integer",
-							"format": "int32"
-						},
-						"description": "Object marking downvoted posts with a 1",
-						"example": {
-							"60e360f314ba142e9db66eb2": 1,
-							"70e360g314ba142e9db66eb2": 1
-						}
-					},
-					"refreshToken": {
-						"type": "string",
-						"description": "The refresh token used for authentication and refreshing the access token"
-					},
-					"reputation": {
-						"type": "integer",
-						"format": "int32",
-						"description": "The difference between the number of upvotes and downvotes this user's posts have"
-					},
-					"numberOfPosts": {
-						"type": "integer",
-						"format": "int32",
-						"description": "How many posts this user made"
-					},
-					"iconPath": {
-						"type": "string",
-						"description": "Where the user icon is stored"
-					},
-					"__v": {
-						"type": "integer",
-						"description": "Version of the user document, used internally by mongoose"
-					}
-				}
-			}
-		}
-	}
+  "openapi": "3.0.0",
+  "info": {
+    "description": "A demo Forum application",
+    "version": "1.0.0",
+    "title": "Forum"
+  },
+  "servers": [
+    {
+      "url": "nodejs-react-forum.herokuapp.com/api/v1",
+      "description": "Main production server"
+    }
+  ],
+  "paths": {
+    "/posts": {
+      "post": {
+        "security": [
+          {
+            "AccessTokenAuth": []
+          }
+        ],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Submit a post to the server",
+        "requestBody": {
+          "description": "The post information",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostRequest"
+              },
+              "example": {
+                "title": "Comment",
+                "body": "Hello everyone, I am making this comment under a post",
+                "parent": "60e360f314ba142e9db66eb2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The _id field of the added post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Invalid access or refresh token. Relogin"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Get posts from a server",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "(Optional) The page number of the posts returned, this is useful for pagination",
+            "example": 2
+          },
+          {
+            "in": "query",
+            "name": "number",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "(Optional) The numbers of items per page if the page query parameter is included",
+            "example": 10
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "default",
+                "recent",
+                "most-upvotes",
+                "oldest"
+              ]
+            },
+            "description": "(Optional) Specify how the posts are sorted",
+            "example": "default"
+          },
+          {
+            "in": "query",
+            "name": "parent",
+            "schema": {
+              "type": "string"
+            },
+            "description": "(Optional) If attempting to return comments under a post, specify this post as a parent",
+            "example": "60e360f314ba142e9db66eb2"
+          },
+          {
+            "in": "query",
+            "name": "returnWithComments",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "(Optional) If you want to return the posts nested with their comments, set this to true",
+            "example": false
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "(Optional) If you want posts filtered by a string in the title",
+            "example": "Hello"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The posts as an array of javascript objects, where the children field contains nested comments and the other fields describe the post itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "example": [
+                  {
+                    "author": "oleks2",
+                    "body": "test3",
+                    "children": [
+                      {
+                        "author": "oleks2",
+                        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                        "children": [],
+                        "date": "2021-09-02T17:37:49.569Z",
+                        "level": 1,
+                        "parent": "61310be94d23d059e8de33f5",
+                        "title": "Comment",
+                        "upvotes": 0,
+                        "_id": "61310bed4d23d059e8de33f6"
+                      }
+                    ],
+                    "date": "2021-09-02T17:37:45.744Z",
+                    "level": 0,
+                    "parent": "61310be34d23d059e8de33f4",
+                    "title": "Comment",
+                    "upvotes": 0,
+                    "__v": 0,
+                    "_id": "61310be94d23d059e8de33f5"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{id}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Get a single post based on id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The post _id field"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SinglePostResult"
+                },
+                "example": {
+                  "author": "oleks2",
+                  "body": "test3",
+                  "date": "2021-09-02T17:37:39.443Z",
+                  "title": "test4",
+                  "upvotes": 0,
+                  "__v": 0,
+                  "_id": "61310be34d23d059e8de33f4"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts-number": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Get the number of total posts (useful for pagination)",
+        "responses": {
+          "200": {
+            "description": "The post itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "integer",
+                      "description": "The number of posts"
+                    }
+                  }
+                },
+                "example": {
+                  "result": 20
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{id}/upvote": {
+      "post": {
+        "security": [
+          {
+            "AccessTokenAuth": []
+          },
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The _id field of the post to be upvoted"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Submit a request to upvote a post",
+        "responses": {
+          "200": {
+            "description": "True if the upvote was successful and false otherwise",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid access or refresh token. Relogin"
+          }
+        }
+      }
+    },
+    "/posts/{id}/downvote": {
+      "post": {
+        "security": [
+          {
+            "AccessTokenAuth": []
+          },
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The _id field of the post to be downvoted"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Submit a request to downvote a post",
+        "responses": {
+          "200": {
+            "description": "True if the downvote was successful and false otherwise",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid access or refresh token. Relogin"
+          }
+        }
+      }
+    },
+    "/posts/{id}/edit": {
+      "post": {
+        "security": [
+          {
+            "AccessTokenAuth": []
+          },
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The _id field of the post to be downvoted"
+          }
+        ],
+        "requestBody": {
+          "description": "The new body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "The body of the post"
+                  }
+                }
+              },
+              "example": {
+                "body": "Hello everyone, I am submitting a new body for a post"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Submit a request to edit a post",
+        "responses": {
+          "200": {
+            "description": "True if editing the post was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is empty"
+          },
+          "401": {
+            "description": "Invalid access or refresh token. Relogin or submit the edit request for the right user"
+          }
+        }
+      }
+    },
+    "/posts/{id}/remove-reactions": {
+      "post": {
+        "security": [
+          {
+            "AccessTokenAuth": []
+          },
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The _id field of the post to be changed"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Submit a request to remove a user reaction from a post, either upvote or downvote",
+        "responses": {
+          "200": {
+            "description": "The reaction was either removed successfully, or there was no reaction present"
+          },
+          "401": {
+            "description": "Invalid access or refresh token. Relogin"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add a user",
+        "requestBody": {
+          "description": "The user information",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              },
+              "example": {
+                "username": "user123",
+                "password": "password12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The _id field of the added post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "validation": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "properties": {
+                            "message": {
+                              "type": "string",
+                              "enum": [
+                                "success"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Password is less then 8 characters long or username already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "validation": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "properties": {
+                            "message": {
+                              "type": "string",
+                              "enum": [
+                                "username already exists",
+                                "your password is less then 8 characters long"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Log in a user",
+        "requestBody": {
+          "description": "The user information",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              },
+              "example": {
+                "username": "user123",
+                "password": "password12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated, a username and access token cookie is set. Also a refresh token cookie is set however it cannot be accessed through client scripts.",
+            "headers": {
+              "refreshtoken": {
+                "description": "Access token",
+                "schema": {
+                  "type": "string",
+                  "example": "abcde12345;"
+                }
+              },
+              "accesstoken": {
+                "description": "Refresh token",
+                "schema": {
+                  "type": "string",
+                  "example": "fghijk678910"
+                }
+              },
+              "username": {
+                "description": "The username",
+                "schema": {
+                  "type": "string",
+                  "example": "user123"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No such such user exists"
+          }
+        }
+      }
+    },
+    "/token": {
+      "get": {
+        "summary": "Get a new access token as it expires every 10 minutes",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Access token",
+                "schema": {
+                  "type": "string",
+                  "example": "accessToken=abcde12345;"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid refresh token cookie. Relogin"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "summary": "Log out a user",
+        "responses": {
+          "200": {
+            "description": "Successfuly deleted the refresh token cookie"
+          },
+          "401": {
+            "description": "Invalid refresh token cookie"
+          }
+        }
+      }
+    },
+    "/users/{username}/reactions": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The username of the user"
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get the reactions of a user",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "downvotes": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "description": "Object marking downvoted posts with a 1",
+                      "example": {
+                        "60e360f314ba142e9db66eb2": 1,
+                        "70e360g314ba142e9db66eb2": 1
+                      }
+                    },
+                    "upvotes": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "description": "Object marking upvoted posts with a 1",
+                      "example": {
+                        "60e360f314ba142e9db66eb2": 1,
+                        "70e360g314ba142e9db66eb2": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username parameter"
+          }
+        }
+      }
+    },
+    "/users/{username}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The username of the user"
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get public data of a user",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reputation": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "numberOfPosts": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username parameter"
+          }
+        }
+      }
+    },
+    "/users/{username}/icon": {
+      "post": {
+        "summary": "Set a user icon",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "AccessTokenAuth": []
+          },
+          {
+            "RefreshTokenAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The username of the user"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid username parameter"
+          },
+          "401": {
+            "description": "The refresh token or the access token is invalid. Relogin"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The username of the user"
+          }
+        ],
+        "summary": "Get a user icon",
+        "responses": {
+          "200": {
+            "description": "The user icon",
+            "content": {
+              "image": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "example": "imagebinary..."
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username parameter"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AccessTokenAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Access token in the 'accesstoken' header"
+      },
+      "RefreshTokenAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Refresh token in the 'refreshtoken' header"
+      }
+    },
+    "schemas": {
+      "CreateUserRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minimum": 8,
+            "description": "Password has to be at least 8 characters long"
+          }
+        }
+      },
+      "CreatePostRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "body"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the post"
+          },
+          "body": {
+            "type": "string",
+            "description": "The body of the post"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "parent": {
+            "type": "string",
+            "description": "id of the parent post"
+          }
+        }
+      },
+      "SinglePostResult": {
+        "type": "object",
+        "required": [
+          "title",
+          "body",
+          "date",
+          "author",
+          "upvotes",
+          "__v",
+          "_id"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the post"
+          },
+          "body": {
+            "type": "string",
+            "description": "The body of the post"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date created"
+          },
+          "author": {
+            "type": "string",
+            "description": "the username of the author"
+          },
+          "upvotes": {
+            "type": "integer",
+            "description": "the number of upvotes the post has"
+          },
+          "__v": {
+            "type": "integer",
+            "description": "Version of the post document, used internally by mongoose"
+          },
+          "_id": {
+            "type": "integer",
+            "description": "The id of the post"
+          },
+          "parent": {
+            "type": "string",
+            "description": "The id of the parent"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "upvotes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Object marking upvoted posts with a 1",
+            "example": {
+              "60e360f314ba142e9db66eb2": 1,
+              "70e360g314ba142e9db66eb2": 1
+            }
+          },
+          "downvotes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Object marking downvoted posts with a 1",
+            "example": {
+              "60e360f314ba142e9db66eb2": 1,
+              "70e360g314ba142e9db66eb2": 1
+            }
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "The refresh token used for authentication and refreshing the access token"
+          },
+          "reputation": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The difference between the number of upvotes and downvotes this user's posts have"
+          },
+          "numberOfPosts": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many posts this user made"
+          },
+          "iconPath": {
+            "type": "string",
+            "description": "Where the user icon is stored"
+          },
+          "__v": {
+            "type": "integer",
+            "description": "Version of the user document, used internally by mongoose"
+          }
+        }
+      }
+    }
+  }
 }
