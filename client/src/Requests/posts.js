@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const sendPostNumberRequest = async () => axios.get('/api/v1/posts-number');
 const sendPostsPageRequest = async (
 	currentPage,
@@ -27,6 +28,9 @@ const sendDownvotePostRequest = async (id) =>
 	axios.post(`/api/v1/posts/${id}/downvote`);
 const sendRemovePostReactionsRequest = async (id) =>
 	axios.post(`/api/v1/posts/${id}/remove-reactions`);
+const sendPostEditRequest = async (id, body) =>
+	axios.post(`/api/v1/posts/${id}/edit`, body);
+
 export {
 	sendPostNumberRequest,
 	sendPostsPageRequest,
@@ -36,5 +40,6 @@ export {
 	sendSinglePostRequest,
 	sendUpvotePostRequest,
 	sendDownvotePostRequest,
-	sendRemovePostReactionsRequest
+	sendRemovePostReactionsRequest,
+	sendPostEditRequest
 };

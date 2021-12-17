@@ -297,6 +297,17 @@ export class PostManager {
 		return false;
 	}
 
+	async editPost(postId: string, username: string, newBody: string) {
+		const post = await this.model.findOne({ _id: new ObjectId(postId) }).exec();
+		if (post?.author === username) {
+			this.model
+				.updateOne({ _id: new ObjectId(postId) }, { body: newBody })
+				.exec();
+			return true;
+		}
+		return false;
+	}
+
 	async downvotePost(
 		postID: string,
 		username: string,

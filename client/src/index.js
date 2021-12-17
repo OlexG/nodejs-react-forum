@@ -2,6 +2,7 @@ import App from './Components/App';
 import PostCreator from './Components/PostCreator';
 import PostPage from './Components/PostPage';
 import LoginPage from './Components/LoginPage';
+import EditPostPage from './Components/EditPostPage';
 import SignupPage from './Components/SignupPage';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -14,6 +15,7 @@ const AppRouter = () => {
 				<Route path='/create' component={PostCreator} />
 				<Route path='/comment' component={PostCreator} />
 				<Route path='/posts/:id' component={PostPage} />
+				<Route path='/edit/:id' component={EditPostPage} />
 				<Route path='/login' component={LoginPage} />
 				<Route path='/signup' component={SignupPage} />
 			</Router>

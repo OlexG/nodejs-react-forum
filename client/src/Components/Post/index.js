@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import styles from './Post.module.css';
 import Reactions from '../Reactions';
+import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 
 const Post = (props) => {
@@ -57,6 +58,15 @@ const Post = (props) => {
 						>
 							Preview
 						</button>
+						{props.author === Cookies.get('username') && (
+							<Link
+								className='btn btn-outline-secondary ml-3 pl-3 pr-3'
+								style={{ height: '40px' }}
+								to={`/edit/${props.id}`}
+							>
+								Edit
+							</Link>
+						)}
 					</div>
 				</div>
 				<div ref={dropDownText} className={styles.dropdown}>

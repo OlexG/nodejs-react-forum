@@ -1,6 +1,7 @@
 import { celebrate } from 'celebrate';
 import validateAccessJWT from '../../validation/validateAccessJWT';
 import postSchema from '../../schemas/postSchema';
+import editPostRequestSchema from '../../schemas/editPostRequestSchema';
 import postRequestSchema from '../../schemas/postRequestSchema';
 import postController from '../../controllers/postController';
 import wrap from '../../controllers/wrap';
@@ -40,6 +41,14 @@ app.post(
 	validateAccessJWT,
 	validateRefreshJWT,
 	wrap(postController.downvotePost)
+);
+
+app.post(
+	'/api/v1/posts/:id/edit',
+	validateAccessJWT,
+	validateRefreshJWT,
+	celebrate(editPostRequestSchema),
+	wrap(postController.editPost)
 );
 
 app.post(

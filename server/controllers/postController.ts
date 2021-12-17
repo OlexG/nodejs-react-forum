@@ -110,6 +110,27 @@ async function downvotePost(req, res, next) {
 	res.send(result);
 }
 
+async function editPost(req, res, next) {
+	function stringify(value) {
+		switch (typeof value) {
+			case 'string':
+			case 'object':
+				return JSON.stringify(value);
+			default:
+				return String(value);
+		}
+	}
+	const refreshToken = req.headers.refreshtoken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.editPost(
+		req.params.id,
+		username,
+		stringify(req.body.body).substring(1, stringify(req.body.body).length - 1)
+	);
+	if (!result) res.status(401).send('Unauthorized');
+	else res.send(result);
+}
+
 async function removePostReactions(req, res, next) {
 	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
@@ -124,5 +145,6 @@ export default {
 	getPostsNumber,
 	upvotePost,
 	downvotePost,
-	removePostReactions
+	removePostReactions,
+	editPost
 };
