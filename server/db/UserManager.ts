@@ -98,6 +98,17 @@ export class UserManager {
 		return { hasBeenChanged: false };
 	}
 
+	async clearPostVotes(postId: string) {
+		const users = await this.model.find({}).exec();
+		for (const user of users) {
+			delete user.upvotes[postId];
+			delete user.downvotes[postId];
+			user.markModified('upvotes');
+			user.markModified('downvotes');
+			await user.save();
+		}
+	}
+
 	async addUser(username: string, password: string): Promise<string> {
 		if (await this.model.findOne({ username }).exec()) {
 			return 'username already exists';

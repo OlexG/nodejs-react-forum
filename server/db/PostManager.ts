@@ -308,6 +308,16 @@ export class PostManager {
 		return false;
 	}
 
+	async deletePost(postId: string, username: string, userManager: UserManager) {
+		const post = await this.model.findOne({ _id: new ObjectId(postId) }).exec();
+		if (post?.author === username) {
+			await userManager.clearPostVotes(postId);
+			await this.model.deleteOne({ _id: new ObjectId(postId) }).exec();
+			return true;
+		}
+		return false;
+	}
+
 	async downvotePost(
 		postID: string,
 		username: string,

@@ -11,7 +11,8 @@ import {
 	sendUpvotePostRequest,
 	sendDownvotePostRequest,
 	sendRemovePostReactionsRequest,
-	sendPostEditRequest
+	sendPostEditRequest,
+	sendPostDeleteRequest
 } from './Requests/posts.js';
 import {
 	logout,
@@ -72,6 +73,7 @@ const api = {
 	sendReactionsRequest,
 	sendUserDataRequest,
 	sendChangeIconRequest,
-	sendPostEditRequest
+	sendPostEditRequest,
+	sendPostDeleteRequest
 };
 export default api;

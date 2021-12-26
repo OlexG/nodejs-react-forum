@@ -131,6 +131,18 @@ async function editPost(req, res, next) {
 	else res.send(result);
 }
 
+async function deletePost(req, res, next) {
+	const refreshToken = req.headers.refreshtoken;
+	const username = await userManager.findRefreshToken(refreshToken);
+	const result = await postManager.deletePost(
+		req.params.id,
+		username,
+		userManager
+	);
+	if (!result) res.status(401).send('Unauthorized');
+	else res.send(result);
+}
+
 async function removePostReactions(req, res, next) {
 	const refreshToken = req.headers.refreshtoken;
 	const username = await userManager.findRefreshToken(refreshToken);
@@ -146,5 +158,6 @@ export default {
 	upvotePost,
 	downvotePost,
 	removePostReactions,
-	editPost
+	editPost,
+	deletePost
 };

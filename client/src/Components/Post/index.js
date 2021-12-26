@@ -4,6 +4,7 @@ import styles from './Post.module.css';
 import Reactions from '../Reactions';
 import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
+import api from '../../api';
 
 const Post = (props) => {
 	const [upvotes, setUpvotes] = useState(props.upvotes);
@@ -22,6 +23,15 @@ const Post = (props) => {
 			dropDownText.current.style.height = '0';
 		}
 	}
+
+	async function deletePost() {
+		const res = await api.sendPostDeleteRequest(props.id);
+		if (res.status === 200) {
+			// reload page
+			window.location.reload();
+		}
+	}
+
 	return (
 		<>
 			<div className='list-group-item p-0 ml-5' style={{ width: '90%' }}>
@@ -59,13 +69,23 @@ const Post = (props) => {
 							Preview
 						</button>
 						{props.author === Cookies.get('username') && (
-							<Link
-								className='btn btn-outline-secondary ml-3 pl-3 pr-3'
-								style={{ height: '40px' }}
-								to={`/edit/${props.id}`}
-							>
-								Edit
-							</Link>
+							<>
+								<Link
+									className='btn btn-outline-secondary ml-3 pl-3 pr-3'
+									style={{ height: '40px' }}
+									to={`/edit/${props.id}`}
+								>
+									Edit
+								</Link>
+								<button
+									type='button'
+									className='btn btn-outline-secondary ml-3 pl-3 pr-3'
+									style={{ height: '40px' }}
+									onClick={deletePost}
+								>
+									🗑️
+								</button>
+							</>
 						)}
 					</div>
 				</div>

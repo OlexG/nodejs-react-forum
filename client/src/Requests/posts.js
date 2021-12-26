@@ -29,7 +29,9 @@ const sendDownvotePostRequest = async (id) =>
 const sendRemovePostReactionsRequest = async (id) =>
 	axios.post(`/api/v1/posts/${id}/remove-reactions`);
 const sendPostEditRequest = async (id, body) =>
-	axios.post(`/api/v1/posts/${id}/edit`, body);
+	axios.patch(`/api/v1/posts/${id}`, body);
+
+const sendPostDeleteRequest = async (id) => axios.delete(`/api/v1/posts/${id}`);
 
 export {
 	sendPostNumberRequest,
@@ -41,5 +43,6 @@ export {
 	sendUpvotePostRequest,
 	sendDownvotePostRequest,
 	sendRemovePostReactionsRequest,
-	sendPostEditRequest
+	sendPostEditRequest,
+	sendPostDeleteRequest
 };
