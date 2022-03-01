@@ -43,8 +43,15 @@ app.post(
 	wrap(postController.downvotePost)
 );
 
-app.post(
-	'/api/v1/posts/:id/edit',
+app.delete(
+	'/api/v1/posts/:id',
+	validateAccessJWT,
+	validateRefreshJWT,
+	wrap(postController.deletePost)
+);
+
+app.patch(
+	'/api/v1/posts/:id',
 	validateAccessJWT,
 	validateRefreshJWT,
 	celebrate(editPostRequestSchema),

@@ -104,7 +104,7 @@
 						"schema": {
 							"type": "boolean"
 						},
-						"description": "(Optional) If you want to return the posts as well as comments set this to true. If parent is also true, the result will be in a nested object format, if not, the result will be an array. ",
+						"description": "(Optional) If you want to return the posts nested with their comments, set this to true",
 						"example": false
 					},
 					{
@@ -203,6 +203,106 @@
 								}
 							}
 						}
+					}
+				}
+			},
+			"patch": {
+				"security": [
+					{
+						"AccessTokenAuth": []
+					},
+					{
+						"RefreshTokenAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The _id field of the post to be edited"
+					}
+				],
+				"requestBody": {
+					"description": "The new body",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["body"],
+								"properties": {
+									"body": {
+										"type": "string",
+										"description": "The body of the post"
+									}
+								}
+							},
+							"example": {
+								"body": "Hello everyone, I am submitting a new body for a post"
+							}
+						}
+					}
+				},
+				"tags": ["Posts"],
+				"summary": "Submit a request to edit a post",
+				"responses": {
+					"200": {
+						"description": "True if editing the post was successful",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The body is empty"
+					},
+					"401": {
+						"description": "Invalid access or refresh token. Relogin or submit the edit request for the right user"
+					}
+				}
+			},
+			"delete": {
+				"security": [
+					{
+						"AccessTokenAuth": []
+					},
+					{
+						"RefreshTokenAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The _id field of the post to be deleted"
+					}
+				],
+				"tags": ["Posts"],
+				"summary": "Submit a request to delete a post",
+				"responses": {
+					"200": {
+						"description": "True if deleting the post was successful",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid access or refresh token. Relogin or submit the delete request for the right user"
 					}
 				}
 			}
@@ -310,70 +410,6 @@
 					},
 					"401": {
 						"description": "Invalid access or refresh token. Relogin"
-					}
-				}
-			}
-		},
-		"/posts/{id}/edit": {
-			"post": {
-				"security": [
-					{
-						"AccessTokenAuth": []
-					},
-					{
-						"RefreshTokenAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The _id field of the post to be edited"
-					}
-				],
-				"requestBody": {
-					"description": "The new body",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"required": ["body"],
-								"properties": {
-									"body": {
-										"type": "string",
-										"description": "The body of the post"
-									}
-								}
-							},
-							"example": {
-								"body": "Hello everyone, I am submitting a new body for a post"
-							}
-						}
-					}
-				},
-				"tags": ["Posts"],
-				"summary": "Submit a request to edit a post",
-				"responses": {
-					"200": {
-						"description": "True if editing the post was successful",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "boolean"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The body is empty"
-					},
-					"401": {
-						"description": "Invalid access or refresh token. Relogin or submit the edit request for the right user"
 					}
 				}
 			}
