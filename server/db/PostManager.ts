@@ -17,6 +17,7 @@ export enum SortOption {
 export interface FilterObject {
 	sort: SortOption;
 	search: string;
+	author?: string;
 }
 
 export class PostManager {
@@ -34,7 +35,11 @@ export class PostManager {
 
 	async getAllPosts(
 		returnWithComments: boolean,
-		{ sort = SortOption.DEFAULT, search = '' }: FilterObject,
+		{
+			sort = SortOption.DEFAULT,
+			search = '',
+			author = undefined
+		}: FilterObject,
 		parent?: mongoose.Types.ObjectId
 	): Promise<object> {
 		if (parent && returnWithComments) {
@@ -129,6 +134,9 @@ export class PostManager {
 			if (search) {
 				sorted = sorted.find({ $text: { $search: search } });
 			}
+			if (author) {
+				sorted = sorted.find({ author: author });
+			}
 			switch (sort) {
 				case SortOption.DEFAULT:
 					break;
@@ -144,11 +152,14 @@ export class PostManager {
 				default:
 					break;
 			}
-			return sorted.lean().exec();
+			return await sorted.lean().exec();
 		} else {
 			let sorted = this.model.find({});
 			if (search) {
 				sorted = sorted.find({ $text: { $search: search } });
+			}
+			if (author) {
+				sorted = sorted.find({ author });
 			}
 			switch (sort) {
 				case SortOption.DEFAULT:

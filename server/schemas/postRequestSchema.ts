@@ -11,6 +11,7 @@ export default {
 				.optional(),
 			parent: Joi.string().optional(),
 			returnWithComments: Joi.boolean().optional(),
-			search: Joi.string().optional()
+			search: Joi.string().optional(),
+			author: Joi.string().optional()
 		})
 };

@@ -57,7 +57,7 @@ async function getPosts(req, res, next) {
 		result = await postManager.getPostsPage(number, page, filterObject);
 	} else {
 		const {
-			query: { sort, search }
+			query: { sort, search, author }
 		} = req;
 		const filterObject: FilterObject = {
 			sort: SortOption.DEFAULT,
@@ -65,6 +65,7 @@ async function getPosts(req, res, next) {
 		};
 		if (sort) filterObject.sort = sort;
 		if (search) filterObject.search = search;
+		if (author) filterObject.author = author;
 		if (req.query.parent) {
 			result = await postManager.getAllPosts(
 				req.query.returnWithComments,
